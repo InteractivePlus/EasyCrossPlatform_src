@@ -11,4 +11,5 @@ Everybody Loves C++, but there is actually no user-friendly libs for beginners t
 Influenced by <a href="http://reasoning.biz" target="_blank">Reasoning</a> Library, however, that library is no longer maintained since 2008<br />
 With less code, developers can develop more safe code preventing memory leaks and debug less. EasyCrossPlatform also brings noticeable performance while enabling developers to develop codes fast and secure.<br />
 ## Build
-This project is not even released with beta and it is still in its early stage of development. We are planning to build it with cmake, to generate static libraries that you can link.
+This project is not even released with beta and it is still in its early stage of development. We are planning to build it with xmake, to generate static libraries that you can link.
+Currently, you can simply run xmake, to make the static library in the directory to get the static link library.
