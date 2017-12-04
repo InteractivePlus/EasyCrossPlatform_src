@@ -5,7 +5,7 @@ Language: <a href="README.md">English</a>
 为了PHP与Python用户创建的快速开发且跨平台的C++框架<br />
 <a href="http://www.xsyds.cn/" target="_blank">形随意动</a> 作品<br />
 贡献列表: <a href="https://github.com/ToiletCommander">年迈的老秋风</a><br />
-包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | <strike>HTTP(s)请求</strike> | <strike>用户界面</strike><br />
+包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | MySQL | <strike>HTTP(s)请求</strike> | <strike>用户界面</strike><br />
 测试环境: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++<br />
 需要支持: Unix / Windows System | C++ 11
 ## 开发理念
@@ -14,7 +14,8 @@ Language: <a href="README.md">English</a>
 用EasyCrossPlatform开发, 可以有效的减少代码行数, 意味着更少Bug和溢出漏洞的可能性. EasyCrossPlatform在实现层趋向于将底层代码封装的更简易, 但是仍旧保留不妥协的性能
 ## 编译
 此项目仍在早期开发阶段, 且并没有考虑开始发行, Beta版都不! 不过如果您等不及了, 可以编译此库以使用它.<br />
-直接在文件夹内运行xmake即可生成静态链接库. (注意Windows和Linux的库互不通用, 不同版本的Linux静态库也不通用).
+直接在文件夹内重命名xmake-系统类型.lua为xmake.lua, 并在目录下运行xmake即可生成静态链接库. (注意Windows和Linux的库互不通用, 不同版本的Linux静态库也不通用).
 ## 贡献
 欢迎提交Pull Request. <br />
+您也可以通过测试来提交 <br />
 注意, 在您提交Pull Request请求前, 请您对您的API进行测试. 谢谢!
