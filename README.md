@@ -15,8 +15,8 @@ With less code, developers can develop more safe code preventing memory leaks an
 ## Build
 This project is not even released with beta and it is still in its early stage of development.<br />
 If you cannot wait to see it, 
-1) Enter the lib directory and put the correct Files in the lib directory<br />
-2) simply run xmake in the directory to generate a static link library that you can use.<br />
+1) Enter the lib/mariadb directory and put the correct Files in the lib directory<br />
+2) simply run xmake in the directory to generate a static/shared library that you can use.<br />
 Remeber that the lib file generated is not cross-platform betweeen Win and Linux, and between different versions of Linux.<br />
 You need to generate lib file each time when you are switching platforms.
 ## Contribute

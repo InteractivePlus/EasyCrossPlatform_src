@@ -14,7 +14,8 @@ Language: <a href="README.md">English</a>
 用EasyCrossPlatform开发, 可以有效的减少代码行数, 意味着更少Bug和溢出漏洞的可能性. EasyCrossPlatform在实现层趋向于将底层代码封装的更简易, 但是仍旧保留不妥协的性能
 ## 编译
 此项目仍在早期开发阶段, 且并没有考虑开始发行, Beta版都不! 不过如果您等不及了, 可以编译此库以使用它.<br />
-直接在文件夹内重命名xmake-系统类型.lua为xmake.lua, 并在目录下运行xmake即可生成静态链接库. (注意Windows和Linux的库互不通用, 不同版本的Linux静态库也不通用).
+1) 在Lib/MariaDB文件夹中选择您系统对应的正确版本, 并拷贝到Lib目录下
+2) 目录下运行xmake即可生成静态/动态链接库. (注意Windows和Linux的库互不通用, 不同版本的Linux静态库也不通用).
 ## 贡献
 欢迎提交Pull Request. <br />
 您也可以通过测试来提交 <br />
