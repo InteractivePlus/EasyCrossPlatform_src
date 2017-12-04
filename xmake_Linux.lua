@@ -1,6 +1,6 @@
 target("easycrossplatform_s")
 	set_kind("static")
-	add_files("**.cpp","**.c","lib/mysqlcppconn-static.*")
+	add_files("src/*.cpp","src/*.c","lib/mysqlcppconn-static.*")
 	add_includedirs("src")
 	--on_install(function (target)
 		

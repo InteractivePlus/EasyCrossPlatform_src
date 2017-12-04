@@ -1,8 +1,10 @@
 # EasyCrossPlatform
 Source Code for EasyCrossPlatform, only for development purpose.
+Language: <a href="README-ch.md">中文</a>
 ## Introduction
 A easy-to-use cross-platform C++ library designed for PHP and Python Users.<br />
-Powered by Windy, a member of <a href="http://www.xsyds.cn/" target="_blank">BlueAirTechGroup</a><br />
+Powered by <a href="http://www.xsyds.cn/" target="_blank">BlueAirTechGroup</a><br />
+Contribution List: <a href="https://github.com/ToiletCommander">Windy</a><br />
 Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | <strike>HTTP(s)_Requests</strike> | <strike>GUI</strike><br />
 Test Env: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++<br />
 Require Support: Unix / Windows System | C++ 11
@@ -12,4 +14,6 @@ Influenced by <a href="http://reasoning.biz" target="_blank">Reasoning</a> Libra
 With less code, developers can develop more safe code preventing memory leaks and debug less. EasyCrossPlatform also brings noticeable performance while enabling developers to develop codes fast and secure.<br />
 ## Build
 This project is not even released with beta and it is still in its early stage of development. We are planning to build it with xmake, to generate static libraries that you can link.
-Currently, you can simply run xmake, to make the static library in the directory to get the static link library.
+Currently, you can simply run xmake, to make the static library in the directory.
+To build on linux, you need to build MYSQL Lib first then put the mysql static library in the lib directory
+To build on Windows, you need to put the correct lib file in the lib directory corresponding to your CPU architecture.
