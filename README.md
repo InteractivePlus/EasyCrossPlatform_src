@@ -1,5 +1,5 @@
 # EasyCrossPlatform
-Source Code for EasyCrossPlatform, only for development purpose.
+Source Code for EasyCrossPlatform, only for development purpose.<br />
 Language: <a href="README-ch.md">中文</a>
 ## Introduction
 A easy-to-use cross-platform C++ library designed for PHP and Python Users.<br />
@@ -13,9 +13,10 @@ Everybody Loves C++, but there is actually no user-friendly libs for beginners t
 Influenced by <a href="http://reasoning.biz" target="_blank">Reasoning</a> Library, however, that library is no longer maintained since 2008<br />
 With less code, developers can develop more safe code preventing memory leaks and debug less. EasyCrossPlatform also brings noticeable performance while enabling developers to develop codes fast and secure.<br />
 ## Build
-This project is not even released with beta and it is still in its early stage of development. We are planning to build it with xmake, to generate static libraries that you can link.
-Currently, you can simply run xmake, to make the static library in the directory.
-To build on linux, you need to build MYSQL Lib first then put the mysql static library in the lib directory
-To build on Windows, you need to put the correct lib file in the lib directory corresponding to your CPU architecture.
+This project is not even released with beta and it is still in its early stage of development.<br />
+If you cannot wait to see it, simply run xmake in the directory to generate a static link library that you can use.<br />
+Remeber that the lib file generated is not cross-platform betweeen Win and Linux, and between different versions of Linux.<br />
+You need to generate lib file each time when you are switching platforms.
 ## Contribute
-You can fork this project and request a Pull Request. Remember that you need to test your API first before you submit the request. Thank you!
+You can fork this project and request a Pull Request. 
+Remember that you need to test your API first before you submit the request. Thank you!<br />

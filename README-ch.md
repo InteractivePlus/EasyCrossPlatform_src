@@ -1,5 +1,5 @@
 # EasyCrossPlatform
-EasyCrossPlatform源代码, 仅开发用
+EasyCrossPlatform源代码, 仅开发用<br />
 Language: <a href="README.md">English</a>
 ## 介绍
 为了PHP与Python用户创建的快速开发且跨平台的C++框架<br />
@@ -11,9 +11,10 @@ Language: <a href="README.md">English</a>
 ## 开发理念
 大家都爱C++, 但是并没有任何好用的库, 来帮助初学者快速上手C++的多线程, 网络, 用户交互开发, 同时享受C++带来的无与伦比的速度与效率优势<br />
 受到 <a href="http://reasoning.biz" target="_blank">Reasoning</a> 库的影响, 但是这个库自2008年便不再开发<br />
-用EasyCrossPlatform开发, 可以有效的减少代码行数, 意味着更少Bug和溢出漏洞的可能性. EasyCrossPlatform在实现层趋向于将底层代码封装的更简易, 但是仍旧保留不妥协的性能<br />
+用EasyCrossPlatform开发, 可以有效的减少代码行数, 意味着更少Bug和溢出漏洞的可能性. EasyCrossPlatform在实现层趋向于将底层代码封装的更简易, 但是仍旧保留不妥协的性能
 ## 编译
-此项目仍在早期开发阶段, 且并没有考虑开始发行, Beta版都不! 不过如果您等不及了, 可以编译此库以使用它.
+此项目仍在早期开发阶段, 且并没有考虑开始发行, Beta版都不! 不过如果您等不及了, 可以编译此库以使用它.<br />
 直接在文件夹内运行xmake即可生成静态链接库. (注意Windows和Linux的库互不通用, 不同版本的Linux静态库也不通用).
 ## 贡献
-欢迎提交Pull Request. 注意, 在您提交Pull Request请求前, 请您对您的API进行测试. 谢谢!
+欢迎提交Pull Request. <br />
+注意, 在您提交Pull Request请求前, 请您对您的API进行测试. 谢谢!
