@@ -15,3 +15,5 @@ Language: <a href="README.md">English</a>
 ## 编译
 此项目仍在早期开发阶段, 且并没有考虑开始发行, Beta版都不! 不过如果您等不及了, 可以编译此库以使用它.
 直接在文件夹内运行xmake即可生成静态链接库. (注意Windows和Linux的库互不通用, 不同版本的Linux静态库也不通用).
+## 贡献
+欢迎提交Pull Request. 注意, 在您提交Pull Request请求前, 请您对您的API进行测试. 谢谢!

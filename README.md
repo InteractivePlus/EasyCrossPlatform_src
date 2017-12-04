@@ -17,3 +17,5 @@ This project is not even released with beta and it is still in its early stage o
 Currently, you can simply run xmake, to make the static library in the directory.
 To build on linux, you need to build MYSQL Lib first then put the mysql static library in the lib directory
 To build on Windows, you need to put the correct lib file in the lib directory corresponding to your CPU architecture.
+## Contribute
+You can fork this project and request a Pull Request. Remember that you need to test your API first before you submit the request. Thank you!
