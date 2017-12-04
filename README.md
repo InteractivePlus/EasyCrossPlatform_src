@@ -5,9 +5,9 @@ Language: <a href="README-ch.md">中文</a>
 A easy-to-use cross-platform C++ library designed for PHP and Python Users.<br />
 Powered by <a href="http://www.xsyds.cn/" target="_blank">BlueAirTechGroup</a><br />
 Contribution List: <a href="https://github.com/ToiletCommander">Windy</a><br />
-Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL | <strike>HTTP(s)_Requests</strike> | <strike>GUI</strike><br />
+Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | <strike>HTTP(s)_Requests</strike> | <strike>GUI</strike><br />
 Test Env: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++<br />
-Require Support: Unix / Windows System | C++ 11
+Require Support: Unix / Linux / Windows System + C++ 11 Support
 ## Develop Theory
 Everybody Loves C++, but there is actually no user-friendly libs for beginners to start using C++ with full support of network and multithreading function, while covering the hardware and underlying technologies. <br />
 Influenced by <a href="http://reasoning.biz" target="_blank">Reasoning</a> Library, however, that library is no longer maintained since 2008<br />
