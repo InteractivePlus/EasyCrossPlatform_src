@@ -5,7 +5,7 @@ Language: <a href="README-ch.md">中文</a>
 A easy-to-use cross-platform C++ library designed for PHP and Python Users.<br />
 Powered by <a href="http://www.xsyds.cn/" target="_blank">BlueAirTechGroup</a><br />
 Contribution List: <a href="https://github.com/ToiletCommander">Windy</a><br />
-Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | <strike>HTTP(s)_Requests</strike>
+Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | <strike>HTTP(s)_Requests</strike><br />
 Test Env: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++<br />
 Require Support: Unix / Linux / Windows System + C++ 11 Support
 ## Why not GUI?
