@@ -7,4 +7,5 @@
 	#include "XSYDUDPSocket.h"
 	#include "XSYDAsyncTCPServer.h"
 	#include "XSYDChrono.h"
+	#include "XSYDMySQL.h"
 #endif //__EasyCrossPlatformFile__
