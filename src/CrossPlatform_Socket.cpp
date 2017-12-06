@@ -2,7 +2,7 @@
 
 void Socket::ProvideErrorString()
 {
-#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 	m_ErrorFlag = errno;
 	m_ErrorString = std::string(strerror(m_ErrorFlag));
 #else
@@ -130,7 +130,7 @@ int Socket::SetDomain(int Domain)
 	return -1;
 }
 
-#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 int
 #else
 SOCKET
@@ -149,7 +149,7 @@ Socket::Create()
 	}
 
 	throw SocketException("Socket is already created.");
-#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 	return -1;
 #else
 	return 0;
@@ -366,7 +366,7 @@ int Socket::Read(const void* Buffer, int Size, bool Block)
 	}
 	memset((void*)Buffer, 0, Size);
 	int ReturnValue = 0;
-#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 	int Linux_Recv_flag = 0;
 	if (!Block) {
 		Linux_Recv_flag = MSG_DONTWAIT;
@@ -426,7 +426,7 @@ int Socket::Write(const void* Buffer, int Size)
 		throw SocketException("Socket is set to UDP, not TCP.");
 		return -1;
 	}
-#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 	int ReturnValue = send(this->m_SocketDescriptor, Buffer, Size, 0);
 #else
 	int ReturnValue = send(this->m_SocketDescriptor, (const char*)Buffer, Size, 0);
@@ -456,7 +456,7 @@ int Socket::ReadFrom(void* Buffer, int Size, bool Block)
 	struct sockaddr_in DestinationAddress;
 	memset(&DestinationAddress, 0, sizeof(struct sockaddr_in));
 	int ReturnValue = 0;
-#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 	int Linux_Recv_flag = 0;
 	if (!Block) {
 		Linux_Recv_flag = MSG_DONTWAIT;
@@ -527,7 +527,7 @@ int Socket::WriteTo(void* Buffer, int Size, const char* DestinationHost, unsigne
 		return -1;
 	}
 
-#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 	int ReturnValue = sendto(this->m_SocketDescriptor, Buffer, Size, 0, (struct sockaddr*)&DestinationAddress, sizeof(struct sockaddr_in));
 #else
 	int ReturnValue = sendto(this->m_SocketDescriptor, (const char*)Buffer, Size, 0, (struct sockaddr*)&DestinationAddress, sizeof(struct sockaddr_in));
@@ -545,7 +545,7 @@ bool Socket::Close()
 {
 	if (this->m_SocketDescriptor != 0)
 	{
-#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 		if (close(this->m_SocketDescriptor) == -1)
 #else
 		if (closesocket(this->m_SocketDescriptor) == -1)
@@ -588,7 +588,7 @@ SocketProtocol Socket::GetSocketProtocol(const char* Protocol)
 	TempProtoStruct = getprotobyname(Protocol);
 
 	ProtocolNumber = TempProtoStruct->p_proto;
-#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 	endprotoent();
 #else
 
@@ -603,7 +603,7 @@ std::string Socket::GetRemoteAddr()
 		char *TmpName;
 		in_addr MyAddr;
 
-		#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+		#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
             MyAddr.s_addr =
 		#else
             MyAddr.S_un.S_addr =
@@ -620,7 +620,7 @@ std::string Socket::GetRemoteAddr()
 	else{ // if (this->m_Domain == IPv6) {
 		char *TmpName;
 		in_addr MyAddr;
-		#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+		#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
             MyAddr.s_addr =
 		#else
             MyAddr.S_un.S_addr =

@@ -20,7 +20,7 @@ FILE * EasyCrossPlatform::File::FileIO::OpenFile(const char * Path, const char *
 #endif
 bool EasyCrossPlatform::File::FileIO::BinaryRead(void * _Buffer, unsigned int ElementSize, unsigned int _BufferNum, FILE * MyFile)
 {
-#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 	unsigned int Rst = fread(_Buffer, ElementSize, _BufferNum, MyFile);
 #else
 	unsigned int Rst = fread_s(_Buffer, ElementSize*_BufferNum, ElementSize, _BufferNum, MyFile);

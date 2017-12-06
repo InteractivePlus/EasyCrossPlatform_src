@@ -3,9 +3,11 @@ Source Code for EasyCrossPlatform, only for development purpose.
 Language: <a href="README-ch.md">中文</a>  
 ## Introduction
 A easy-to-use cross-platform C++ library designed for PHP and Python Users.  
+Supported System: UNIX / LINUX / WIN / MacOS(in theory) / iOS(probably)  
+Supported Architecture: x86(i386) / x64(x86_64) / ~~ARM64~~  
 Powered by <a href="http://www.xsyds.cn/" target="_blank">BlueAirTechGroup</a>  
 Contribution List: <a href="https://github.com/ToiletCommander">Windy</a>  
-Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption(In Progress) | <strike>HTTP(s)_Requests</strike>  
+Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption(In Progress) | ~~HTTP(s)_Requests~~  
 Test Env: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++  
 Require Support: Unix / Linux / Windows System + C++ 11 Support  
 ## Credit
@@ -21,6 +23,7 @@ Influenced by <a href="http://reasoning.biz" target="_blank">Reasoning</a> Libra
 With less code, developers can develop more safe code preventing memory leaks and debug less. EasyCrossPlatform also brings noticeable performance while enabling developers to develop codes fast and secure.  
 ## Build
 This project is not even released with beta and it is still in its early stage of development.  
+Remember that *currently xmake does not support running/compiling on ARM64 CPU*, so EasyCrossPlatform cannot work on ARM64, unless you perform a crossover compilation on your x86 / x64 machine  
 If you cannot wait to see it, 
 1) Enter the lib/mariadb directory and put the correct Files in the lib directory  
 2) simply run xmake in the directory to generate a static/shared library that you can use.  

@@ -12,15 +12,15 @@ target("easycrossplatform_s")
 	
 	if(is_plat("windows")) then --Windows, Only x86 and x64
 		if is_arch("x86") then
-			add_defines("_M_X86")
+			add_defines("_M_X86","EASYCROSSPLATFORM_ARCHITECTURE_X86")
 		elseif is_arch("x64") then
-			add_defines("_M_X64")
+			add_defines("_M_X64","EASYCROSSPLATFORM_ARCHITECTURE_X64")
 		end
 	else --Linux Distribution, xmake only supports x86 and x64
 		if is_arch("i386") then
-			add_defines("X86")
+			add_defines("X86","EASYCROSSPLATFORM_ARCHITECTURE_X86")
 		elseif is_arch("x86_64") then
-			add_defines("X64")
+			add_defines("X64","EASYCROSSPLATFORM_ARCHITECTURE_X64")
 		end
 	end
 	--nasm -f elf32 rdrand.S -DX86 -g -o rdrand-x86.o
@@ -43,15 +43,15 @@ target("easycrossplatform")
 	add_links("libmariadb")
 	if(is_plat("windows")) then --Windows, Only x86 and x64
 		if is_arch("x86") then
-			add_defines("_M_X86")
+			add_defines("_M_X86","EASYCROSSPLATFORM_ARCHITECTURE_X86")
 		elseif is_arch("x64") then
-			add_defines("_M_X64")
+			add_defines("_M_X64","EASYCROSSPLATFORM_ARCHITECTURE_X64")
 		end
 	else --Linux Distribution, xmake only supports x86 and x64
 		if is_arch("i386") then
-			add_defines("X86")
+			add_defines("X86","EASYCROSSPLATFORM_ARCHITECTURE_X86")
 		elseif is_arch("x86_64") then
-			add_defines("X64")
+			add_defines("X64","EASYCROSSPLATFORM_ARCHITECTURE_X64")
 		end
 	end
 	

@@ -13,7 +13,7 @@ namespace EasyCrossPlatform {
 			const int           m_Protocol;
 			struct sockaddr_in  m_ReadSocketAddress;
 			struct sockaddr_in  m_SendSocketAddress;
-			#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+			#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 			socklen_t           m_Structuresize;
 			#else
 			int                 m_Structuresize;
