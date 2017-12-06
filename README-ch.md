@@ -5,7 +5,7 @@ Language: <a href="README.md">English</a>
 为了PHP与Python用户创建的快速开发且跨平台的C++框架<br />
 <a href="http://www.xsyds.cn/" target="_blank">形随意动</a> 作品<br />
 贡献列表: <a href="https://github.com/ToiletCommander">年迈的老秋风</a><br />
-包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | <strike>HTTP(s)请求</strike><br />
+包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库(正在编写) | <strike>HTTP(s)请求</strike><br />
 测试环境: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++<br />
 需要支持: Unix / Linux / Windows系统 + C++11
 ## 为什么没有用户界面库?

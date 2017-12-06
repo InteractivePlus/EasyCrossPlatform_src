@@ -10,7 +10,7 @@
 		#define EASYCROSSPLATFORM_PLATFORM_WINDOWS true
 	#endif
 	*/
-	#if defined(__WINDOWS_) || defined(_WIN32)
+	#if defined(__WINDOWS_) || defined(_WIN32) || defined(_WIN64)
         #define EASYCROSSPLATFORM_PLATFORM_WINDOWS
     #else
         #define EASYCROSSPLATFORM_PLATFORM_LINUX
