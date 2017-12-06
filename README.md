@@ -1,13 +1,18 @@
 # EasyCrossPlatform
-Source Code for EasyCrossPlatform, only for development purpose.<br />
-Language: <a href="README-ch.md">中文</a>
+Source Code for EasyCrossPlatform, only for development purpose.  
+Language: <a href="README-ch.md">中文</a>  
 ## Introduction
-A easy-to-use cross-platform C++ library designed for PHP and Python Users.<br />
-Powered by <a href="http://www.xsyds.cn/" target="_blank">BlueAirTechGroup</a><br />
-Contribution List: <a href="https://github.com/ToiletCommander">Windy</a><br />
-Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption(In Progress) | <strike>HTTP(s)_Requests</strike><br />
-Test Env: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++<br />
-Require Support: Unix / Linux / Windows System + C++ 11 Support
+A easy-to-use cross-platform C++ library designed for PHP and Python Users.  
+Powered by <a href="http://www.xsyds.cn/" target="_blank">BlueAirTechGroup</a>  
+Contribution List: <a href="https://github.com/ToiletCommander">Windy</a>  
+Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption(In Progress) | <strike>HTTP(s)_Requests</strike>  
+Test Env: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++  
+Require Support: Unix / Linux / Windows System + C++ 11 Support  
+## Credit
+The development of EasyCrossPlatform is given power by the following lib:  
+[CppSocket](https://github.com/itomi/CppSocket) - CrossPlatform Socket Completely built based on it, but I fixed several bugs that affected the compile process, and also fixed several bugs on runtime.  
+[Crypto++](https://github.com/weidai11/cryptopp) - Encryption Lib, EasyCrossPlatform Encryption will be built based on it.  
+[MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB Connector Lib.
 ## Why not GUI?
 GUI requires too much dependencies, and we are considering using "mygui". However, the OpenGL environment in each machine can be different, and if you want to use a GUI Lib, we recommend MyGUI with OpenGL2.0 Implemention
 ## Develop Theory
