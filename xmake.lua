@@ -4,7 +4,7 @@ target("easycrossplatform_s")
 	if (is_plat("windows")) then
 		add_files("src/**.asm")
 	else
-		add_files("src/**.S")
+		--add_files("src/**.S")
 	end
 	add_includedirs("src")
 	add_linkdirs("lib")
@@ -36,7 +36,7 @@ target("easycrossplatform")
 	if (is_plat("windows")) then
 		add_files("src/**.asm")
 	else
-		add_files("src/**.S")
+		--add_files("src/**.S")
 	end
 	add_includedirs("src")
 	add_linkdirs("lib")
