@@ -13,7 +13,8 @@ Require Support: Unix / Linux / Windows System + C++ 11 Support
 ## Credit
 The development of EasyCrossPlatform is given power by the following lib:  
 [CppSocket](https://github.com/itomi/CppSocket) - CrossPlatform Socket Completely built based on it, but I fixed several bugs that affected the compile process, and also fixed several bugs on runtime.  
-[Crypto++](https://github.com/weidai11/cryptopp) - Encryption Lib, EasyCrossPlatform Encryption will be built based on it.  
+[Crypto++](https://github.com/weidai11/cryptopp) - Encryption Lib, EasyCrossPlatform Encryption built based on it.  
+[Crypto++ Examples](https://github.com/sechaser/CryptoPP) - Crypto++ AES Example, EasyCrossPlatform AES Encryption built based on it.  
 [MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB Connector Lib.  
 ## Why not GUI?
 GUI requires too much dependencies, and we are considering using "mygui". However, the OpenGL environment in each machine can be different, and if you want to use a GUI Lib, we recommend MyGUI with OpenGL2.0 Implemention  
