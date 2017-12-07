@@ -81,12 +81,18 @@ EasyCrossPlatform::Database::MySQLResult EasyCrossPlatform::Database::MySQLManag
 	unsigned int Num_Rows = mysql_num_rows(MYRES);
 	MYSQL_ROW MyTempRow;
 	std::string MyTempRowFieldValue;
+	unsigned long* MyTempRowLengths;
 	std::vector<std::string> MyTempRowValue;
 	for (unsigned int i = 0;i < Num_Rows; i++) {
 		MyTempRow = mysql_fetch_row(MYRES);
+		MyTempRowLengths = mysql_fetch_lengths(MYRES);
 		MyTempRowValue.clear();
 		for (unsigned int j = 0; j < Num_Fields; j++) {
-			MyTempRowFieldValue = MyTempRow[j] ? MyTempRow[j] : "";
+			if (MyTempRow[j] != NULL) {
+				MyTempRowFieldValue.assign(MyTempRow[j], MyTempRowLengths[j]);
+			} else {
+				MyTempRowFieldValue.assign("");
+			}
 			MyTempRowValue.push_back(MyTempRowFieldValue);
 		}
 		MyResult.Rows.push_back(MyTempRowValue);
