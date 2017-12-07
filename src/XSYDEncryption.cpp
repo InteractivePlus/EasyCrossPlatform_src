@@ -141,7 +141,7 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Encrypt_CBC(std::s
 	else if (keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_192 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_256) {
 		throw std::runtime_error("The Length of Encryption Key specified is invalid");
 	}
-	else if (ivText.length > CryptoPP::AES::BLOCKSIZE) {
+	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
 	}
 	std::string tempResult;
@@ -162,7 +162,7 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Decrypt_CBC(std::s
 	else if (keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_192 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_256) {
 		throw std::runtime_error("The Length of Encryption Key specified is invalid");
 	}
-	else if (ivText.length > CryptoPP::AES::BLOCKSIZE) {
+	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
 	}
 	std::string tempResult;
@@ -183,7 +183,7 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Encrypt_CFB(std::s
 	else if (keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_192 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_256) {
 		throw std::runtime_error("The Length of Encryption Key specified is invalid");
 	}
-	else if (ivText.length > CryptoPP::AES::BLOCKSIZE) {
+	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
 	}
 	std::string tempResult;
@@ -204,7 +204,7 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Decrypt_CFB(std::s
 	else if (keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_192 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_256) {
 		throw std::runtime_error("The Length of Encryption Key specified is invalid");
 	}
-	else if (ivText.length > CryptoPP::AES::BLOCKSIZE) {
+	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
 	}
 	std::string tempResult;
@@ -225,7 +225,7 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Encrypt_OFB(std::s
 	else if (keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_192 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_256) {
 		throw std::runtime_error("The Length of Encryption Key specified is invalid");
 	}
-	else if (ivText.length > CryptoPP::AES::BLOCKSIZE) {
+	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
 	}
 	std::string tempResult;
@@ -246,7 +246,7 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Decrypt_OFB(std::s
 	else if (keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_192 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_256) {
 		throw std::runtime_error("The Length of Encryption Key specified is invalid");
 	}
-	else if (ivText.length > CryptoPP::AES::BLOCKSIZE) {
+	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
 	}
 	std::string tempResult;
