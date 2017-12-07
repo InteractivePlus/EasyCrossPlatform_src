@@ -19,6 +19,7 @@ The development of EasyCrossPlatform is given power by the following lib:
 ## Why not GUI?
 GUI requires too much dependencies, and we are considering using "mygui". However, the OpenGL environment in each machine can be different, and if you want to use a GUI Lib, we recommend MyGUI with OpenGL2.0 Implemention  
 ## Develop Theory
+*"To build with less dependency, to code with less line"*  
 Everybody Loves C++, but there is actually no user-friendly libs for beginners to start using C++ with full support of network and multithreading function, while covering the hardware and underlying technologies.   
 Influenced by <a href="http://reasoning.biz" target="_blank">Reasoning</a> Library, however, that library is no longer maintained since 2008  
 With less code, developers can develop more safe code preventing memory leaks and debug less. EasyCrossPlatform also brings noticeable performance while enabling developers to develop codes fast and secure.  
