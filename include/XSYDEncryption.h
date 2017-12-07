@@ -5,6 +5,10 @@
 	#include "cryptopp\des.h"
 	#include "cryptopp\modes.h"
 	#include "cryptopp\filters.h"
+	#include "cryptopp\md5.h"
+	#include "cryptopp\sha.h"
+	#include "cryptopp\sha3.h"
+	#include "cryptopp\hex.h"
 	
 	namespace EasyCrossPlatform {
 		namespace Encryption {
@@ -47,6 +51,11 @@
 					std::string AES_Encrypt_OFB(std::string Password, std::string ivText, std::string plaintext, unsigned int keyLength = EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128);
 					std::string AES_Decrypt_OFB(std::string Password, std::string ivText, std::string encryptedtext, unsigned int keyLength = EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128);
 				}
+			}
+			namespace Hash {
+				std::string getMd5(std::string &data, const char* Salt = "");
+				std::string getSHA1(std::string &data, const char* Salt = "");
+				std::string getSHA256(std::string &data, const char* Salt = "");
 			}
 		}
 	}

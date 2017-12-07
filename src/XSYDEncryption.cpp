@@ -109,6 +109,9 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Encypt_ECB(std::st
 	else if (keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_192 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_256) {
 		throw std::runtime_error("The Length of Encryption Key specified is invalid");
 	}
+	else if (plaintext.empty()) {
+		throw std::runtime_error("The data prepared for encryption should not be empty");
+	}
 	std::string tempResult;
 	byte *myKey = new byte[keyLength];
 	ProfessionalMode::AES_MakeKey(Password, myKey, keyLength);
@@ -124,6 +127,9 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Decrypt_ECB(std::s
 	}
 	else if (keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_192 && keyLength != EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_256) {
 		throw std::runtime_error("The Length of Encryption Key specified is invalid");
+	}
+	else if (encryptedText.empty()) {
+		throw std::runtime_error("The data prepared for decryption should not be empty");
 	}
 	std::string tempResult;
 	byte *myKey = new byte[keyLength];
@@ -143,6 +149,9 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Encrypt_CBC(std::s
 	}
 	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
+	}
+	else if (plaintext.empty()) {
+		throw std::runtime_error("The data prepared for encryption should not be empty");
 	}
 	std::string tempResult;
 	byte *myKey = new byte[keyLength];
@@ -165,6 +174,9 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Decrypt_CBC(std::s
 	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
 	}
+	else if (encryptedtext.empty()) {
+		throw std::runtime_error("The data prepared for decryption should not be empty");
+	}
 	std::string tempResult;
 	byte *myKey = new byte[keyLength];
 	byte myIV[CryptoPP::AES::BLOCKSIZE];
@@ -185,6 +197,9 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Encrypt_CFB(std::s
 	}
 	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
+	}
+	else if (plaintext.empty()) {
+		throw std::runtime_error("The data prepared for encryption should not be empty");
 	}
 	std::string tempResult;
 	byte *myKey = new byte[keyLength];
@@ -207,6 +222,9 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Decrypt_CFB(std::s
 	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
 	}
+	else if (encryptedtext.empty()) {
+		throw std::runtime_error("The data prepared for decryption should not be empty");
+	}
 	std::string tempResult;
 	byte *myKey = new byte[keyLength];
 	byte myIV[CryptoPP::AES::BLOCKSIZE];
@@ -227,6 +245,9 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Encrypt_OFB(std::s
 	}
 	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
+	}
+	else if (plaintext.empty()) {
+		throw std::runtime_error("The data prepared for encryption should not be empty");
 	}
 	std::string tempResult;
 	byte *myKey = new byte[keyLength];
@@ -249,6 +270,9 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Decrypt_OFB(std::s
 	else if (ivText.length() > CryptoPP::AES::BLOCKSIZE) {
 		throw std::runtime_error("The Length of Encryption IV cannot exeed the Crypto::AES::BLOCKSIZE Limit");
 	}
+	else if (encryptedtext.empty()) {
+		throw std::runtime_error("The data prepared for decryption should not be empty");
+	}
 	std::string tempResult;
 	byte *myKey = new byte[keyLength];
 	byte myIV[CryptoPP::AES::BLOCKSIZE];
@@ -257,4 +281,73 @@ std::string EasyCrossPlatform::Encryption::AES::EasyMode::AES_Decrypt_OFB(std::s
 	ProfessionalMode::AES_OFBdecrypt(myKey, myIV, encryptedtext, tempResult, keyLength);
 	delete[] myKey;
 	return tempResult;
+}
+
+std::string EasyCrossPlatform::Encryption::Hash::getMd5(std::string &data, const char* Salt)
+{
+	if (data.empty()) {
+		throw std::runtime_error("Sorry, but original data for hash should not be empty");
+	}
+	std::string tmpData(data);
+	if (Salt != NULL) {
+		tmpData += Salt;
+	}
+	CryptoPP::MD5 hash;
+	byte digest[CryptoPP::MD5::DIGESTSIZE];
+
+	hash.CalculateDigest(digest, (byte*)tmpData.c_str(), tmpData.length());
+
+	CryptoPP::HexEncoder encoder;
+	std::string output;
+	encoder.Attach(new CryptoPP::StringSink(output));
+	encoder.Put(digest, sizeof(digest));
+	encoder.MessageEnd();
+
+	return output;
+}
+
+std::string EasyCrossPlatform::Encryption::Hash::getSHA1(std::string & data, const char* Salt)
+{
+	if (data.empty()) {
+		throw std::runtime_error("Sorry, but original data for hash should not be empty");
+	}
+	std::string tmpData(data);
+	if (Salt != NULL) {
+		tmpData += Salt;
+	}
+	CryptoPP::SHA1 hash;
+	byte digest[CryptoPP::SHA1::DIGESTSIZE];
+
+	hash.CalculateDigest(digest, (byte*)tmpData.c_str(), tmpData.length());
+
+	CryptoPP::HexEncoder encoder;
+	std::string output;
+	encoder.Attach(new CryptoPP::StringSink(output));
+	encoder.Put(digest, sizeof(digest));
+	encoder.MessageEnd();
+
+	return output;
+}
+
+std::string EasyCrossPlatform::Encryption::Hash::getSHA256(std::string & data, const char* Salt)
+{
+	if (data.empty()) {
+		throw std::runtime_error("Sorry, but original data for hash should not be empty");
+	}
+	std::string tmpData(data);
+	if (Salt != NULL) {
+		tmpData += Salt;
+	}
+	CryptoPP::SHA256 hash;
+	byte digest[CryptoPP::SHA256::DIGESTSIZE];
+
+	hash.CalculateDigest(digest, (byte*)tmpData.c_str(), tmpData.length());
+
+	CryptoPP::HexEncoder encoder;
+	std::string output;
+	encoder.Attach(new CryptoPP::StringSink(output));
+	encoder.Put(digest, sizeof(digest));
+	encoder.MessageEnd();
+
+	return output;
 }
