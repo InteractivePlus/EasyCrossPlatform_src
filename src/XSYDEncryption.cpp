@@ -351,3 +351,232 @@ std::string EasyCrossPlatform::Encryption::Hash::getSHA256(std::string & data, c
 
 	return output;
 }
+
+std::string EasyCrossPlatform::Encryption::Base64::base64Encode(std::string const & plaintext)
+{
+	if (plaintext.empty()) {
+		throw std::runtime_error("Sorry, but encode content should not be empty");
+	}
+	std::string out;
+
+	int val = 0;
+	int valb = -6;
+	for (unsigned char c : plaintext)
+	{
+		val = (val << 8) + c;
+		valb += 8;
+		while (valb >= 0) {
+			out.push_back(EasyCrossPlatform::Encryption::Base64::alphabet[(val >> valb) & 0x3F]);
+			valb -= 6;
+		}
+	}
+	if (valb > -6)
+		out.push_back(EasyCrossPlatform::Encryption::Base64::alphabet[((val << 8) >> (valb + 8)) & 0x3F]);
+	while (out.size() % 4)
+		out.push_back(EasyCrossPlatform::Encryption::Base64::padding);
+	return out;
+}
+
+std::string EasyCrossPlatform::Encryption::Base64::base64Decode(std::string const & encryptedtext)
+{
+	if (encryptedtext.empty()) {
+		throw std::runtime_error("Sorry, but the decode content should not be empty");
+	}
+	std::string out;
+	std::vector<int> T(256, -1);
+
+	for (int i(0); i < 64; ++i)
+		T[EasyCrossPlatform::Encryption::Base64::alphabet[i]] = i;
+
+	int val = 0;
+	int valb = -8;
+	for (unsigned char c : encryptedtext)
+	{
+		if (T[c] == -1)
+			break;
+		val = (val << 6) + T[c];
+		valb += 6;
+		if (valb >= 0)
+		{
+			out.push_back(char((val >> valb) & 0xFF));
+			valb -= 8;
+		}
+	}
+	return out;
+}
+
+std::string EasyCrossPlatform::Encryption::RSA::getPrivateKeyAsString(CryptoPP::RSA::PrivateKey const & prvKey)
+{
+	std::string out;
+
+	CryptoPP::StringSink stringSink(out);
+	prvKey.DEREncode(stringSink);
+	out = EasyCrossPlatform::Encryption::Base64::base64Encode(out);
+	return out;
+}
+
+std::string EasyCrossPlatform::Encryption::RSA::getPublicKeyAsString(CryptoPP::RSA::PublicKey const & pubKey)
+{
+	std::string out;
+
+	CryptoPP::StringSink stringSink(out);
+	pubKey.DEREncode(stringSink);
+	out = EasyCrossPlatform::Encryption::Base64::base64Encode(out);
+	return out;
+}
+
+CryptoPP::RSA::PrivateKey EasyCrossPlatform::Encryption::RSA::getPrivateKeyAsCryptoPPType(std::string const & prvKey)
+{
+	CryptoPP::RSA::PrivateKey key;
+
+	// de-base54 user key
+	std::string prvKeyDecoded = EasyCrossPlatform::Encryption::Base64::base64Decode(prvKey);
+	// create cryptopp rsa key out of user key (decoded string)
+	CryptoPP::StringSource stringSource(prvKeyDecoded, true);
+	key.BERDecode(stringSource);
+	return key;
+}
+
+CryptoPP::RSA::PublicKey EasyCrossPlatform::Encryption::RSA::getPublicKeyAsCryptoPPType(std::string const & pubKey)
+{
+	CryptoPP::RSA::PublicKey key;
+
+	// de-base64 user key
+	std::string pubKeyDecoded = EasyCrossPlatform::Encryption::Base64::base64Decode(pubKey);
+	// create cryptopp rsa key out of user key (decoded string)
+	CryptoPP::StringSource stringSource(pubKeyDecoded, true);
+	key.BERDecode(stringSource);
+	return key;
+}
+
+std::pair<std::string, std::string> EasyCrossPlatform::Encryption::RSA::generateKeyPairStr(unsigned int keyLength)
+{
+	std::pair<CryptoPP::RSA::PublicKey, CryptoPP::RSA::PrivateKey> myKeyResult = generateKeyPair(keyLength);
+	return std::make_pair<std::string, std::string>(getPublicKeyAsString(myKeyResult.first), getPrivateKeyAsString(myKeyResult.second));
+}
+
+std::pair<CryptoPP::RSA::PublicKey, CryptoPP::RSA::PrivateKey> EasyCrossPlatform::Encryption::RSA::generateKeyPair(unsigned int keyLength)
+{
+	CryptoPP::AutoSeededRandomPool rng;
+	CryptoPP::InvertibleRSAFunction params;
+	CryptoPP::RSA::PrivateKey prvKey;
+	CryptoPP::RSA::PublicKey pubKey;
+	params.GenerateRandomWithKeySize(rng, keyLength); // keySize >= msglen * 8
+	prvKey = CryptoPP::RSA::PrivateKey(params);
+	pubKey = CryptoPP::RSA::PublicKey(params);
+	return std::pair<CryptoPP::RSA::PublicKey, CryptoPP::RSA::PrivateKey>(pubKey,prvKey);
+}
+
+std::string EasyCrossPlatform::Encryption::RSA::pubKeyEncrypt(std::string const & msg, std::string const & pubKey, unsigned int keyLength)
+{
+	//MsgLen <= keySize / 8
+	//Data split.
+	std::string output;
+
+	CryptoPP::RSA::PublicKey myPubKey = getPublicKeyAsCryptoPPType(pubKey);
+	output = pubKeyEncrypt(msg, myPubKey, keyLength);
+	return output;
+}
+
+std::string EasyCrossPlatform::Encryption::RSA::pubKeyEncrypt(std::string const & msg, CryptoPP::RSA::PublicKey & pubKey, unsigned int keyLength)
+{
+	CryptoPP::AutoSeededRandomPool rng;
+	std::string output;
+
+	CryptoPP::RSAES_OAEP_SHA_Encryptor myEncryptor(pubKey);
+
+	if (msg.length() > myEncryptor.FixedMaxPlaintextLength()) {
+		output = pubKeyEncrypt(msg.substr(0, myEncryptor.FixedMaxPlaintextLength()), pubKey, keyLength) + pubKeyEncrypt(msg.substr(myEncryptor.FixedMaxPlaintextLength()),pubKey,keyLength);
+	}
+	else {
+		CryptoPP::StringSource ss1(msg, true,
+			new CryptoPP::PK_EncryptorFilter(rng, myEncryptor,
+				new CryptoPP::StringSink(output)
+			) // PK_EncryptorFilter
+		); // StringSource
+	}
+	return output;
+}
+
+std::string EasyCrossPlatform::Encryption::RSA::pubKeyDecrypt(std::string const & encryptedText, std::string const & pubKey, unsigned int keyLength)
+{
+	std::string output;
+
+	CryptoPP::RSA::PublicKey myPubKey = getPublicKeyAsCryptoPPType(pubKey);
+	output = pubKeyDecrypt(encryptedText, myPubKey, keyLength);
+	return output;
+}
+
+std::string EasyCrossPlatform::Encryption::RSA::pubKeyDecrypt(std::string const & encryptedText, CryptoPP::RSA::PublicKey & pubKey, unsigned int keyLength)
+{
+	CryptoPP::AutoSeededRandomPool rng;
+	std::string output;
+	CryptoPP::RSAES_OAEP_SHA_Decryptor myDecryptor(pubKey);
+	if (encryptedText.length() > myDecryptor.FixedCiphertextLength()) {
+		output = pubKeyDecrypt(encryptedText.substr(0, myDecryptor.FixedCiphertextLength()), pubKey, keyLength) + pubKeyDecrypt(encryptedText.substr(myDecryptor.FixedCiphertextLength()), pubKey, keyLength);
+	}
+	else {
+		CryptoPP::StringSource ss2(encryptedText, true,
+			new CryptoPP::PK_DecryptorFilter(rng, myDecryptor,
+				new CryptoPP::StringSink(output)
+			) // PK_DecryptorFilter
+		); // StringSource
+	}
+	return output;
+}
+
+std::string EasyCrossPlatform::Encryption::RSA::privateKeyEncrypt(std::string const & msg, std::string const & prvKey, unsigned int keyLength)
+{
+	std::string output;
+
+	CryptoPP::RSA::PrivateKey myPrvKey = getPrivateKeyAsCryptoPPType(prvKey);
+	output = pubKeyEncrypt(msg, myPrvKey, keyLength);
+	return output;
+}
+
+std::string EasyCrossPlatform::Encryption::RSA::privateKeyEncrypt(std::string const & msg, CryptoPP::RSA::PrivateKey & prvKey, unsigned int keyLength)
+{
+	CryptoPP::AutoSeededRandomPool rng;
+	std::string output;
+
+	CryptoPP::RSAES_OAEP_SHA_Encryptor myEncryptor(prvKey);
+
+	if (msg.length() > myEncryptor.FixedMaxPlaintextLength()) {
+		output = privateKeyEncrypt(msg.substr(0, myEncryptor.FixedMaxPlaintextLength()), prvKey, keyLength) + pubKeyEncrypt(msg.substr(myEncryptor.FixedMaxPlaintextLength()), prvKey, keyLength);
+	}
+	else {
+		CryptoPP::StringSource ss1(msg, true,
+			new CryptoPP::PK_EncryptorFilter(rng, myEncryptor,
+				new CryptoPP::StringSink(output)
+			) // PK_EncryptorFilter
+		); // StringSource
+	}
+	return output;
+}
+
+std::string EasyCrossPlatform::Encryption::RSA::privateKeyDecrypt(std::string const & encryptedText, std::string const & prvKey, unsigned int keyLength)
+{
+	std::string output;
+
+	CryptoPP::RSA::PrivateKey myPrvKey = getPrivateKeyAsCryptoPPType(prvKey);
+	output = pubKeyDecrypt(encryptedText, myPrvKey, keyLength);
+	return output;
+}
+
+std::string EasyCrossPlatform::Encryption::RSA::privateKeyDecrypt(std::string const & encryptedText, CryptoPP::RSA::PrivateKey & prvKey, unsigned int keyLength)
+{
+	CryptoPP::AutoSeededRandomPool rng;
+	std::string output;
+	CryptoPP::RSAES_OAEP_SHA_Decryptor myDecryptor(prvKey);
+	if (encryptedText.length() > myDecryptor.FixedCiphertextLength()) {
+		output = pubKeyDecrypt(encryptedText.substr(0, myDecryptor.FixedCiphertextLength()), prvKey, keyLength) + pubKeyDecrypt(encryptedText.substr(myDecryptor.FixedCiphertextLength()), prvKey, keyLength);
+	}
+	else {
+		CryptoPP::StringSource ss2(encryptedText, true,
+			new CryptoPP::PK_DecryptorFilter(rng, myDecryptor,
+				new CryptoPP::StringSink(output)
+			) // PK_DecryptorFilter
+		); // StringSource
+	}
+	return output;
+}

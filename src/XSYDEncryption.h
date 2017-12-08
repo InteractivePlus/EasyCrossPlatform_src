@@ -1,14 +1,18 @@
 #ifndef __XSYDENCRYPTIONFILE__
 	#define __XSYDENCRYPTIONFILE__
 	#include "EasyCP_Common.h"
-	#include "cryptopp\aes.h"
-	#include "cryptopp\des.h"
-	#include "cryptopp\modes.h"
-	#include "cryptopp\filters.h"
-	#include "cryptopp\md5.h"
-	#include "cryptopp\sha.h"
-	#include "cryptopp\sha3.h"
-	#include "cryptopp\hex.h"
+	#include "cryptopp/aes.h"
+	#include "cryptopp/des.h"
+	#include "cryptopp/modes.h"
+	#include "cryptopp/filters.h"
+	#include "cryptopp/md5.h"
+	#include "cryptopp/sha.h"
+	#include "cryptopp/sha3.h"
+	#include "cryptopp/hex.h"
+	#include "cryptopp/base64.h"
+	#include "cryptopp/osrng.h"
+	#include "cryptopp/integer.h"
+	#include "cryptopp/rsa.h"
 	
 	namespace EasyCrossPlatform {
 		namespace Encryption {
@@ -56,6 +60,34 @@
 				std::string getMd5(std::string &data, const char* Salt = "");
 				std::string getSHA1(std::string &data, const char* Salt = "");
 				std::string getSHA256(std::string &data, const char* Salt = "");
+			}
+			namespace Base64 {
+				char const constexpr alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+				char const constexpr padding('=');
+				std::string base64Encode(std::string const &plaintext);
+				std::string base64Decode(std::string const &encryptedtext);
+			}
+			namespace RSA {
+				#define EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_1024 1024
+				#define EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048 2048
+				#define EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_3072 3072
+				#define EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_4096 4096
+				#define EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_5120 5120
+				std::string getPrivateKeyAsString(CryptoPP::RSA::PrivateKey const &prvKey);
+				std::string getPublicKeyAsString(CryptoPP::RSA::PublicKey const &pubKey);
+				CryptoPP::RSA::PrivateKey getPrivateKeyAsCryptoPPType(std::string const &prvKey);
+				CryptoPP::RSA::PublicKey getPublicKeyAsCryptoPPType(std::string const &pubKey);
+				std::pair<std::string, std::string> generateKeyPairStr(unsigned int keyLength = EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048);
+				std::pair<CryptoPP::RSA::PublicKey, CryptoPP::RSA::PrivateKey> generateKeyPair(unsigned int keyLength = EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048);
+				std::string pubKeyEncrypt(std::string const &msg, std::string const &pubKey, unsigned int keyLength = EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048);
+				std::string pubKeyEncrypt(std::string const &msg, CryptoPP::RSA::PublicKey &pubKey, unsigned int keyLength = EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048);
+				std::string pubKeyDecrypt(std::string const &encryptedText, std::string const &pubKey, unsigned int keyLength = EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048);
+				std::string pubKeyDecrypt(std::string const &encryptedText, CryptoPP::RSA::PublicKey &pubKey, unsigned int keyLength = EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048);
+				std::string privateKeyEncrypt(std::string const &msg, std::string const &prvKey, unsigned int keyLength = EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048);
+				std::string privateKeyEncrypt(std::string const &msg, CryptoPP::RSA::PrivateKey &prvKey, unsigned int keyLength = EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048);
+				std::string privateKeyDecrypt(std::string const &encryptedText, std::string const &prvKey, unsigned int keyLength = EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048);
+				std::string privateKeyDecrypt(std::string const &encryptedText, CryptoPP::RSA::PrivateKey &prvKey, unsigned int keyLength = EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048);
+
 			}
 		}
 	}

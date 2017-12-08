@@ -1,6 +1,7 @@
 #ifndef __XSYDCommonHeaderFile__
 	#define __XSYDCommonHeadersFile__
-	#define NULL 0
+	#define NULL 0 //NULL can be interpreted using 0
+	typedef unsigned char byte; //Byte is unsigned char, you can cast it just from char
 	//Define系统类型
 	#define EASYCROSSPLATFORM_VERSION 0;
 	//Linux Symbol linux, _UNIX, __LINUX__, __unix__
@@ -67,4 +68,5 @@
 	#include <deque> //STD队列[双向数组]Deque
 	#include <list> //STD列表
 	#include <map> //STD Dictionary
+	#include <utility> //Utilities, now using pairs in them.
 #endif

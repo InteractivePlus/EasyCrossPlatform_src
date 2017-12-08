@@ -1,13 +1,13 @@
 # EasyCrossPlatform
 EasyCrossPlatform源代码, 仅开发用  
-Language: <a href="README.md">English</a>
+Language: [English](README.md)
 ## 介绍
 为了PHP与Python用户创建的快速开发且跨平台的C++框架  
 支持系统: UNIX / LINUX / WIN / MacOS(理论支持) / iOS(可能支持)  
 支持CPU架构: x86(i386) / x64(x86_64) / ~~ARM64~~  
 <a href="http://www.xsyds.cn/" target="_blank">形随意动</a> 作品  
 贡献列表: <a href="https://github.com/ToiletCommander">年迈的老秋风</a>  
-包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库(正在编写) | ~~HTTP(s)请求~~  
+包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | ~~HTTP(s)请求~~  
 测试环境: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++  
 需要支持: Unix / Linux / Windows系统 + C++11  
 ## 依赖
