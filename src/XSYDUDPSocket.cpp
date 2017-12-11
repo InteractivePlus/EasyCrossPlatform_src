@@ -31,8 +31,8 @@ bool EasyCrossPlatform::Network::UDPSocket::Listen(int PortNumber)
 	{
 		TemporarySocketAddress.sin_family = AF_INET;
 		TemporarySocketAddress.sin_port = htons(PortNumber);
-		TemporarySocketAddress.sin_addr.s_addr = inet_addr(INADDR_ANY);
-
+		TemporarySocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+		
 		if (bind(this->m_SocketDescriptor, (struct sockaddr*) &TemporarySocketAddress, sizeof(struct sockaddr_in)) == -1)
 		{
 			ProvideErrorString();
