@@ -7,7 +7,7 @@ Supported System: UNIX / LINUX / WIN / MacOS(in theory) / iOS(probably)
 Supported Architecture: x86(i386) / x64(x86_64) / ~~ARM64~~  
 Powered by <a href="http://www.xsyds.cn/" target="_blank">BlueAirTechGroup</a>  
 Contribution List: <a href="https://github.com/ToiletCommander">Windy</a>  
-Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption | ~~HTTP(s)_Requests~~  
+Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption | HTTP(s)_Requests  
 Test Env: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++  
 Require Support: Unix / Linux / Windows System + C++ 11 Support  
 ## Credit

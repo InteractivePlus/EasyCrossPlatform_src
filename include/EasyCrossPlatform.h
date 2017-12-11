@@ -8,4 +8,6 @@
 	#include "XSYDAsyncTCPServer.h"
 	#include "XSYDChrono.h"
 	#include "XSYDMySQL.h"
+	#include "XSYDEncryption.h"
+	#include "XSYDRequest.h"
 #endif //__EasyCrossPlatformFile__
