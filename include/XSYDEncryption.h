@@ -17,9 +17,9 @@
 	namespace EasyCrossPlatform {
 		namespace Encryption {
 			namespace AES {
-				#define EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128 16
-				#define EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_192 24
-				#define EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_256 32
+				const constexpr int EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128=16;
+				const constexpr int EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_192=24;
+				const constexpr int EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_256=32;
 				namespace ProfessionalMode {
 					void AES_MakeKey(std::string &strKey, byte* key, unsigned int KeyLength = EASYCROSSPLATFORM_AESENCRYPTION_KEYSIZE_128);//When u r making a key, make sure that the strKey's length does not exceed the keyLength variable.(Not 128 / 192 / 256 but 16 / 24 / 32)
 					void AES_MakeIV(std::string &strIV, byte(&iv)[CryptoPP::AES::BLOCKSIZE]);
@@ -68,11 +68,11 @@
 				std::string base64Decode(std::string const &encryptedtext);
 			}
 			namespace RSA {
-				#define EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_1024 1024
-				#define EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048 2048
-				#define EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_3072 3072
-				#define EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_4096 4096
-				#define EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_5120 5120
+				const constexpr int EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_1024=1024;
+				const constexpr int EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_2048=2048;
+				const constexpr int EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_3072=3072;
+				const constexpr int EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_4096=4096;
+				const constexpr int EASYCROSSPLATFORM_RSAENCRYPTION_KEYSIZE_5120=5120;
 				std::string getPrivateKeyAsString(CryptoPP::RSA::PrivateKey const &prvKey);
 				std::string getPublicKeyAsString(CryptoPP::RSA::PublicKey const &pubKey);
 				CryptoPP::RSA::PrivateKey getPrivateKeyAsCryptoPPType(std::string const &prvKey);
