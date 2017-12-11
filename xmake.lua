@@ -2,7 +2,7 @@ target("easycrossplatform_s")
 	set_kind("static")
 	add_files("src/**.cpp","src/**.cc","src/**.c")
 	
-	add_includedirs("src")
+	add_includedirs("src","include")
 	add_linkdirs("lib")
 	
 	if(is_plat("windows")) then --Windows, Only x86 and x64
@@ -30,7 +30,7 @@ target("easycrossplatform")
 	set_kind("shared")
 	add_files("src/**.cpp","src/**.cc","src/**.c")
 	
-	add_includedirs("src")
+	add_includedirs("src","include")
 	add_linkdirs("lib")
 	
 	if(is_plat("windows")) then --Windows, Only x86 and x64
