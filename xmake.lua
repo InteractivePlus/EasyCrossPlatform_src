@@ -51,6 +51,10 @@ target("easycrossplatform")
 	end
 	if(is_plat("windows")) then
 		add_links("libmariadb")
+	elseif (is_plat("macosx")) then
+		add_links("mariadb")
+	else
+		add_links("mariadb")
 	end
 	add_rpathdirs("@loader_path/lib","@loader_path","@loader_path","@executable_path/lib","@executable_path")
 	
