@@ -62,6 +62,9 @@
 	#include <stdio.h>
 	#include <memory>
 	#include <string> //标准字符串
+	#if defined(EASYCROSSPLATFORM_PLATFORM_UNIX)
+		#include <string.h>
+	#endif
 	#include <chrono> //时间
 	#include <cassert> //Debug类
 	#include <exception> //Exception异常类
