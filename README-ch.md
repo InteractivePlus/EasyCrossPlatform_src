@@ -16,6 +16,7 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 [Crypto++](https://github.com/weidai11/cryptopp) - 加密库, 未来的EasyCrossPlatform加密库会基于此加密库.  
 [Crypto++ Examples](https://github.com/sechaser/CryptoPP) - Crypto++ AES例子, EasyCrossPlatform AES 加密库基于此实例搭建  
 [MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB 连接器.  
+[LibCurl](https://curl.haxx.se/) - EasyCrossPlatform的HTTP(s)请求库完全基于此库编写.  
 ## 为什么没有用户界面库?
 我们曾考虑过使用"MyGUI"库, 但是它包含了太多的依赖且在每个桌面环境中, OPENGL的配置都可以是不一样的. 如果您需要用户界面, 我们推荐使用MyGUI和它的OPENGL2.0实现.  
 ## 开发理念

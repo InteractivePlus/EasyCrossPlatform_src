@@ -16,6 +16,7 @@ The development of EasyCrossPlatform is given power by the following lib:
 [Crypto++](https://github.com/weidai11/cryptopp) - Encryption Lib, EasyCrossPlatform Encryption built based on it.  
 [Crypto++ Examples](https://github.com/sechaser/CryptoPP) - Crypto++ AES Example, EasyCrossPlatform AES Encryption built based on it.  
 [MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB Connector Lib.  
+[LibCurl](https://curl.haxx.se/) - EasyCrossPlatform Request Lib built based on it.  
 ## Why not GUI?
 GUI requires too much dependencies, and we are considering using "mygui". However, the OpenGL environment in each machine can be different, and if you want to use a GUI Lib, we recommend MyGUI with OpenGL2.0 Implemention  
 ## Develop Theory
