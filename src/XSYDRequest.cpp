@@ -1,4 +1,5 @@
 #include "XSYDRequest.h"
+using namespace std;
 
 size_t EasyCrossPlatform::Network::Request::WebsiteRequest::writeFunction(void * ptr, size_t dataTypesize, size_t dataNum, void * stream)
 {

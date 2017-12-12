@@ -59,7 +59,8 @@
 		#define EASYCROSSPLATFORM_PLATFORMTYPE EASYCROSSPLATFORM_PLATFORMTYPE_UNKNOWN
 	#endif
 	//***************************************
-	
+	#include <stdio.h>
+	#include <memory>
 	#include <string> //标准字符串
 	#include <chrono> //时间
 	#include <cassert> //Debug类
