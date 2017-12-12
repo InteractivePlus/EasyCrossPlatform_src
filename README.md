@@ -3,8 +3,8 @@ Source Code for EasyCrossPlatform, only for development purpose.
 Language: [中文](README-ch.md)  
 ## Introduction
 A easy-to-use cross-platform C++ library designed for PHP and Python Users.  
-Supported System: UNIX / LINUX / WIN / MacOS(in theory) / iOS(probably)  
-Supported Architecture: x86(i386) / x64(x86_64) / ~~ARM64~~  
+Supported System: UNIX / LINUX / WIN / MacOS / iOS(probably)  
+Supported Architecture: x86(i386) / x64(x86_64) / ~~ARMv5~~ / ARMv6 / ~~ARMv7~~ / ~~ARMv8~~ /  
 Powered by <a href="http://www.xsyds.cn/" target="_blank">BlueAirTechGroup</a>  
 Contribution List: <a href="https://github.com/ToiletCommander">Windy</a>  
 Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption | HTTP(s)_Requests  
