@@ -19,6 +19,8 @@ target("easycrossplatform_s")
 			add_defines("X86","EASYCROSSPLATFORM_ARCHITECTURE_X86")
 		elseif is_arch("x86_64") then
 			add_defines("X64","EASYCROSSPLATFORM_ARCHITECTURE_X64")
+		elseif is_arch("arm64*") then
+			add_defines("EASYCROSSPLATFORM_ARCHITECTURE_ARM64")
 		end
 	end
 	
@@ -50,6 +52,8 @@ target("easycrossplatform")
 			add_defines("X86","EASYCROSSPLATFORM_ARCHITECTURE_X86")
 		elseif is_arch("x86_64") then
 			add_defines("X64","EASYCROSSPLATFORM_ARCHITECTURE_X64")
+		elseif is_arch("arm64*") then
+			add_defines("EASYCROSSPLATFORM_ARCHITECTURE_ARM64")
 		end
 	end
 	if(is_plat("windows")) then
