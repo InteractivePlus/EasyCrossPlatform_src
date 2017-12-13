@@ -3,7 +3,7 @@ EasyCrossPlatform源代码, 仅开发用
 Language: [English](README.md)
 ## 介绍
 为了PHP与Python用户创建的快速开发且跨平台的C++框架  
-支持系统: UNIX / LINUX / WIN / MacOS(理论支持) / iOS(可能支持)  
+支持系统: UNIX / LINUX / WIN / MacOS / iOS(可能支持)  
 支持CPU架构: x86(i386) / x64(x86_64) / ~~ARM64~~  
 <a href="http://www.xsyds.cn/" target="_blank">形随意动</a> 作品  
 贡献列表: <a href="https://github.com/ToiletCommander">年迈的老秋风</a>  
