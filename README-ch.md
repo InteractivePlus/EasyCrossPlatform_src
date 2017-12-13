@@ -8,7 +8,7 @@ Language: [English](README.md)
 <a href="http://www.xsyds.cn/" target="_blank">形随意动</a> 作品  
 贡献列表: <a href="https://github.com/ToiletCommander">年迈的老秋风</a>  
 包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | HTTP(s)请求  
-测试环境: Windows 10 + Visual Studio 2017 | Ubuntu LTS16.04LTS + g++  
+测试环境: Windows 10 + XMake + VS2017 | Ubuntu LTS16.04LTS + XMake + GCC  | RaspBian Stretch Nov 2017 + XMake + GCC | MacOS High Sierra + XMake + XCode + GCC  
 需要支持: Unix / Linux / Windows系统 + C++11  
 ## 依赖
 EasyCrossPlatform的发展是由下面几个库驱动的:  
