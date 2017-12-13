@@ -7,8 +7,9 @@ Supported System: UNIX / LINUX / WIN / MacOS / iOS(probably)
 Supported Architecture: x86(i386) / x64(x86_64) / ~~ARMv5~~ / ARMv6 / ~~ARMv7~~ / ~~ARMv8~~ /  
 Powered by <a href="http://www.xsyds.cn/" target="_blank">BlueAirTechGroup</a>  
 Contribution List: <a href="https://github.com/ToiletCommander">Windy</a>  
-Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption | HTTP(s)_Requests  
-Test Env: Windows 10 + XMake + VS2017 | Ubuntu LTS16.04LTS + XMake + GCC  | RaspBian Stretch Nov 2017 + XMake + GCC | MacOS High Sierra + XMake + XCode + GCC  
+Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption | ~~HTTP(s)_Requests~~  
+Test Env: Windows 10 + XMake + VS2017 | Ubuntu LTS16.04 + XMake + GCC  | RaspBian Stretch Nov 2017 + XMake + GCC | MacOS High Sierra + XMake + XCode + GCC  
+100% Support List: Windows(x86, x64) | Ubuntu LTS 16.04(x64) | Raspbian Stretch Nov 2017(ARMv6)  
 Require Support: Unix / Linux / Windows System + C++ 11 Support  
 ## Credit
 The development of EasyCrossPlatform is given power by the following lib:  
