@@ -7,7 +7,7 @@ size_t EasyCrossPlatform::Network::Request::WebsiteRequest::writeFunction(void *
 	size_t realSize = dataTypesize * dataNum;
 	//先转为Char, 再进行处理
 	char* myCharData = new char[realSize];
-	std::memcpy(myCharData, ptr, realSize);
+	memcpy(myCharData, ptr, realSize);
 	
 	std::string *myString = (std::string*) stream;
 	myString->clear();

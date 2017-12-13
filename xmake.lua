@@ -1,3 +1,5 @@
+--64位Linux Make编译x32 make RELEASE=1 BITS=32
+--64位Linux Xmake编译x32 xmake f -a i386
 target("easycrossplatform_s")
 	set_kind("static")
 	add_files("src/**.cpp","src/**.cc","src/**.c")
