@@ -6,7 +6,7 @@ target("easycrossplatform_s")
 	
 	add_includedirs("src","include")
 	add_linkdirs("lib")
-	
+	add_defines("CURL_STATICLIB")
 	if(is_plat("windows")) then --Windows, Only x86 and x64
 		if is_arch("x86") then
 			add_defines("_M_X86","EASYCROSSPLATFORM_ARCHITECTURE_X86")
@@ -40,9 +40,9 @@ target("easycrossplatform_s")
 	
 	add_links("mariadbclient")
 	if(is_plat("windows")) then
-		--add_links("libcurl_s")
+		add_links("libcurl_s")
 	else
-		--add_links("curl_s")
+		add_ldflags("-lcurl")
 	end
 	
 target("easycrossplatform")
@@ -84,9 +84,9 @@ target("easycrossplatform")
 	end
 	if(is_plat("windows")) then
 		add_links("libmariadb")
-		--add_links("libcurl")
+		add_links("libcurl")
 	else
 		add_links("mariadb")
-		--add_links("curl")
+		add_links("curl")
 	end
 	add_rpathdirs("@loader_path/lib","@loader_path","@loader_path","@executable_path/lib","@executable_path")
