@@ -27,9 +27,11 @@ Influenced by <a href="http://reasoning.biz" target="_blank">Reasoning</a> Libra
 With less code, developers can develop more safe code preventing memory leaks and debug less. EasyCrossPlatform also brings noticeable performance while enabling developers to develop codes fast and secure.  
 ## Build
 This project is not even released with beta and it is still in its early stage of development.  
-Remember that *currently xmake does not support running/compiling on ARM64 CPU*, so EasyCrossPlatform cannot work on ARM64, unless you perform a crossover compilation on your x86 / x64 machine  
+Windows .LIB / .DLL Files will be released whenever a major version is comming out under [EasyCrossPlatform_release](https://github.com/EasyCrossPlatformLib/EasyCrossPlatform_release).  
 If you cannot wait to see it, 
 1) Enter the lib/mariadb directory and put the correct Files in the lib directory  
+2) a) If you are building under Windows, Enter the lib/libcurl directory and put the correct Files in the lib directory  
+   b) If you are building under Linux / Unix / MacOS, Simply Install LibCurl and you should be good to go.  
 2) simply run xmake in the directory to generate a static/shared library that you can use.  
 Remeber that the lib file generated is not cross-platform betweeen Win and Linux, and between different versions of Linux.  
 You need to generate lib file each time when you are switching platforms.  
