@@ -7,7 +7,7 @@ Language: [English](README.md)
 支持CPU架构: x86(i386) / x64(x86_64) / ~~ARM64~~  
 <a href="http://www.xsyds.cn/" target="_blank">形随意动</a> 作品  
 贡献列表: <a href="https://github.com/ToiletCommander">年迈的老秋风</a>  
-包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | HTTP(s)请求  
+包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | HTTP(s)请求 | ~~JSON~~  
 测试环境: Windows 10 + XMake + VS2017 | Ubuntu LTS16.04 + XMake + GCC  | RaspBian Stretch Nov 2017 + XMake + GCC | MacOS High Sierra + XMake + XCode + GCC  
 100%支持列表: Windows(x86, x64) | Ubuntu LTS 16.04(x64) | Raspbian Stretch Nov 2017(ARMv6)
 需要支持: Unix / Linux / Windows系统 + C++11  
