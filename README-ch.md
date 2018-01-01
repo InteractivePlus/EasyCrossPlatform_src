@@ -27,7 +27,6 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 用EasyCrossPlatform开发, 可以有效的减少代码行数, 意味着更少Bug和溢出漏洞的可能性. EasyCrossPlatform在实现层趋向于将底层代码封装的更简易, 但是仍旧保留不妥协的性能  
 ## 编译
 此项目仍在早期开发阶段, 且并没有考虑开始发行, Beta版都不! 不过如果您等不及了, 可以编译此库以使用它.  
-Windows版本的.Lib/.DLL库会在每个大版本更新时, 释放在[EasyCrossPlatform_release](https://github.com/EasyCrossPlatformLib/EasyCrossPlatform_release)  
 注意, 目前我们使用的编译工具*xmake不支持在ARM64上进行运行/编译*, 除非您在X86/X64机器上进行交叉编译, 否则您将无法使用ARM64版本的EASYCROSSPLATFORM.  
 1) 在Lib/MariaDB文件夹中选择您系统对应的正确版本, 并拷贝到Lib目录下
 2) a) 如果您在Windows机器上编译, 在Lib/LibCurl文件夹中选择您系统对应的正确版本, 并拷贝到Lib目录下  

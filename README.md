@@ -27,7 +27,6 @@ Influenced by [Reasoning](http://reasoning.biz) Library, however, that library i
 With less code, developers can develop more safe code preventing memory leaks and debug less. EasyCrossPlatform also brings noticeable performance while enabling developers to develop codes fast and secure.  
 ## Build
 This project is not even released with beta and it is still in its early stage of development.  
-Windows .LIB / .DLL Files will be released whenever a major version is comming out under [EasyCrossPlatform_release](https://github.com/EasyCrossPlatformLib/EasyCrossPlatform_release).  
 If you cannot wait to see it, 
 1) Enter the lib/mariadb directory and put the correct Files in the lib directory  
 2) a) If you are building under Windows, Enter the lib/libcurl directory and put the correct Files in the lib directory  
