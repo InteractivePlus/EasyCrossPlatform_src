@@ -4,9 +4,9 @@ Language: [English](README.md)
 ## 介绍
 为了PHP与Python用户创建的快速开发且跨平台的C++框架  
 支持系统: UNIX / LINUX / WIN / MacOS  
-支持CPU架构: x86(i386) / x64(x86_64) / ~~ARM64~~  
-<a href="http://www.xsyds.cn/" target="_blank">形随意动</a> 作品  
-贡献列表: <a href="https://github.com/ToiletCommander">年迈的老秋风</a>  
+支持CPU架构: x86(i386) / x64(x86_64) / ~~ARMv5~~ / ARMv6 / ~~ARMv7~~ / ~~ARMv8~~  
+[形随意动](https://www.xsyds.cn/)作品  
+贡献列表: [年迈的老秋风](https://github.com/ToiletCommander)  
 包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | HTTP(s)请求 | JSON  
 测试环境: Windows 10 + XMake + VS2017 | Ubuntu LTS16.04 + XMake + GCC  | RaspBian Stretch Nov 2017 + XMake + GCC | MacOS High Sierra + XMake + XCode + GCC  
 100%支持列表: Windows(x86, x64) | Ubuntu LTS 16.04(x64) | Raspbian Stretch Nov 2017(ARMv6)
@@ -23,7 +23,7 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 ## 开发理念
 *"使用更少的依赖, 使用更少的代码"*  
 大家都爱C++, 但是并没有任何好用的库, 来帮助初学者快速上手C++的多线程, 网络, 用户交互开发, 同时享受C++带来的无与伦比的速度与效率优势  
-受到 <a href="http://reasoning.biz" target="_blank">Reasoning</a> 库的影响, 但是这个库自2008年便不再开发  
+受到 [Reasoning](http://reasoning.biz/) 库的影响, 但是这个库自2008年便不再开发  
 用EasyCrossPlatform开发, 可以有效的减少代码行数, 意味着更少Bug和溢出漏洞的可能性. EasyCrossPlatform在实现层趋向于将底层代码封装的更简易, 但是仍旧保留不妥协的性能  
 ## 编译
 此项目仍在早期开发阶段, 且并没有考虑开始发行, Beta版都不! 不过如果您等不及了, 可以编译此库以使用它.  
