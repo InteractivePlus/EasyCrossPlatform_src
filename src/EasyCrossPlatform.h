@@ -9,4 +9,6 @@
 	#include "XSYDChrono.h"
 	#include "XSYDMySQL.h"
 	#include "XSYDEncryption.h"
+	#include "XSYDRequest.h"
+	#include "XSYDJson.h"
 #endif //__EasyCrossPlatformFile__
