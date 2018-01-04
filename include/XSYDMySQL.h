@@ -1,7 +1,7 @@
 #ifndef __XSYDMySQLFile__
 	#define __XSYDMySQLFile__
-	#include "EasyCP_Common.h"
-	#include "mariadb/mysql.h"
+	#include <EasyCP_Common.h>
+	#include <mariadb/mysql.h>
 	namespace EasyCrossPlatform {
 		namespace Database {
 			struct MySQLResult {

@@ -6,8 +6,8 @@ Modified and Bug Fixed by Windy
 #ifndef __XSYDFileTCPSockFile__
 #define __XSYDFileTCPSockFile__
 
-#include "CrossPlatform_Socket.h"
-#include "EasyCP_Common.h"
+#include <CrossPlatform_Socket.h>
+#include <EasyCP_Common.h>
 namespace EasyCrossPlatform {
 	namespace Network {
 		class TCPSocket : public Socket

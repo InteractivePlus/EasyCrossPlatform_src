@@ -1,4 +1,4 @@
-#include "XSYDMySQL.h"
+#include <XSYDMySQL.h>
 
 EasyCrossPlatform::Database::MySQLManager::MySQLManager()
 {

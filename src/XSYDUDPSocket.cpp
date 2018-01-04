@@ -1,4 +1,4 @@
-#include "XSYDUDPSocket.h"
+#include <XSYDUDPSocket.h>
 
 EasyCrossPlatform::Network::UDPSocket::UDPSocket()
 	: Socket(Socket::UDP,"UDP"),

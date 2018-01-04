@@ -1,6 +1,6 @@
 #ifndef __XSYDFileIOFile__
 	#define __XSYDFileIOFile__
-	#include "EasyCP_Common.h"
+	#include <EasyCP_Common.h>
 	#include <stdio.h>
 	namespace EasyCrossPlatform {
 		namespace File {

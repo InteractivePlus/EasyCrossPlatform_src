@@ -1,4 +1,4 @@
-#include "XSYDMultiTask.h"
+#include <XSYDMultiTask.h>
 
 int EasyCrossPlatform::Thread::SingleWork::DoingJob(EasyCrossPlatform::Thread::WorkInfo MyInfo)
 {

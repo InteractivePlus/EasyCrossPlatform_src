@@ -3,10 +3,10 @@
 	#define _WINSOCK_DEPRECATED_NO_WARNINGS
 	#include <iostream>
 	#include <string>
-	#include "EasyCP_Common.h"
-	#include "CrossPlatform_SocketException.h"
+	#include <EasyCP_Common.h>
+	#include <CrossPlatform_SocketException.h>
 
-	#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+	#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 		#include <errno.h>
 		#include <sys/types.h>
 		#include <sys/socket.h>
@@ -40,7 +40,7 @@
 			IPv6 = AF_INET6
 		};
 	protected:
-	#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+	#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 		int             m_SocketDescriptor;
 	#else
 		SOCKET          m_SocketDescriptor;
@@ -74,7 +74,7 @@
 		virtual int             SetProtocol(std::string ProtocolName);
 
 		virtual int             SetDomain(int Domain);
-	#ifdef EASYCROSSPLATFORM_PLATFORM_LINUX
+	#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
 		virtual int             Create();
 	#else
 		virtual SOCKET          Create();

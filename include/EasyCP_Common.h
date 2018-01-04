@@ -66,6 +66,7 @@
 		#include <string.h>
 	#endif
 	#include <chrono> //时间
+	#include <assert.h>
 	#include <cassert> //Debug类
 	#include <exception> //Exception异常类
 	#include <stdexcept> //StdException通用异常类

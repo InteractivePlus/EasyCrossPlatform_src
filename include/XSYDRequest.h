@@ -1,7 +1,7 @@
 #ifndef __XSYDREQUESTFILE__
 	#define __XSYDREQUESTFILE__
-	#include "EasyCP_Common.h"
-	#include "curl/curl.h"
+	#include <EasyCP_Common.h>
+	#include <curl/curl.h>
 	#include <mutex>
 	namespace EasyCrossPlatform {
 		namespace Network {

@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 #include <string>
-#include "EasyCP_Common.h"
+#include <EasyCP_Common.h>
 class SocketException : public std::runtime_error
 {
 public:

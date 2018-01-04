@@ -1,6 +1,6 @@
 #ifndef __XSYDMultiTaskFile__
 	#define __XSYDMultiTaskFile__
-	#include "EasyCP_Common.h"
+	#include <EasyCP_Common.h>
 	#include <thread>
 	#include <mutex>
 	namespace EasyCrossPlatform {

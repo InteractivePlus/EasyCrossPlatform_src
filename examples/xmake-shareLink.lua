@@ -3,4 +3,4 @@ target("program")
     add_files("**.c","**.cpp","**.cxx"）
 	add_linkdirs("lib")
 	add_links("easycrossplatform")
-	add_includedirs("include")
+	add_includedirs("include","include/extlibs")

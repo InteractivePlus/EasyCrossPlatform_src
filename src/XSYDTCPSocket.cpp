@@ -1,4 +1,4 @@
-#include "XSYDTCPSocket.h"
+#include <XSYDTCPSocket.h>
 
 EasyCrossPlatform::Network::TCPSocket::TCPSocket()
 	: Socket(Socket::TCP,"TCP"),
