@@ -15,7 +15,7 @@ target("easycrossplatform_s")
 		elseif is_arch("x64") then
 			add_defines("_M_X64","EASYCROSSPLATFORM_ARCHITECTURE_X64")
 			add_files("src/asm/x64/**.asm","src/asm/shared/**.asm")
-			add_linkdirs("lib/libcurl/Win_x86","lib/mariadb/Win_x64")
+			add_linkdirs("lib/libcurl/Win_x64","lib/mariadb/Win_x64")
 		end
 	else --Linux Distribution, xmake only supports x86 and x64
 		add_cxxflags("-std=c++11")
