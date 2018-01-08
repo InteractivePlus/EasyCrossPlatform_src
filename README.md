@@ -1,4 +1,4 @@
-# EasyCrossPlatform
+﻿# EasyCrossPlatform
 Source Code for EasyCrossPlatform, only for development purpose.  
 Language: [中文](README-ch.md)  
 ## Introduction
@@ -18,6 +18,7 @@ The development of EasyCrossPlatform is given power by the following lib:
 [Crypto++ Examples](https://github.com/sechaser/CryptoPP) - Crypto++ AES Example, EasyCrossPlatform AES Encryption built based on it.  
 [MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB Connector Lib.  
 [LibCurl](https://curl.haxx.se/) - EasyCrossPlatform Request Lib built based on it.  
+[JSONCPP](https://github.com/henshao/jsoncpp) - A quicker version of JSONCPP, a JSON parser, EasyCrossPlatform JSON class completely built based on it.  
 ## Why not GUI?
 GUI requires too much dependencies, and we are considering using "mygui". However, the OpenGL environment in each machine can be different, and if you want to use a GUI Lib, we recommend MyGUI with OpenGL2.0 Implemention  
 ## Develop Theory

@@ -28,10 +28,10 @@
 	//********************************************
 	
 	//****CROSSPLATFORM_TYPE_RECOGNITION****
-	#if defined(__WINDOWS_) || defined(_WIN32) || defined(_WIN64)
+	#if defined(__WINDOWS_) || defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(_WIN64) || defined(__WIN64__) || defined(WIN64)
 		#define EASYCROSSPLATFORM_PLATFORM_IS_WINDOWS 1
 		#define EASYCROSSPLATFORM_PLATFORMTYPE EASYCROSSPLATFORM_PLATFORMTYPE_WINDOWS
-	#elif defined(__APPLE__)
+	#elif defined(__APPLE__) || defined(APPLE)
 		#include <TargetConditionals.h>
 		#if TARGET_IPHONE_SIMULATOR
 			#define EASYCROSSPLATFORM_PLATFORM_IS_IOSSIMULATOR 1
@@ -46,10 +46,10 @@
 	#elif defined(__ANDROID__)
 		#define EASYCROSSPLATFORM_PLATFORM_IS_ANDROID 1
 		#define EASYCROSSPLATFORM_PLATFORMTYPE EASYCROSSPLATFORM_PLATFORMTYPE_ANDROID
-	#elif defined(linux) || defined(__LINUX__)
+	#elif defined(linux) || defined(__LINUX__) || defined(__linux) || defined(__linux)
 		#define EASYCROSSPLATFORM_PLATFORM_IS_LINUX 1
 		#define EASYCROSSPLATFORM_PLATFORMTYPE EASYCROSSPLATFORM_PLATFORMTYPE_LINUX
-	#elif defined(_UNIX) || defined(__unix__)
+	#elif defined(_UNIX) || defined(__unix__) || defined(__GNU__) || defined(__GLIBC__)
 		#define EASYCROSSPLATFORM_PLATFORM_IS_UNIX 1
 		#define EASYCROSSPLATFORM_PLATFORMTYPE EASYCROSSPLATFORM_PLATFORMTYPE_UNIX
 	#elif defined(_POSIX_VERSION)
