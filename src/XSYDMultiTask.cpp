@@ -7,6 +7,10 @@ int EasyCrossPlatform::Thread::SingleWork::DoingJob(EasyCrossPlatform::Thread::W
 	return 0;
 }
 
+EasyCrossPlatform::Thread::SingleWork::SingleWork(){
+	
+}
+
 EasyCrossPlatform::Thread::SingleWork::SingleWork(EasyCrossPlatform::Thread::SpecificWorkPtr mWork)
 {
 	this->MyWork = mWork;
@@ -14,11 +18,17 @@ EasyCrossPlatform::Thread::SingleWork::SingleWork(EasyCrossPlatform::Thread::Spe
 	this->RunningSign = false;
 }
 
+
 EasyCrossPlatform::Thread::SingleWork::SingleWork(SingleWork & mWork)
 {
 	this->MyWork = mWork.MyWork;
 	this->RunningSign = false;
 	this->mThread = NULL;
+}
+
+void EasyCrossPlatform::Thread::SingleWork::setWork(EasyCrossPlatform::Thread::SpecificWorkPtr mWork)
+{
+	this->MyWork = mWork;
 }
 
 bool EasyCrossPlatform::Thread::SingleWork::StartJob(std::mutex *MyMutex, void * Parameter)

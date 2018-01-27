@@ -1,19 +1,21 @@
 # EasyCrossPlatform
-EasyCrossPlatform源代码, 仅开发用  
-Language: [English](README.md)
+用简单的代码, 写出毫无妥协性能的程序  
+版本: 1.0Alpha
+Language: [English](README.md)  
 ## 介绍
 为了PHP与Python用户创建的快速开发且跨平台的C++框架  
-支持系统: UNIX / LINUX / WIN / MacOS  
-支持CPU架构: x86(i386) / x64(x86_64) / ~~ARMv5~~ / ARMv6 / ~~ARMv7~~ / ~~ARMv8~~  
+支持系统: LINUX / WIN / MacOS  
+支持CPU架构: x86(i386) / x64(x86_64) / ARMv5 / ARMv6 / ARMv7 / ARMv8  
 [形随意动](https://www.xsyds.cn/)作品  
 贡献列表: [年迈的老秋风](https://github.com/ToiletCommander)  
 包含库: 多线程池 | 多线程 | 文件读写 | TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | HTTP(s)请求 | JSON  
-测试环境: Windows 10 + XMake + VS2017 | Ubuntu LTS16.04 + XMake + GCC  | RaspBian Stretch Nov 2017 + XMake + GCC | MacOS High Sierra + XMake + XCode + GCC  
-100%支持列表: Windows(x86, x64) | Ubuntu LTS 16.04(x64) | Raspbian Stretch Nov 2017(ARMv6)
 需要支持: Unix / Linux / Windows系统 + C++11  
+## 毫不妥协的性能
+Socket库以Libuv为底层, 开发了跨平台的Socket库.  
+根据测试, Release版本在1W并发的情况下延时仅240ms.  
 ## 依赖
 EasyCrossPlatform的发展是由下面几个库驱动的:  
-[CppSocket](https://github.com/itomi/CppSocket) - CrossPlatform套接字完全基于此库编写, 但是我对它部分强烈影响编译/运行结果的Bug予以了修复.  
+[LibUV](https://github.com/libuv/libuv) - CrossPlatform套接字完全基于此库编写, 我给他写了一层包装库.  
 [Crypto++](https://github.com/weidai11/cryptopp) - 加密库, 未来的EasyCrossPlatform加密库会基于此加密库.  
 [Crypto++ Examples](https://github.com/sechaser/CryptoPP) - Crypto++ AES例子, EasyCrossPlatform AES 加密库基于此实例搭建  
 [MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB 连接器.  

@@ -22,8 +22,10 @@
 				protected:
 
 				public:
+					SingleWork();
 					SingleWork(SpecificWorkPtr mWork);
 					SingleWork(SingleWork &mWork);
+					void setWork(SpecificWorkPtr mWork);
 					bool StartJob(std::mutex *MyMutex = NULL, void* Parameter = NULL);
 					void StopJob();
 					bool getRunningStatus();

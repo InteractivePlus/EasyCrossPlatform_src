@@ -1,19 +1,21 @@
 ﻿# EasyCrossPlatform
-Source Code for EasyCrossPlatform, only for development purpose.  
+Write Easy Code with uncompromising performances.  
+Version: 1.0Alpha  
 Language: [中文](README-ch.md)  
 ## Introduction
 A easy-to-use cross-platform C++ library designed for PHP and Python Users.  
-Supported System: UNIX / LINUX / WIN / MacOS  
-Supported Architecture: x86(i386) / x64(x86_64) / ~~ARMv5~~ / ARMv6 / ~~ARMv7~~ / ~~ARMv8~~  
+Supported System: LINUX / WIN / MacOS  
+Supported Architecture: x86(i386) / x64(x86_64) / ARMv5 / ARMv6 / ARMv7 / ARMv8  
 Powered by [BlueAirTechGroup](https://www.xsyds.cn/)  
 Contribution List: [Windy](https://github.com/ToiletCommander)  
 Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption | HTTP(s)_Requests | JSON  
-Test Env: Windows 10 + XMake + VS2017 | Ubuntu LTS16.04 + XMake + GCC  | RaspBian Stretch Nov 2017 + XMake + GCC | MacOS High Sierra + XMake + XCode + GCC  
-100% Support List: Windows(x86, x64) | Ubuntu LTS 16.04(x64) | Raspbian Stretch Nov 2017(ARMv6)  
-Require Support: Unix / Linux / Windows System + C++ 11 Support  
+Require Support: MacOSX / Linux / Windows System and C++ 11 Support  
+## Uncompromising Performances?
+Right, we use LibUV as our basis for our socket class.  
+As benchmark showed, on release version, the socket Delay is 240ms with 1W connections.  
 ## Credit
 The development of EasyCrossPlatform is given power by the following lib:  
-[CppSocket](https://github.com/itomi/CppSocket) - CrossPlatform Socket Completely built based on it, but I fixed several bugs that affected the compile process, and also fixed several bugs on runtime.  
+[LibUV](https://github.com/libuv/libuv) - CrossPlatform Socket Completely built based on it, and I made an wrapper to make programming with LibUV easier.  
 [Crypto++](https://github.com/weidai11/cryptopp) - Encryption Lib, EasyCrossPlatform Encryption built based on it.  
 [Crypto++ Examples](https://github.com/sechaser/CryptoPP) - Crypto++ AES Example, EasyCrossPlatform AES Encryption built based on it.  
 [MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB Connector Lib.  
