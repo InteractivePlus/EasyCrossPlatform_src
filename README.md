@@ -31,11 +31,12 @@ With less code, developers can develop more safe code preventing memory leaks an
 ## Build
 This project is not even released with beta and it is still in its early stage of development.  
 If you cannot wait to see it, 
-1) Enter the lib/mariadb directory and put the correct Files in the lib directory  
-2) a) If you are building under Windows, Enter the lib/libcurl directory and put the correct Files in the lib directory  
+1) Enter the /extlibs/mariadb directory and put the correct Files in the /lib directory  
+2) a) If you are building under Windows, Enter the extlibs/libcurl directory and put the correct Files in the lib directory  
    b) If you are building under Linux / Unix / MacOS, Simply Install LibCurl and you should be good to go.  
 2) simply run xmake in the directory to generate a static/shared library that you can use.  
 Remeber that the lib file generated is not cross-platform betweeen Win and Linux, and between different versions of Linux.  
+*If you are running Linux, please read Linux_BuildOptions.txt  
 You need to generate lib file each time when you are switching platforms.  
 ## Contribute
 You can fork this project and request a Pull Request.   
