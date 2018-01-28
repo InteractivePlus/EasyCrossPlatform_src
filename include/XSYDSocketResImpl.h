@@ -6,42 +6,29 @@
 	namespace EasyCrossPlatform {
 		namespace Network {
 			namespace Socket {
-				//IpV4地址类封装, 绑定全部网卡填0.0.0.0
-				class IpAddrV4 {
-					friend class TCPAsyncClientSocketv4;
-					friend class UDPAsyncSocketv4;
-				private:
-
-				protected:
-					sockaddr_in m_Addr;
-				public:
-					IpAddrV4();
-					IpAddrV4(const std::string& IpAddress, const unsigned short Port);
-					IpAddrV4(const char *IpAddress, const unsigned short Port);
-					bool setIPAddress(const std::string& IpAddress, const unsigned short Port);
-					bool setIPAddress(const char * IpAddress, const unsigned short Port);
-					bool setIPAddress(const sockaddr_in& newAddr);
-					std::string getIPString();
-					unsigned short getPort();
-					sockaddr_in getIPAddress();
-				};
-				class IpAddrV6 {
-					friend class TCPAsyncClientSocketv6;
-					friend class UDPAsyncSocketv6;
-				private:
-
-				protected:
-					sockaddr_in6 m_Addr;
-				public:
-					IpAddrV6();
-					IpAddrV6(const std::string& IpAddress, const unsigned short Port);
-					IpAddrV6(const char *IpAddress, const unsigned short Port);
-					bool setIPAddress(const std::string& IpAddress, const unsigned short Port);
-					bool setIPAddress(const char * IpAddress, const unsigned short Port);
-					bool setIPAddress(const sockaddr_in6& newAddr);
-					std::string getIPString();
-					unsigned short getPort();
-					sockaddr_in6 getIPAddress();
+				//IpV4绑定全部网卡填0.0.0.0
+				//IpV6绑定全部网卡填::
+				class IpAddr {
+					friend class UDPAsyncSocket;
+					friend class TCPAsyncClientSocket;
+					friend class TCPAsyncServerSocket;
+					friend class DNSRequest;
+					protected:
+						sockaddr m_Addr;
+						bool m_isIpV4;
+					public:
+						IpAddr();
+						IpAddr(const std::string& IpAddress, const unsigned short Port, bool AddrIpV4);
+						IpAddr(const char* IpAddress, const unsigned short Port, bool AddrIpV4);
+						IpAddr(const sockaddr& newAddr);
+						IpAddr(const IpAddr& oldAddr);
+						bool setIPAddress(const std::string& IpAddress, const unsigned short Port, bool AddrIpV4);
+						bool setIPAddress(const char* IpAddress, const unsigned short Port, bool AddrIpV4);
+						bool setIPAddress(const sockaddr& newAddr);
+						std::string getIPString();
+						bool addrIsIPV4();
+						unsigned short getPort();
+						sockaddr getIPAddress();
 				};
 				class SocketParam {
 					private:

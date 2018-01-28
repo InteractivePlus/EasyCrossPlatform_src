@@ -1,24 +1,24 @@
 #include <EasyCrossPlatform.h>
 #include <iostream>
 using namespace EasyCrossPlatform::Network::Socket;
-std::vector<TCPAsyncClientSocketv4*> myClients;
+std::vector<TCPAsyncClientSocket*> myClients;
 class MyServerFunction{
 	public:
-		static void onServerNewConn(TCPAsyncClientSocketv4* newClientSocket, void* ServerClassPtr) {
-			TCPAsyncServerSocketv4* MyServer = (TCPAsyncServerSocketv4*)ServerClassPtr;
+		static void onServerNewConn(TCPAsyncClientSocket* newClientSocket, void* ServerClassPtr) {
+			TCPAsyncServerSocket* MyServer = (TCPAsyncServerSocket*)ServerClassPtr;
 			myClients.push_back(newClientSocket);
 		}
 		static void onServerError(int errCode, const std::string& errInfo, void* ServerClassPtr) {
-			TCPAsyncServerSocketv4* MyServer = (TCPAsyncServerSocketv4*)ServerClassPtr;
+			TCPAsyncServerSocket* MyServer = (TCPAsyncServerSocket*)ServerClassPtr;
 			//std::cout << "SrvError:" << errInfo << std::endl;
 		}
 		static void onClientConnect(bool Succeed, void* ClientPtr){
-			TCPAsyncClientSocketv4* MyClient = (TCPAsyncClientSocketv4*)ClientPtr;
+			TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
 			
 			//std::cout << "ClientConnect:" << MyClient->getRemoteAddr().getIPString() << ":" << MyClient->getRemoteAddr().getPort() << std::endl;
 		}
 		static void onClientDisconnect(void* ClientPtr) {
-			TCPAsyncClientSocketv4* MyClient = (TCPAsyncClientSocketv4*)ClientPtr;
+			TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
 			//std::cout << "ClientDisconnect:" << std::endl;
 			MyClient->Destroy();
 			for (auto i = myClients.begin(); i != myClients.end(); i++) {
@@ -30,19 +30,19 @@ class MyServerFunction{
 			}
 		}
 		static void onClientMsg(const std::string& data, void* ClientPtr) {
-			TCPAsyncClientSocketv4* MyClient = (TCPAsyncClientSocketv4*)ClientPtr;
+			TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
 			//std::cout << MyClient->getRemoteAddr().getIPString() << ":(" << data << ")" << std::endl;
 			MyClient->SendMsg(data);
 		}
 		static void onClientError(int errCode, const std::string& errInfo, void* ClientPtr) {
-			TCPAsyncClientSocketv4* MyClient = (TCPAsyncClientSocketv4*)ClientPtr;
+			TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
 			//std::cout << "ClientError:" << errInfo << std::endl;
 		}
 };
 int main(int argc, char** args) {
 	std::cout << "hi" << std::endl;
 	
-	EasyCrossPlatform::Network::Socket::TCPAsyncServerSocketv4 mSocket;
+	EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket mSocket;
 	mSocket.Init();
 	mSocket.ClientConnectCallBack = MyServerFunction::onClientConnect;
 	mSocket.ClientDisconnectCallBack = MyServerFunction::onClientDisconnect;
@@ -51,7 +51,7 @@ int main(int argc, char** args) {
 	mSocket.ServerErrorCallBack = MyServerFunction::onServerError;
 	mSocket.ServerNewConnCallBack = MyServerFunction::onServerNewConn;
 	//Binding 0.0.0.0 means binding every interface.
-	mSocket.Listen(EasyCrossPlatform::Network::Socket::IpAddrV4("0.0.0.0", 700),200);
+	mSocket.Listen(EasyCrossPlatform::Network::Socket::IpAddr("0.0.0.0", 700, true),200);
 	//system("pause");
 	std::cin.get();
 	std::cout << "----" << std::endl;

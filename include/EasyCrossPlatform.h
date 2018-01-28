@@ -10,4 +10,5 @@
 	#include <XSYDJson.h>
 	#include <XSYDTCPSocket.h>
 	#include <XSYDUDPSocket.h>
+	#include <XSYDDNS.h>
 #endif //__EasyCrossPlatformFile__
