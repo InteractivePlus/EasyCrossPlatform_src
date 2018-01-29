@@ -109,7 +109,7 @@ EasyCrossPlatform::Network::Socket::DNSResult EasyCrossPlatform::Network::Socket
 	DNSResult myResult;
 	myResult.NumResults = 0;
 	PortStr = std::to_string(Port);
-	int reqState = uv_getaddrinfo(&SocketParam::m_uv_loop, this->m_RequestHandle, DNSRequest::m_uv_resolved_cb, Domain.c_str(), PortStr, &this->m_RequestHints);
+	int reqState = uv_getaddrinfo(&SocketParam::m_uv_loop, this->m_RequestHandle, DNSRequest::m_uv_resolved_cb, Domain.c_str(), PortStr.c_str(), &this->m_RequestHints);
 	if (reqState < 0) {
 		return myResult;
 	}
