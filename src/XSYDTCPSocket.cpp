@@ -422,7 +422,8 @@ EasyCrossPlatform::Network::Socket::IpAddr EasyCrossPlatform::Network::Socket::T
 
 void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::Listen()
 {
-	int bindState = uv_tcp_bind(this->m_SocketHandle.get(), &this->m_myIP.getIPAddress(), 0);
+	sockaddr myAddr = this->m_myIP.getIPAddress();
+	int bindState = uv_tcp_bind(this->m_SocketHandle.get(), &myAddr, 0);
 	if (bindState < 0) {
 		this->onError(bindState, uv_err_name(bindState));
 		return;
