@@ -1,4 +1,48 @@
+option("build-on-solaris")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-linux")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-zos")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-freebsd")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-dragonflybsd")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-openbsd")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-netbsd")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+
 target("libuv_s")
+	add_options("build-on-linux",
+				"build-on-solaris",
+				"build-on-zos",
+				"build-on-freebsd",
+				"build-on-dragonflybsd",
+				"build-on-openbsd",
+				"build-on-netbsd"
+	)
 	set_kind("static")
 	add_includedirs("include")
 	--编译LibUV进行时
@@ -138,6 +182,14 @@ target("libuv_s")
 		add_defines('_LARGEFILE_SOURCE', '_FILE_OFFSET_BITS=64')
 	end
 target("libuv")
+	add_options("build-on-linux",
+				"build-on-solaris",
+				"build-on-zos",
+				"build-on-freebsd",
+				"build-on-dragonflybsd",
+				"build-on-openbsd",
+				"build-on-netbsd"
+	)
 	set_kind("shared")
 	add_includedirs("include")
 	add_defines("USING_UV_SHARED=1")
@@ -271,7 +323,6 @@ target("libuv")
 					'unix/os390.c',
 					'unix/os390-syscalls.c'
 			)
-			
 		end
 	end
 	if ( not(is_os("windows")) ) then

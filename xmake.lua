@@ -1,4 +1,12 @@
 target("easycrossplatform_s")
+	add_options("build-on-linux",
+				"build-on-solaris",
+				"build-on-zos",
+				"build-on-freebsd",
+				"build-on-dragonflybsd",
+				"build-on-openbsd",
+				"build-on-netbsd"
+	)
 	set_kind("static")
 	--OS Arch Declaration
 	if is_arch("i386") or is_arch("x86") then
@@ -42,6 +50,14 @@ target("easycrossplatform_s")
 	end
 
 target("easycrossplatform")
+	add_options("build-on-linux",
+				"build-on-solaris",
+				"build-on-zos",
+				"build-on-freebsd",
+				"build-on-dragonflybsd",
+				"build-on-openbsd",
+				"build-on-netbsd"
+	)
 	set_kind("shared")
 	--OS Arch Declaration
 	if is_arch("i386") or is_arch("x86") then
