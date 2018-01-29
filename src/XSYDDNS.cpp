@@ -105,14 +105,10 @@ EasyCrossPlatform::Network::Socket::DNSResult EasyCrossPlatform::Network::Socket
 	this->m_RequestHints.ai_family = PF_INET6;
 	this->onProgress = true;
 	this->progressSucceed = false;
-	char PortStr[6] = "";
+	std::string PortStr;
 	DNSResult myResult;
 	myResult.NumResults = 0;
-	#ifdef EASYCROSSPLATFORM_PLATFORM_UNIX
-		itoa(static_cast<int>(Port), PortStr, 10);
-	#elif defined(EASYCROSSPLATFORM_PLATFORM_WINDOWS)
-		_itoa_s(static_cast<int>(Port), PortStr, 6, 10);
-	#endif
+	PortStr = std::to_string(Port);
 	int reqState = uv_getaddrinfo(&SocketParam::m_uv_loop, this->m_RequestHandle, DNSRequest::m_uv_resolved_cb, Domain.c_str(), PortStr, &this->m_RequestHints);
 	if (reqState < 0) {
 		return myResult;
