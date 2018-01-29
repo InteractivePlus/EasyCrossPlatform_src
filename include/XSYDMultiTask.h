@@ -24,7 +24,7 @@
 				public:
 					SingleWork();
 					SingleWork(SpecificWorkPtr mWork);
-					SingleWork(SingleWork &mWork);
+					SingleWork(const SingleWork &mWork);
 					void setWork(SpecificWorkPtr mWork);
 					bool StartJob(std::mutex *MyMutex = NULL, void* Parameter = NULL);
 					void StopJob();

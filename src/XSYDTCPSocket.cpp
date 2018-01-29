@@ -149,7 +149,8 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Connect()
 		this->Init();
 	}
 	uv_connect_t *myReadReq = (uv_connect_t*) malloc(sizeof(uv_connect_t));
-	uv_tcp_connect(myReadReq, this->m_ClientSocketHandle.get(), &this->m_remoteAddr.getIPAddress(), EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::m_uv_connect_cb);
+	sockaddr myAddress = this->m_remoteAddr.getIPAddress();
+	uv_tcp_connect(myReadReq, this->m_ClientSocketHandle.get(), &myAddress, EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::m_uv_connect_cb);
 }
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::setRemoteIPAddr(const IpAddr & newIP)
 {

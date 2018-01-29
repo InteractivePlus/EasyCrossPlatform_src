@@ -7,12 +7,12 @@
 	namespace EasyCrossPlatform{
 		namespace Network{
 			namespace Socket{
-				typedef void(*TCPClientMsgCallBack)(const std::string& message, void* ClientClassPtr);
-				typedef void(*TCPClientConnectCallBack)(bool succeed, void* ClientClassPtr);
-				typedef void(*TCPClientDisconnectCallBack)(void* ClientClassPtr);
-				typedef void(*TCPServerNewConnectionCallBack)(TCPAsyncClientSocket* newClientSocket, void* ServerClassPtr);
-				typedef void(*TCPClientErrorCallBack)(int errCode, const std::string& errDescription, void* ClientClassPtr);
-				typedef void(*TCPServerErrorCallBack)(int errCode, const std::string& errDescription, void* ServerClassPtr);
+				typedef void(*TCPClientMsgCallBack)(const std::string&, void*);
+				typedef void(*TCPClientConnectCallBack)(bool, void*);
+				typedef void(*TCPClientDisconnectCallBack)(void*);
+				typedef void(*TCPServerNewConnectionCallBack)(void*, void*);
+				typedef void(*TCPClientErrorCallBack)(int, const std::string&, void*);
+				typedef void(*TCPServerErrorCallBack)(int, const std::string&, void*);
 				class TCPAsyncClientSocket {
 					friend class TCPAsyncServerSocket;
 					private:

@@ -4,9 +4,10 @@ using namespace EasyCrossPlatform::Network::Socket;
 std::vector<TCPAsyncClientSocket*> myClients;
 class MyServerFunction{
 	public:
-		static void onServerNewConn(TCPAsyncClientSocket* newClientSocket, void* ServerClassPtr) {
+		static void onServerNewConn(void* newClientSocket, void* ServerClassPtr) {
+			TCPAsyncClientSocket* MyClientSocket = (TCPAsyncClientSocket*) newClientSocket;
 			TCPAsyncServerSocket* MyServer = (TCPAsyncServerSocket*)ServerClassPtr;
-			myClients.push_back(newClientSocket);
+			myClients.push_back(MyClientSocket);
 		}
 		static void onServerError(int errCode, const std::string& errInfo, void* ServerClassPtr) {
 			TCPAsyncServerSocket* MyServer = (TCPAsyncServerSocket*)ServerClassPtr;

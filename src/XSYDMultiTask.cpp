@@ -19,7 +19,7 @@ EasyCrossPlatform::Thread::SingleWork::SingleWork(EasyCrossPlatform::Thread::Spe
 }
 
 
-EasyCrossPlatform::Thread::SingleWork::SingleWork(SingleWork & mWork)
+EasyCrossPlatform::Thread::SingleWork::SingleWork(const SingleWork & mWork)
 {
 	this->MyWork = mWork.MyWork;
 	this->RunningSign = false;
