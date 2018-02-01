@@ -1,4 +1,48 @@
+option("build-on-solaris")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-linux")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-zos")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-freebsd")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-dragonflybsd")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-openbsd")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-netbsd")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
+
 target("program")
+	add_options("build-on-linux",
+				"build-on-solaris",
+				"build-on-zos",
+				"build-on-freebsd",
+				"build-on-dragonflybsd",
+				"build-on-openbsd",
+				"build-on-netbsd"
+	)
     set_kind("binary")
 	add_defines("CURL_STATICLIB")
 	--add_defines("USING_UV_SHARED=1")	
@@ -30,8 +74,12 @@ target("program")
 	elseif is_os("macosx") then
 		add_defines("CROSSPLATFORM_OS_STRING=\"macosx\"");
 	end
-	
-	
+	--STD Declaration
+	if (not is_os("windows")) then
+		add_cxflags("-std=c++11")
+	end
+	--Always put the libs that need dependencies in front of their dependencies.
+	add_links("easycrossplatform_s")
 	add_links("cryptopp_s","libuv_s","jsoncpp_s")
 	add_links("mariadbclient")
 	if(is_plat("windows")) then
@@ -39,9 +87,12 @@ target("program")
 		add_links('iphlpapi','psapi','shell32','user32','userenv',"winmm","ws2_32","wldap32","advapi32","Normaliz","Crypt32")
 	else
 		if is_option("build-on-solaris") then
+			add_cxflags("-pthreads")
 			add_ldflags("-pthreads")
 			add_links('kstat','nsl','sendfile','socket')
 		else
+			add_cxflags("-pthread")
+			add_mxflags("-pthread")
 			add_ldflags("-pthread")
 		end
 		if is_option("build-on-linux") then
@@ -49,4 +100,3 @@ target("program")
 		end
 		add_links("curl")
 	end
-	add_links("easycrossplatform_s")

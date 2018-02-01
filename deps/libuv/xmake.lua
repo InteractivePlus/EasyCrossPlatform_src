@@ -107,8 +107,11 @@ target("libuv_s")
 				'unix/udp.c'
 		)
 		if is_option("build-on-solaris") then
+			add_cxflags("-pthreads")
 			add_ldflags("-pthreads")
 		else
+			add_cxflags("-pthread")
+			add_mxflags("-pthread")
 			add_ldflags("-pthread")
 		end
 		
@@ -155,7 +158,7 @@ target("libuv_s")
 			add_links('kstat','nsl','sendfile','socket')
 			
 		end
-		if (is_option("build-on-freebsd") or is_os("build-on-dragonflybsd")) then
+		if (is_option("build-on-freebsd") or is_option("build-on-dragonflybsd")) then
 			add_files("unix/freebsd.c")
 		end
 		if is_option("build-on-openbsd") then
@@ -255,8 +258,11 @@ target("libuv")
 				'unix/udp.c'
 		)
 		if is_option("build-on-solaris") then
+			add_cxflags("-pthreads")
 			add_ldflags("-pthreads")
 		else
+			add_cxflags("-pthread")
+			add_mxflags("-pthread")
 			add_ldflags("-pthread")
 		end
 		
@@ -303,7 +309,7 @@ target("libuv")
 			add_links('kstat','nsl','sendfile','socket')
 			
 		end
-		if (is_option("build-on-freebsd") or is_os("build-on-dragonflybsd")) then
+		if (is_option("build-on-freebsd") or is_option("build-on-dragonflybsd")) then
 			add_files("unix/freebsd.c")
 		end
 		if is_option("build-on-openbsd") then
@@ -325,6 +331,6 @@ target("libuv")
 			)
 		end
 	end
-	if ( not(is_os("windows")) ) then
+	if (not is_os("windows")) then
 		add_defines('_LARGEFILE_SOURCE', '_FILE_OFFSET_BITS=64')
 	end

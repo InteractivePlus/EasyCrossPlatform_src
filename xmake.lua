@@ -32,9 +32,13 @@ target("easycrossplatform_s")
 	elseif is_os("macosx") then
 		add_defines("CROSSPLATFORM_OS_STRING=\"macosx\"");
 	end
+	--STD Declaration
+	if (not is_os("windows")) then
+		add_cxflags("-std=c++11")
+	end
 	--Source Files
 	add_includedirs("include")
-	add_subdirs("deps/cryptopp","deps/libuv","deps/jsoncpp")
+	includes("deps/cryptopp","deps/libuv","deps/jsoncpp")
 	add_files("src/*.cpp")
 	add_deps("cryptopp_s")
 	add_deps("libuv_s")
@@ -42,11 +46,11 @@ target("easycrossplatform_s")
 	--ExtLibs
 	add_defines("CURL_STATICLIB")
 	add_linkdirs("extlibs")
+	add_links("mariadbclient")
 	if is_os("windows") then
-		add_links("libcurl_s","mariadbclient")
+		add_links("libcurl_s")
 	else
 		add_links("curl")
-		add_links("mariadbclient")
 	end
 
 target("easycrossplatform")
@@ -83,20 +87,19 @@ target("easycrossplatform")
 	elseif is_os("macosx") then
 		add_defines("CROSSPLATFORM_OS_STRING=\"macosx\"");
 	end
+	--STD Declaration
+	if (not is_os("windows")) then
+		add_cxflags("-std=c++11")
+	end
 	--Source Files
 	add_includedirs("include")
-	add_subdirs("deps/cryptopp","deps/libuv","deps/jsoncpp")
+	includes("deps/cryptopp","deps/libuv","deps/jsoncpp")
 	add_files("src/*.cpp")
 	add_deps("cryptopp_s")
 	add_deps("libuv_s")
 	add_deps("jsoncpp_s")
 	--ExtLibs
 	add_linkdirs("extlibs")
-	if is_os("windows") then
-		add_links("libcurl")
-		add_links("libmariadb")
-	else
-		add_links("curl")
-		add_links("mariadb")
-	end
+	add_links("curl")
+	add_links("mariadb")
 	
