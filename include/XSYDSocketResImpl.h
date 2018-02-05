@@ -36,7 +36,6 @@
 					protected:
 						
 					public:
-						static std::mutex Lock;
 						static unsigned int m_num_Client;
 						static uv_loop_t m_uv_loop;
 						static EasyCrossPlatform::Thread::SingleWork m_MTManager;

@@ -2,15 +2,12 @@
 
 uv_loop_t EasyCrossPlatform::Network::Socket::SocketParam::m_uv_loop;
 unsigned int EasyCrossPlatform::Network::Socket::SocketParam::m_num_Client = 0;
-std::mutex EasyCrossPlatform::Network::Socket::SocketParam::Lock;
 EasyCrossPlatform::Thread::SingleWork EasyCrossPlatform::Network::Socket::SocketParam::m_MTManager = EasyCrossPlatform::Thread::SingleWork(SocketParam::m_MultiThread_Job);
 
 void EasyCrossPlatform::Network::Socket::SocketParam::m_MultiThread_Job(std::thread::id ThreadID, void * Parameters, bool * RunningSign, std::mutex * Mutex)
 {
 	while ((*RunningSign)){
-		Lock.lock();
-			uv_run(&SocketParam::m_uv_loop, UV_RUN_ONCE);
-		Lock.unlock();
+		uv_run(&SocketParam::m_uv_loop, UV_RUN_DEFAULT);
 	}
 	return;
 }
