@@ -24,7 +24,7 @@ class MyServerFunction{
 			MyClient->Destroy();
 			for (auto i = myClients.begin(); i != myClients.end(); i++) {
 				if ((*i) == MyClient) {
-					free(MyClient);
+					delete MyClient;
 					i=myClients.erase(i);
 					break;
 				}
@@ -52,6 +52,7 @@ int main(int argc, char** args) {
 	mSocket.ServerErrorCallBack = MyServerFunction::onServerError;
 	mSocket.ServerNewConnCallBack = MyServerFunction::onServerNewConn;
 	//Binding 0.0.0.0 means binding every interface.
+	//Keep in mind that Linux users need to use root permission to bind the socket to 700. Otherwise you need to find a bigger number like 25535.
 	mSocket.Listen(EasyCrossPlatform::Network::Socket::IpAddr("0.0.0.0", 700, true),200);
 	//system("pause");
 	std::cin.get();
