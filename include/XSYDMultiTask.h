@@ -5,7 +5,7 @@
 	#include <mutex>
 	namespace EasyCrossPlatform {
 		namespace Thread {
-
+			unsigned int getRecommendedThreadNum();
 			typedef void (*SpecificWorkPtr)(std::thread::id ThreadID, void* Parameters, bool * RunningSign, std::mutex *Mutex);
 			struct WorkInfo {
 				SpecificWorkPtr MyWork;
@@ -15,13 +15,13 @@
 			};
 			class SingleWork {
 				private:
-					std::thread *mThread;
-					bool RunningSign;
+					std::thread mThread;
 					SpecificWorkPtr MyWork;
 					static int DoingJob(WorkInfo MyInfo);
 				protected:
-
+					bool RunningSign;
 				public:
+					
 					SingleWork();
 					SingleWork(SpecificWorkPtr mWork);
 					SingleWork(const SingleWork &mWork);
@@ -33,7 +33,7 @@
 			};
 			class SingleWorkCls {
 				private:
-					std::thread *mThread;
+					std::thread mThread;
 					std::mutex* TempMutex;
 					void* TempParameter;
 					bool RunningSign;

@@ -135,7 +135,7 @@ void EasyCrossPlatform::Network::Socket::DNSRequest::Init()
 	this->m_RequestHandle->data = (void*) this;
 	if (SocketParam::m_num_Client == 0) {
 		uv_loop_init(&SocketParam::m_uv_loop);
-		SocketParam::m_MTManager.StartJob();
+		SocketParam::Start();
 	}
 	SocketParam::m_num_Client++;
 }
@@ -150,8 +150,7 @@ void EasyCrossPlatform::Network::Socket::DNSRequest::Destroy()
 	SocketParam::m_num_Client--;
 	if (SocketParam::m_num_Client == 0) {
 		uv_stop(&SocketParam::m_uv_loop);
-		SocketParam::m_MTManager.StopJob();
-		uv_loop_close(&SocketParam::m_uv_loop);
+		SocketParam::Stop();
 	}
 }
 

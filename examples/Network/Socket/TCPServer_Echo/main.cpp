@@ -2,6 +2,7 @@
 #include <iostream>
 using namespace EasyCrossPlatform::Network::Socket;
 std::vector<TCPAsyncClientSocket*> myClients;
+std::mutex myMutex;
 class MyServerFunction{
 	public:
 		static void onServerNewConn(void* newClientSocket, void* ServerClassPtr) {
@@ -21,14 +22,23 @@ class MyServerFunction{
 		static void onClientDisconnect(void* ClientPtr) {
 			TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
 			//std::cout << "ClientDisconnect:" << std::endl;
+			
 			MyClient->Destroy();
-			for (auto i = myClients.begin(); i != myClients.end(); i++) {
-				if ((*i) == MyClient) {
-					delete MyClient;
-					i=myClients.erase(i);
-					break;
+			
+			myMutex.lock();
+			bool ClientsEmpty = myClients.empty();
+			
+
+			if (!ClientsEmpty) {
+				for (auto i = myClients.begin(); i != myClients.end(); i++) {
+					if ((*i) == MyClient) {
+						delete MyClient;
+						i = myClients.erase(i);
+						break;
+					}
 				}
 			}
+			myMutex.unlock();
 		}
 		static void onClientMsg(const std::string& data, void* ClientPtr) {
 			TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
@@ -42,8 +52,15 @@ class MyServerFunction{
 };
 int main(int argc, char** args) {
 	std::cout << "hi" << std::endl;
-	
+	EasyCrossPlatform::Network::Socket::SocketWorker myListeningWorker;
+	EasyCrossPlatform::Network::Socket::SocketWorker myClientWorker1;
+	EasyCrossPlatform::Network::Socket::SocketWorker myClientWorker2;
+	std::deque<EasyCrossPlatform::Network::Socket::SocketWorker*> myWorkers;
+	myWorkers.push_back(&myClientWorker1);
+	myWorkers.push_back(&myClientWorker2);
+
 	EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket mSocket;
+	mSocket.setWorkers(myListeningWorker, myWorkers);
 	mSocket.Init();
 	mSocket.ClientConnectCallBack = MyServerFunction::onClientConnect;
 	mSocket.ClientDisconnectCallBack = MyServerFunction::onClientDisconnect;

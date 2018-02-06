@@ -24,6 +24,7 @@
 
 						IpAddr m_myRemoteAddr;
 						IpAddr m_myAddr;
+						SocketWorker* mySocketWorker;
 					public:
 						UDPAsyncSocket();
 						UDPAsyncSocket(const IpAddr& ListeningAddr);
@@ -35,6 +36,7 @@
 						void Listen(const IpAddr& myNewAddr);
 						void StopListen();
 
+						void setWorker(SocketWorker& myWorker);
 						void Init();
 						void Destroy();
 

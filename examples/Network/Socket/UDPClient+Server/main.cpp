@@ -20,6 +20,8 @@ int main(int argc, char** args) {
 	std::cout << "hi" << std::endl;
 	
 	MySocket mSocket;
+	EasyCrossPlatform::Network::Socket::SocketWorker myWorker;
+	mSocket.setWorker(myWorker);
 	mSocket.Init();
 	mSocket.Listen(EasyCrossPlatform::Network::Socket::IpAddr("0.0.0.0", 700, true));
 	//UDP: If you want every computer in the LAN to recieve, type 255.255.255.255 for IP Address.

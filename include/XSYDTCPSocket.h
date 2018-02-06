@@ -24,7 +24,7 @@
 						bool m_Connected;
 						bool Inited;
 						bool Closing;
-						std::mutex* myMutex;
+						static std::mutex sharedMutex;
 						static void m_uv_connect_cb(uv_connect_t* req, int status);
 						static void m_uv_close_cb(uv_handle_t* handle);
 						static void m_uv_read_cb(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf);
@@ -32,6 +32,7 @@
 						static void m_uv_write_cb(uv_write_t* req, int status);
 						static void m_uv_alloc_buffer(uv_handle_t* handle, size_t suggested_size, uv_buf_t* buf);
 
+						SocketWorker* mySocketWorker;
 						void onConnected(bool Succeeded);
 						void onMsg(const std::string& Msg);
 						void onDisconnect();
@@ -41,6 +42,7 @@
 						TCPAsyncClientSocket(const IpAddr& RemoteIP);
 						TCPAsyncClientSocket(const TCPAsyncClientSocket& oldClient);
 						
+						void setWorker(SocketWorker& socketWorker);
 						void Init();
 						void Connect();
 						void setRemoteIPAddr(const IpAddr& newIP);
@@ -73,11 +75,14 @@
 						bool isListening;
 						bool hasInted;
 						int m_QueueLength;
+						SocketWorker* myListenWorker;
+						std::deque<SocketWorker*> myClientWorker;
 					public:
 						TCPAsyncServerSocket();
 						TCPAsyncServerSocket(const IpAddr& myIP, int QueLength);
 						TCPAsyncServerSocket(const TCPAsyncServerSocket& oldServer);
 
+						void setWorkers(SocketWorker& listeningWorker, std::deque<SocketWorker*>& clientWorkers);
 						void Init();
 						void Destroy();
 

@@ -1,14 +1,31 @@
 #include <XSYDSocketResImpl.h>
+#include "..\include\XSYDSocketResImpl.h"
 
 uv_loop_t EasyCrossPlatform::Network::Socket::SocketParam::m_uv_loop;
 unsigned int EasyCrossPlatform::Network::Socket::SocketParam::m_num_Client = 0;
 EasyCrossPlatform::Thread::SingleWork EasyCrossPlatform::Network::Socket::SocketParam::m_MTManager = EasyCrossPlatform::Thread::SingleWork(SocketParam::m_MultiThread_Job);
 
+void EasyCrossPlatform::Network::Socket::SocketParam::Start()
+{
+	SocketParam::m_MTManager.StartJob(NULL, NULL);
+}
+
+void EasyCrossPlatform::Network::Socket::SocketParam::Stop()
+{
+	SocketParam::m_MTManager.StopJob();
+}
+
 void EasyCrossPlatform::Network::Socket::SocketParam::m_MultiThread_Job(std::thread::id ThreadID, void * Parameters, bool * RunningSign, std::mutex * Mutex)
 {
 	while ((*RunningSign)){
-		uv_run(&SocketParam::m_uv_loop, UV_RUN_DEFAULT);
+		if (uv_loop_alive(&SocketParam::m_uv_loop) > 0) {
+			uv_run(&SocketParam::m_uv_loop, UV_RUN_DEFAULT);
+		}
+		else {
+			std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(200));
+		}
 	}
+	uv_loop_close(&SocketParam::m_uv_loop);
 	return;
 }
 
@@ -111,4 +128,40 @@ unsigned short EasyCrossPlatform::Network::Socket::IpAddr::getPort()
 sockaddr EasyCrossPlatform::Network::Socket::IpAddr::getIPAddress()
 {
 	return this->m_Addr;
+}
+
+EasyCrossPlatform::Network::Socket::SocketWorker::SocketWorker()
+{
+	this->m_MTManager.setWork(SocketWorker::m_MultiThread_Job);
+	this->m_uv_loop = std::shared_ptr<uv_loop_t>(new uv_loop_t);
+}
+
+void EasyCrossPlatform::Network::Socket::SocketWorker::Start()
+{
+	this->m_MTManager.StartJob(NULL, (void*)this);
+}
+
+void EasyCrossPlatform::Network::Socket::SocketWorker::Stop()
+{
+	this->m_MTManager.StopJob();
+}
+
+void EasyCrossPlatform::Network::Socket::SocketWorker::m_MultiThread_Job(std::thread::id ThreadID, void * Parameters, bool * RunningSign, std::mutex * Mutex)
+{
+	SocketWorker* myWorker = (SocketWorker*)Parameters;
+	while ((*RunningSign)) {
+		if (uv_loop_alive(myWorker->m_uv_loop.get()) > 0) {
+			uv_run(myWorker->m_uv_loop.get(), UV_RUN_DEFAULT);
+		}
+		else {
+			std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(200));
+		}
+	}
+	uv_loop_close(myWorker->m_uv_loop.get());
+	return;
+}
+
+EasyCrossPlatform::Network::Socket::SocketWorker::~SocketWorker()
+{
+	this->m_uv_loop.reset();
 }

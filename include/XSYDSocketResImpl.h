@@ -34,12 +34,29 @@
 					private:
 
 					protected:
-						
+						static EasyCrossPlatform::Thread::SingleWork m_MTManager;
 					public:
 						static unsigned int m_num_Client;
 						static uv_loop_t m_uv_loop;
-						static EasyCrossPlatform::Thread::SingleWork m_MTManager;
+						static void Start();
+						static void Stop();
+						
 						static void m_MultiThread_Job(std::thread::id ThreadID, void* Parameters, bool * RunningSign, std::mutex *Mutex);
+				};
+				class SocketWorker {
+					private:
+						
+					protected:
+
+					public:
+						SocketWorker();
+						unsigned int m_num_Client;
+						std::shared_ptr<uv_loop_t> m_uv_loop;
+						EasyCrossPlatform::Thread::SingleWork m_MTManager;
+						void Start();
+						void Stop();
+						static void m_MultiThread_Job(std::thread::id ThreadID, void* Parameters, bool * RunningSign, std::mutex *Mutex);
+						~SocketWorker();
 				};
 			}
 		}

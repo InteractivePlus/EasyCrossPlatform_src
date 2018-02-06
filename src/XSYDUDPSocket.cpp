@@ -58,10 +58,10 @@ EasyCrossPlatform::Network::Socket::UDPAsyncSocket::UDPAsyncSocket(UDPAsyncSocke
 	this->m_isListenMode = oldUDP.m_isListenMode;
 	this->m_SocketHandle = oldUDP.m_SocketHandle;
 	this->m_hasInited = oldUDP.m_hasInited;
-
+	this->mySocketWorker = oldUDP.mySocketWorker;
 	if (oldUDP.m_hasInited) {
 		this->m_MyClassPtrs[this->m_SocketHandle.get()].push_back(this);
-		SocketParam::m_num_Client++;
+		this->mySocketWorker->m_num_Client++;
 	}
 }
 void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::setmyIP(const IpAddr& myNewIP)
@@ -117,20 +117,27 @@ void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::StopListen()
 		this->m_isListening = false;
 	}
 }
+void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::setWorker(SocketWorker & myWorker)
+{
+	this->mySocketWorker = &myWorker;
+}
 void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::Init()
 {
 	if (this->m_hasInited) {
 		return;
 	}
+	else if (this->mySocketWorker == NULL) {
+		return;
+	}
 	this->m_SocketHandle = std::shared_ptr<uv_udp_t>(new uv_udp_t);
-	if (SocketParam::m_num_Client == 0) {
-		uv_loop_init(&SocketParam::m_uv_loop);
-		SocketParam::m_MTManager.StartJob();
+	if (this->mySocketWorker->m_num_Client == 0) {
+		uv_loop_init(this->mySocketWorker->m_uv_loop.get());
+		this->mySocketWorker->Start();
 	}
 	this->m_MyClassPtrs[this->m_SocketHandle.get()] = std::vector<UDPAsyncSocket*>();
 	this->m_MyClassPtrs[this->m_SocketHandle.get()].push_back(this);
-	SocketParam::m_num_Client++;
-	uv_udp_init(&SocketParam::m_uv_loop, this->m_SocketHandle.get());
+	this->mySocketWorker->m_num_Client++;
+	uv_udp_init(this->mySocketWorker->m_uv_loop.get(), this->m_SocketHandle.get());
 	this->m_hasInited = true;
 }
 void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::Destroy()
@@ -153,11 +160,11 @@ void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::Destroy()
 		uv_close((uv_handle_t*)this->m_SocketHandle.get(), NULL);
 		this->m_MyClassPtrs.erase(this->m_SocketHandle.get());
 	}
-	SocketParam::m_num_Client--;
-	if (SocketParam::m_num_Client == 0) {
-		uv_stop(&SocketParam::m_uv_loop);
-		SocketParam::m_MTManager.StopJob();
-		uv_loop_close(&SocketParam::m_uv_loop);
+	this->mySocketWorker->m_num_Client--;
+	if (this->mySocketWorker->m_num_Client == 0) {
+		uv_stop(this->mySocketWorker->m_uv_loop.get());
+		this->mySocketWorker->Stop();
+		uv_loop_close(this->mySocketWorker->m_uv_loop.get());
 	}
 	this->m_hasInited = false;
 }
