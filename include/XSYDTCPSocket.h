@@ -18,7 +18,7 @@
 					private:
 						
 					protected:
-						static std::map<uv_tcp_t*, std::vector<TCPAsyncClientSocket*>> m_MyClassPtrs;
+						static std::map<SocketWorker*,std::map<uv_tcp_t*, std::vector<TCPAsyncClientSocket*>>> m_MyClassPtrs;
 						IpAddr m_remoteAddr;
 						std::shared_ptr<uv_tcp_t> m_ClientSocketHandle;
 						bool m_Connected;
