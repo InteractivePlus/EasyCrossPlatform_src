@@ -12,7 +12,7 @@ Libs: MultiThreadPool | MultiThread | FileIO | TCP & UDP Sockets | MySQL / Maria
 Require Support: MacOSX / Linux / Windows System and C++ 11 Support  
 ## Uncompromising Performances?
 Right, we use LibUV as our basis for our socket class.  
-As benchmark showed, on release version, the socket Delay is 240ms with 1W connections.  
+As benchmark showed, on release version, the socket Delay is 240ms with 10k connections.  
 ## Credit
 The development of EasyCrossPlatform is given power by the following lib:  
 [LibUV](https://github.com/libuv/libuv) - CrossPlatform Socket Completely built based on it, and I made an wrapper to make programming with LibUV easier.  
@@ -21,6 +21,8 @@ The development of EasyCrossPlatform is given power by the following lib:
 [MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB Connector Lib.  
 [LibCurl](https://curl.haxx.se/) - EasyCrossPlatform Request Lib built based on it.  
 [JSONCPP](https://github.com/henshao/jsoncpp) - A quicker version of JSONCPP, a JSON parser, EasyCrossPlatform JSON class completely built based on it.  
+[mbedtls](https://github.com/ARMmbed/mbedtls) - A encryption and TLS/SSL lib for building TLS-connected sockets.  
+[evt-tls](https://github.com/deleisha/evt-tls) - A wrapper for libuv using mbedtls/openssl.  
 ## Why not GUI?
 GUI requires too much dependencies, and we are considering using "mygui". However, the OpenGL environment in each machine can be different, and if you want to use a GUI Lib, we recommend MyGUI with OpenGL2.0 Implemention  
 ## Develop Theory

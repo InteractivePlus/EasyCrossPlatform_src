@@ -56,7 +56,6 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::m_uv_read_cb(uv_s
 			}
 		}
 		if (nread == UV_EOF) {
-			//EOF代表连接断开
 			(*iter)->Disconnect();
 		}
 		else if (nread < 0) {
@@ -75,7 +74,6 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::m_uv_read_cb(uv_s
 
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::m_uv_shutdown_cb(uv_shutdown_t * req, int state)
 {
-	//废弃, 暂时不用
 	if (state < 0) {
 		std::vector<TCPAsyncClientSocket*> &myClasses = TCPAsyncClientSocket::m_MyClassPtrs[(SocketWorker*)req->data][(uv_tcp_t*)req->handle];
 		for (auto iter = myClasses.begin(); iter != myClasses.end(); iter++) {
@@ -90,7 +88,7 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::m_uv_shutdown_cb(
 }
 
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::m_uv_write_cb(uv_write_t * req, int status)
-{ //Write Callback
+{
 	free(req);
 	return;
 }
@@ -101,14 +99,13 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::m_uv_alloc_buffer
 	buf->len = suggested_size;
 }
 
-//TCPAsyncClientSocketv4 Class
 EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::TCPAsyncClientSocket() {
-	this->Init();
+	
 }
 
 EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::TCPAsyncClientSocket(const IpAddr& RemoteIP){
 	this->m_remoteAddr = RemoteIP;
-	this->Init();
+	
 }
 EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::TCPAsyncClientSocket(const TCPAsyncClientSocket & oldClient)
 {
@@ -126,9 +123,9 @@ EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::TCPAsyncClientSocket(c
 		this->m_MyClassPtrs[this->mySocketWorker][this->m_ClientSocketHandle.get()].push_back(this);
 	}
 }
-void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::setWorker(SocketWorker & socketWorker)
+void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::setWorker(SocketWorker* socketWorker)
 {
-	this->mySocketWorker = &socketWorker;
+	this->mySocketWorker = socketWorker;
 }
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Init()
 {
@@ -142,7 +139,6 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Init()
 	this->Inited = true;
 	this->m_ClientSocketHandle = std::shared_ptr<uv_tcp_t>(new uv_tcp_t);
 	this->m_ClientSocketHandle.get()->data = (void*)this->mySocketWorker;
-	//this->m_MyClassPtrs[this->m_ClientSocketHandle.get()] = std::pair<std::mutex*, std::vector<TCPAsyncClientSocketv4*>>(new std::mutex(), std::vector<TCPAsyncClientSocketv4*>());
 	if (this->m_MyClassPtrs.find(this->mySocketWorker) == this->m_MyClassPtrs.end()) {
 		this->m_MyClassPtrs[this->mySocketWorker] = std::map<uv_tcp_t*, std::vector<TCPAsyncClientSocket*>>();
 	}
@@ -160,7 +156,8 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Init()
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Connect()
 {
 	if (!this->Inited) {
-		this->Init();
+		this->onError(-1, "You cannot connect without intializing");
+		return;
 	}
 	uv_connect_t *myReadReq = (uv_connect_t*) malloc(sizeof(uv_connect_t));
 	myReadReq->data = (void*)this->mySocketWorker;
@@ -225,7 +222,7 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Disconnect()
 		uv_close((uv_handle_t*) this->m_ClientSocketHandle.get(), TCPAsyncClientSocket::m_uv_close_cb);
 	}
 }
-#include <iostream>
+
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Destroy()
 {
 	if (!this->Inited) {
@@ -290,7 +287,6 @@ EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::~TCPAsyncClientSocket(
 {
 	this->Destroy();
 }
-//TCPAsyncClientSocketv4 Class Ends
 
 std::map<uv_tcp_t*, std::vector<EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket*>> EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::m_MyClassPtrs;
 void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::onConnection(TCPAsyncClientSocket* newClient)
@@ -313,10 +309,6 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::m_uv_connection_c
 	std::vector<TCPAsyncServerSocket*> &MyClasses = TCPAsyncServerSocket::m_MyClassPtrs[(uv_tcp_t*)server];
 	TCPAsyncClientSocket* MyNewClient = NULL;
 	int acceptState = 0;
-	if (status == 0) {
-		//Succeed!
-		
-	}
 	for (auto iter = MyClasses.begin(); iter != MyClasses.end(); iter++) {
 		if (status < 0) {
 			(*iter)->onError(status, uv_err_name(status));
@@ -327,7 +319,7 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::m_uv_connection_c
 		}
 		else if ((*iter)->isListening) {
 			MyNewClient = new TCPAsyncClientSocket();
-			MyNewClient->setWorker((*(*iter)->myClientWorker.front()));
+			MyNewClient->setWorker((*iter)->myClientWorker.front());
 			(*iter)->myClientWorker.push_back((*iter)->myClientWorker.front());
 			(*iter)->myClientWorker.pop_front();
 			MyNewClient->Init();
@@ -353,14 +345,13 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::m_uv_connection_c
 
 EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::TCPAsyncServerSocket()
 {
-	this->Init();
+	
 }
 
 EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::TCPAsyncServerSocket(const IpAddr & myIP, int QueLength)
 {
 	this->m_myIP = myIP;
 	this->m_QueueLength = QueLength;
-	this->Init();
 }
 
 EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::TCPAsyncServerSocket(const TCPAsyncServerSocket & oldServer)
@@ -375,6 +366,8 @@ EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::TCPAsyncServerSocket(c
 	this->ClientDisconnectCallBack = oldServer.ClientDisconnectCallBack;
 	this->ClientErrorCallBack = oldServer.ClientErrorCallBack;
 	this->ClientMsgCallBack = oldServer.ClientMsgCallBack;
+	this->myListenWorker = oldServer.myListenWorker;
+	this->myClientWorker = oldServer.myClientWorker;
 	this->hasInted = oldServer.hasInted;
 	if (oldServer.hasInted) {
 		this->myListenWorker->m_num_Client++;
@@ -382,9 +375,9 @@ EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::TCPAsyncServerSocket(c
 	}
 }
 
-void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::setWorkers(SocketWorker& listeningWorker, std::deque<SocketWorker*>& clientWorkers)
+void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::setWorkers(SocketWorker* listeningWorker, std::deque<SocketWorker*>& clientWorkers)
 {
-	this->myListenWorker = &listeningWorker;
+	this->myListenWorker = listeningWorker;
 	this->myClientWorker = clientWorkers;
 }
 
@@ -396,6 +389,7 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::Init()
 	else if (this->myListenWorker == NULL) {
 		return;
 	}
+	this->hasInted = true;
 	this->m_SocketHandle = std::shared_ptr<uv_tcp_t>(new uv_tcp_t);
 	this->m_MyClassPtrs[this->m_SocketHandle.get()] = std::vector<TCPAsyncServerSocket*>();
 	this->m_MyClassPtrs[this->m_SocketHandle.get()].push_back(this);
@@ -405,7 +399,6 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::Init()
 	}
 	uv_tcp_init(this->myListenWorker->m_uv_loop.get(), this->m_SocketHandle.get());
 	this->myListenWorker->m_num_Client++;
-	this->hasInted = true;
 }
 
 void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::Destroy()
@@ -452,6 +445,14 @@ EasyCrossPlatform::Network::Socket::IpAddr EasyCrossPlatform::Network::Socket::T
 
 void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::Listen()
 {
+	if (!this->hasInted) {
+		this->onError(-1, "You cannot Listen on your socket without Intializing");
+		return;
+	}
+	else if(this->m_QueueLength == 0){
+		this->onError(-1, "You havent specified your IP Address to listen, and your queue length");
+		return;
+	}
 	sockaddr myAddr = this->m_myIP.getIPAddress();
 	int bindState = uv_tcp_bind(this->m_SocketHandle.get(), &myAddr, 0);
 	if (bindState < 0) {

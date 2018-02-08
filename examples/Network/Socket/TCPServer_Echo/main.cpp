@@ -60,7 +60,7 @@ int main(int argc, char** args) {
 	myWorkers.push_back(&myClientWorker2);
 
 	EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket mSocket;
-	mSocket.setWorkers(myListeningWorker, myWorkers);
+	mSocket.setWorkers(&myListeningWorker, myWorkers);
 	mSocket.Init();
 	mSocket.ClientConnectCallBack = MyServerFunction::onClientConnect;
 	mSocket.ClientDisconnectCallBack = MyServerFunction::onClientDisconnect;
@@ -71,7 +71,7 @@ int main(int argc, char** args) {
 	//Binding 0.0.0.0 means binding every interface.
 	//Keep in mind that Linux users need to use root permission to bind the socket to 700. Otherwise you need to find a bigger number like 25535.
 	mSocket.Listen(EasyCrossPlatform::Network::Socket::IpAddr("0.0.0.0", 700, true),200);
-	//system("pause");
+	
 	std::cin.get();
 	std::cout << "----" << std::endl;
 	//If you want every computer in the LAN to recieve, type 255.255.255.255 for IP Address.

@@ -25,7 +25,7 @@ int main(int argc, char** args) {
 
 	EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket mSocket;
 	EasyCrossPlatform::Network::Socket::SocketWorker mSocketWorker;
-	mSocket.setWorker(mSocketWorker);
+	mSocket.setWorker(&mSocketWorker);
 	mSocket.Init();
 	//Set CallBack
 	mSocket.ConnectCallBack = MySocket::ConnectCB;

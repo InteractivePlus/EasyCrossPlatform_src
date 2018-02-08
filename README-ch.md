@@ -12,7 +12,7 @@ Language: [English](README.md)
 需要支持: Unix / Linux / Windows系统 + C++11  
 ## 毫不妥协的性能
 Socket库以Libuv为底层, 开发了跨平台的Socket库.  
-根据测试, Release版本在1W并发的情况下延时仅240ms.  
+根据测试, Release版本在1万并发的情况下延时仅240ms.  
 ## 依赖
 EasyCrossPlatform的发展是由下面几个库驱动的:  
 [LibUV](https://github.com/libuv/libuv) - CrossPlatform套接字完全基于此库编写, 我给他写了一层包装库.  
@@ -21,6 +21,8 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 [MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB 连接器.  
 [LibCurl](https://curl.haxx.se/) - EasyCrossPlatform的HTTP(s)请求库完全基于此库编写.  
 [JSONCPP](https://github.com/henshao/jsoncpp) - 一个魔改版的JSONCPP, 比原版的快速很多, EasyCrossPlatform的JSON解析库完全基于此库编写  
+[mbedtls](https://github.com/ARMmbed/mbedtls) - 一个SSL/TLS和其他加密方法的库, 用于编写TLS加密的套接字  
+[evt-tls](https://github.com/deleisha/evt-tls) - Libuv使用mbedtls/openssl的包装(Wrapper)  
 ## 为什么没有用户界面库?
 我们曾考虑过使用"MyGUI"库, 但是它包含了太多的依赖且在每个桌面环境中, OPENGL的配置都可以是不一样的. 如果您需要用户界面, 我们推荐使用MyGUI和它的OPENGL2.0实现.  
 ## 开发理念

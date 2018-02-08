@@ -42,7 +42,7 @@
 						TCPAsyncClientSocket(const IpAddr& RemoteIP);
 						TCPAsyncClientSocket(const TCPAsyncClientSocket& oldClient);
 						
-						void setWorker(SocketWorker& socketWorker);
+						void setWorker(SocketWorker* socketWorker);
 						void Init();
 						void Connect();
 						void setRemoteIPAddr(const IpAddr& newIP);
@@ -82,7 +82,7 @@
 						TCPAsyncServerSocket(const IpAddr& myIP, int QueLength);
 						TCPAsyncServerSocket(const TCPAsyncServerSocket& oldServer);
 
-						void setWorkers(SocketWorker& listeningWorker, std::deque<SocketWorker*>& clientWorkers);
+						void setWorkers(SocketWorker* listeningWorker, std::deque<SocketWorker*>& clientWorkers);
 						void Init();
 						void Destroy();
 

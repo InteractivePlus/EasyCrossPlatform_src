@@ -1,5 +1,4 @@
 #include <XSYDSocketResImpl.h>
-#include "..\include\XSYDSocketResImpl.h"
 
 uv_loop_t EasyCrossPlatform::Network::Socket::SocketParam::m_uv_loop;
 unsigned int EasyCrossPlatform::Network::Socket::SocketParam::m_num_Client = 0;
@@ -133,6 +132,7 @@ sockaddr EasyCrossPlatform::Network::Socket::IpAddr::getIPAddress()
 EasyCrossPlatform::Network::Socket::SocketWorker::SocketWorker()
 {
 	this->m_MTManager.setWork(SocketWorker::m_MultiThread_Job);
+	this->m_num_Client = 0U;
 	this->m_uv_loop = std::shared_ptr<uv_loop_t>(new uv_loop_t);
 }
 
