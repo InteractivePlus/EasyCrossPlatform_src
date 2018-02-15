@@ -1,6 +1,7 @@
 # EasyCrossPlatform
 用简单的代码, 写出毫无妥协性能的程序  
-版本: 1.0Alpha
+[形随意动](https://github.com/BlueAirTechGroup/)旗下项目, 2017年10月15日开始动工  
+版本: 1.0Beta
 Language: [English](README.md)  
 ## 介绍
 为了PHP与Python用户创建的快速开发且跨平台的C++框架  
@@ -23,6 +24,7 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 [JSONCPP](https://github.com/henshao/jsoncpp) - 一个魔改版的JSONCPP, 比原版的快速很多, EasyCrossPlatform的JSON解析库完全基于此库编写  
 [mbedtls](https://github.com/ARMmbed/mbedtls) - 一个SSL/TLS和其他加密方法的库, 用于编写TLS加密的套接字  
 [evt-tls](https://github.com/deleisha/evt-tls) - Libuv使用mbedtls/openssl的包装(Wrapper)  
+*以上项目的协议完全保持原样, 请务必参照他们的项目工程页面  
 ## 为什么没有用户界面库?
 我们曾考虑过使用"MyGUI"库, 但是它包含了太多的依赖且在每个桌面环境中, OPENGL的配置都可以是不一样的. 如果您需要用户界面, 我们推荐使用MyGUI和它的OPENGL2.0实现.  
 ## 开发理念

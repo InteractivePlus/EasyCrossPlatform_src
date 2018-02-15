@@ -1,6 +1,7 @@
 ﻿# EasyCrossPlatform
 Write Easy Code with uncompromising performances.  
-Version: 1.0Alpha  
+A project under [BlueAirTechGroup](https://github.com/BlueAirTechGroup), started from 15 Oct 2017  
+Version: 1.0Beta  
 Language: [中文](README-ch.md)  
 ## Introduction
 A easy-to-use cross-platform C++ library designed for PHP and Python Users.  
@@ -23,6 +24,7 @@ The development of EasyCrossPlatform is given power by the following lib:
 [JSONCPP](https://github.com/henshao/jsoncpp) - A quicker version of JSONCPP, a JSON parser, EasyCrossPlatform JSON class completely built based on it.  
 [mbedtls](https://github.com/ARMmbed/mbedtls) - A encryption and TLS/SSL lib for building TLS-connected sockets.  
 [evt-tls](https://github.com/deleisha/evt-tls) - A wrapper for libuv using mbedtls/openssl.  
+*Those projects remain in their own licenses, please refer to their project site.  
 ## Why not GUI?
 GUI requires too much dependencies, and we are considering using "mygui". However, the OpenGL environment in each machine can be different, and if you want to use a GUI Lib, we recommend MyGUI with OpenGL2.0 Implemention  
 ## Develop Theory
