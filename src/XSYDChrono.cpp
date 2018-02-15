@@ -1,4 +1,4 @@
-#include <XSYDChrono.h>
+﻿#include <XSYDChrono.h>
 
 double EasyCrossPlatform::Chrono::systemTime()
 {

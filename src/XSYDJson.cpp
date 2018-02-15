@@ -1,4 +1,4 @@
-#include <XSYDJson.h>
+﻿#include <XSYDJson.h>
 
 Json::Value EasyCrossPlatform::Parser::JSON::ReadFromJSON(const std::string& JSONString)
 {

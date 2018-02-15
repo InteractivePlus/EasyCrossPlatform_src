@@ -1,4 +1,4 @@
-#include <EasyCrossPlatform.h>
+﻿#include <EasyCrossPlatform.h>
 #include <iostream>
 
 class MySocket : public EasyCrossPlatform::Network::Socket::UDPAsyncSocket{

@@ -1,4 +1,4 @@
-#include <EasyCrossPlatform.h>
+﻿#include <EasyCrossPlatform.h>
 #include <iostream>
 using namespace EasyCrossPlatform::Network::Socket;
 

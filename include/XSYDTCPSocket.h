@@ -21,9 +21,9 @@
 						static std::map<SocketWorker*,std::map<uv_tcp_t*, std::vector<TCPAsyncClientSocket*>>> m_MyClassPtrs;
 						IpAddr m_remoteAddr;
 						std::shared_ptr<uv_tcp_t> m_ClientSocketHandle;
-						bool m_Connected;
-						bool Inited;
-						bool Closing;
+						bool m_Connected = false;
+						bool Inited = false;
+						bool Closing = false;
 						static std::mutex sharedMutex;
 						static void m_uv_connect_cb(uv_connect_t* req, int status);
 						static void m_uv_close_cb(uv_handle_t* handle);
@@ -32,7 +32,7 @@
 						static void m_uv_write_cb(uv_write_t* req, int status);
 						static void m_uv_alloc_buffer(uv_handle_t* handle, size_t suggested_size, uv_buf_t* buf);
 
-						SocketWorker* mySocketWorker;
+						SocketWorker* mySocketWorker = NULL;
 						void onConnected(bool Succeeded);
 						void onMsg(const std::string& Msg);
 						void onDisconnect();
@@ -71,18 +71,17 @@
 						static void m_uv_connection_cb(uv_stream_t* server, int status);
 
 						std::shared_ptr<uv_tcp_t> m_SocketHandle;
-						IpAddr m_myIP;
-						bool isListening;
-						bool hasInted;
-						int m_QueueLength;
-						SocketWorker* myListenWorker;
-						std::deque<SocketWorker*> myClientWorker;
+						IpAddr m_myIP = IpAddr();
+						bool isListening = false;
+						bool hasInted = false;
+						int m_QueueLength = 0;
+						SocketWorker* myListenWorker = NULL;
 					public:
 						TCPAsyncServerSocket();
 						TCPAsyncServerSocket(const IpAddr& myIP, int QueLength);
 						TCPAsyncServerSocket(const TCPAsyncServerSocket& oldServer);
 
-						void setWorkers(SocketWorker* listeningWorker, std::deque<SocketWorker*>& clientWorkers);
+						void setWorkers(SocketWorker* Worker);
 						void Init();
 						void Destroy();
 

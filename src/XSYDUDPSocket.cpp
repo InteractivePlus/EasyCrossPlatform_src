@@ -1,4 +1,4 @@
-#include <XSYDUDPSocket.h>
+﻿#include <XSYDUDPSocket.h>
 std::map<uv_udp_t*, std::vector<EasyCrossPlatform::Network::Socket::UDPAsyncSocket*>> EasyCrossPlatform::Network::Socket::UDPAsyncSocket::m_MyClassPtrs;
 void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::m_uv_read_cb(uv_udp_t * handle, ssize_t nread, const uv_buf_t * buf, const sockaddr * remoteaddr, unsigned flags)
 {
@@ -130,7 +130,7 @@ void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::Init()
 		return;
 	}
 	this->m_SocketHandle = std::shared_ptr<uv_udp_t>(new uv_udp_t);
-	if (this->mySocketWorker->m_num_Client == 0) {
+	if (this->mySocketWorker->m_num_Client == 0U) {
 		uv_loop_init(this->mySocketWorker->m_uv_loop.get());
 		this->mySocketWorker->Start();
 	}
@@ -161,7 +161,7 @@ void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::Destroy()
 		this->m_MyClassPtrs.erase(this->m_SocketHandle.get());
 	}
 	this->mySocketWorker->m_num_Client--;
-	if (this->mySocketWorker->m_num_Client == 0) {
+	if (this->mySocketWorker->m_num_Client == 0U) {
 		uv_stop(this->mySocketWorker->m_uv_loop.get());
 		this->mySocketWorker->Stop();
 		uv_loop_close(this->mySocketWorker->m_uv_loop.get());

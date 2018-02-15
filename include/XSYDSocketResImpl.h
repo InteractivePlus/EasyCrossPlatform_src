@@ -15,7 +15,7 @@
 					friend class DNSRequest;
 					protected:
 						sockaddr m_Addr;
-						bool m_isIpV4;
+						bool m_isIpV4 = true;
 					public:
 						IpAddr();
 						IpAddr(const std::string& IpAddress, const unsigned short Port, bool AddrIpV4);
@@ -50,7 +50,7 @@
 
 					public:
 						SocketWorker();
-						unsigned int m_num_Client;
+						unsigned int m_num_Client = 0U;
 						std::shared_ptr<uv_loop_t> m_uv_loop;
 						EasyCrossPlatform::Thread::SingleWork m_MTManager;
 						void Start();

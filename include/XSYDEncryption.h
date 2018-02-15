@@ -63,7 +63,7 @@
 			}
 			namespace Base64 {
 				char const constexpr alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-				char const constexpr padding('=');
+				char const constexpr padding = '=';
 				std::string base64Encode(std::string const &plaintext);
 				std::string base64Decode(std::string const &encryptedtext);
 			}

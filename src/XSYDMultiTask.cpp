@@ -42,7 +42,9 @@ bool EasyCrossPlatform::Thread::SingleWork::StartJob(std::mutex *MyMutex, void *
 	MyInfo.RunningSign = &(this->RunningSign);
 	this->RunningSign = true;
 	this->mThread = std::thread(EasyCrossPlatform::Thread::SingleWork::DoingJob, MyInfo);
-	this->mThread.detach();
+	if (this->mThread.joinable()) {
+		this->mThread.detach();
+	}
 	return true;
 }
 
@@ -250,7 +252,9 @@ bool EasyCrossPlatform::Thread::SingleWorkCls::StartJob(std::mutex* MyMutex, voi
 	this->TempMutex = MyMutex;
 	this->RunningSign = true;
 	this->mThread = std::thread(EasyCrossPlatform::Thread::SingleWorkCls::DoingJob, this);
-	this->mThread.detach();
+	if (this->mThread.joinable()) {
+		this->mThread.detach();
+	}
 	return true;
 }
 

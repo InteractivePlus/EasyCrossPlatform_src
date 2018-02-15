@@ -1,4 +1,4 @@
-#include <XSYDDNS.h>
+﻿#include <XSYDDNS.h>
 
 void EasyCrossPlatform::Network::Socket::DNSRequest::m_uv_resolved_cb(uv_getaddrinfo_t * resolver, int status, addrinfo * res)
 {
@@ -133,7 +133,7 @@ void EasyCrossPlatform::Network::Socket::DNSRequest::Init()
 	this->onProgress = false;
 	this->m_RequestHandle = new uv_getaddrinfo_t;
 	this->m_RequestHandle->data = (void*) this;
-	if (SocketParam::m_num_Client == 0) {
+	if (SocketParam::m_num_Client == 0U) {
 		uv_loop_init(&SocketParam::m_uv_loop);
 		SocketParam::Start();
 	}
@@ -148,7 +148,7 @@ void EasyCrossPlatform::Network::Socket::DNSRequest::Destroy()
 	this->Inited = false;
 	delete this->m_RequestHandle;
 	SocketParam::m_num_Client--;
-	if (SocketParam::m_num_Client == 0) {
+	if (SocketParam::m_num_Client == 0U) {
 		uv_stop(&SocketParam::m_uv_loop);
 		SocketParam::Stop();
 	}

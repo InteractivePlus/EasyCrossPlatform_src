@@ -1,4 +1,4 @@
-#include <XSYDEncryption.h>
+﻿#include <XSYDEncryption.h>
 
 
 void EasyCrossPlatform::Encryption::AES::ProfessionalMode::AES_MakeKey(std::string &strKey, byte * key, unsigned int KeyLength)

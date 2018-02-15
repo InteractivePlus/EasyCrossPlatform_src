@@ -8,10 +8,10 @@
 			unsigned int getRecommendedThreadNum();
 			typedef void (*SpecificWorkPtr)(std::thread::id ThreadID, void* Parameters, bool * RunningSign, std::mutex *Mutex);
 			struct WorkInfo {
-				SpecificWorkPtr MyWork;
-				bool * RunningSign;
-				std::mutex *mMutex;
-				void * Parameters;
+				SpecificWorkPtr MyWork = NULL;
+				bool * RunningSign = NULL;
+				std::mutex *mMutex = NULL;
+				void * Parameters = NULL;
 			};
 			class SingleWork {
 				private:
@@ -19,7 +19,7 @@
 					SpecificWorkPtr MyWork;
 					static int DoingJob(WorkInfo MyInfo);
 				protected:
-					bool RunningSign;
+					bool RunningSign = false;
 				public:
 					
 					SingleWork();
@@ -34,9 +34,9 @@
 			class SingleWorkCls {
 				private:
 					std::thread mThread;
-					std::mutex* TempMutex;
-					void* TempParameter;
-					bool RunningSign;
+					std::mutex* TempMutex = NULL;
+					void* TempParameter = NULL;
+					bool RunningSign = false;
 					static int DoingJob(SingleWorkCls* ClassPtr);
 				protected:
 
@@ -50,29 +50,29 @@
 					~SingleWorkCls();
 			};
 			struct WorkerInfo {
-				SingleWork* wInfo;
-				SingleWorkCls *wClsInfo;
-				void* wParameters;
+				SingleWork* wInfo = NULL;
+				SingleWorkCls *wClsInfo = NULL;
+				void* wParameters = NULL;
 			};
 			struct WorksInfo {
-				std::deque<WorkerInfo>* CurrentWorksAddr;
-				std::deque<WorkerInfo>* PendingWorksAddr;
+				std::deque<WorkerInfo>* CurrentWorksAddr = NULL;
+				std::deque<WorkerInfo>* PendingWorksAddr = NULL;
 				unsigned int MaxThread;
-				std::mutex *SharedMutex;
-				std::mutex *LineMutex;
+				std::mutex *SharedMutex = NULL;
+				std::mutex *LineMutex = NULL;
 			};
 			class WorkPool {
 				private:
 					static void SuperviseThreads(std::thread::id ThreadID, void* Parameters, bool * RunningSign, std::mutex *Mutex);
-					unsigned int MaxThread = 4;
+					unsigned int MaxThread = 4U;
 					std::deque<WorkerInfo> CurrentWorks;
 					std::deque <WorkerInfo> PendingWorks;
 					std::mutex MyMutex;
 					std::mutex LineMutex;
-					SingleWork* SupervisingThread;
-					bool Started;
+					SingleWork* SupervisingThread = NULL;
+					bool Started = false;
 				public:
-					WorkPool(const unsigned int ThreadNum = 4);
+					WorkPool(const unsigned int ThreadNum = 4U);
 					~WorkPool();
 					void Start();
 					void Stop();
