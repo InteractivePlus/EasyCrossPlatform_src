@@ -1,7 +1,7 @@
 # EasyCrossPlatform
 用简单的代码, 写出毫无妥协性能的程序  
 [形随意动](https://github.com/BlueAirTechGroup/)旗下项目, 2017年10月15日开始动工  
-版本: 1.0Beta
+版本: 1.0Beta  
 Language: [English](README.md)  
 ## 介绍
 为了PHP与Python用户创建的快速开发且跨平台的C++框架  
