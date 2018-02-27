@@ -1,0 +1,11 @@
+target("httpparser_s")
+	set_kind("static")
+	add_includedirs("include")
+	add_files("*.c","*.cpp")
+	add_defines("HTTP_PARSER_STRICT=0")
+
+target("httpparser")
+	set_kind("shared")
+	add_includedirs("include")
+	add_files("*.c","*.cpp")
+	add_defines("HTTP_PARSER_STRICT=0")
