@@ -7,6 +7,7 @@
 	#include <CrossPlatform_OSDetection.h>
 	//***************************************
 	#include <stdio.h>
+	#include <algorithm>
 	#include <memory>
 	#include <string> //±ê×¼×Ö·û´®
 	#if defined(EASYCROSSPLATFORM_PLATFORM_UNIX)

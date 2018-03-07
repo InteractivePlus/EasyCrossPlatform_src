@@ -8,14 +8,22 @@
 	
 	#define CROSSPLATFORM_OS_WIN 0
 	#define CROSSPLATFORM_OS_UNIX 1
+	#define CROSSPLATFORM_OS_MAC 2
 	#if defined(__WINDOWS_) || defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(_WIN64) || defined(__WIN64__) || defined(WIN64)
 		#define CROSSPLATFORM_OS_TYPE CROSSPLATFORM_OS_WIN
 		#define CROSSPLATFORM_OS_IS_WIN 1
 		#define EASYCROSSPLATFORM_PLATFORM_WINDOWS 1
-	#elif defined(__APPLE__) || defined(APPLE) || defined(linux) || defined(__LINUX__) || defined(__linux) || defined(__linux) || defined(_UNIX) || defined(__unix__) || defined(__GNU__) || defined(__GLIBC__) || defined(_POSIX_VERSION)
+		#define CROSSPLATFORM_OS_STRING "windows"
+	#elif defined(linux) || defined(__LINUX__) || defined(__linux) || defined(__linux) || defined(_UNIX) || defined(__unix__) || defined(__GNU__) || defined(__GLIBC__) || defined(_POSIX_VERSION)
 		#define CROSSPLATFORM_OS_TYPE CROSSPLATFORM_OS_UNIX
 		#define CROSSPLATFORM_OS_IS_UNIX 1
 		#define EASYCROSSPLATFORM_PLATFORM_UNIX 1
+		#define CROSSPLATFORM_OS_STRING "macosx"
+	#elif defined(__APPLE__) || defined(APPLE)
+		#define CROSSPLATFORM_OS_TYPE CROSSPLATFORM_OS_MAC
+		#define CROSSPLATFORM_OS_IS_MAC 1
+		#define EASYCROSSPLATFORM_PLATFORM_UNIX 1
+		#define CROSSPLATFORM_OS_STRING "macosx"
 	#endif
 	//*******************************************************************************************************
 	//**********************************************ArchDetection********************************************

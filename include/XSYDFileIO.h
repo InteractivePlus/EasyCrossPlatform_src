@@ -28,7 +28,6 @@
 				static bool BinaryWriteFile_Append(const char* Path, void* _Buffer, unsigned int ElementSize, unsigned int Count);
 				static unsigned long GetFileLength(const std::string &Path);
 				static unsigned long GetFileLength(const char* Path);
-				
 			};
 		}
 	}
