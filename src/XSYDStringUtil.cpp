@@ -19,7 +19,7 @@ std::vector<std::pair<std::string::size_type, std::string>> EasyCrossPlatform::P
 			myResults.push_back(std::pair<std::string::size_type,std::string>(NowAt,tmpStr.substr(0U, LastFindPlace)));
 			NowAt += LastFindPlace + lastNewLineLength;
 			numSplited++;
-			if (numSplited >= Limit && Limit != -1) {
+			if (static_cast<int>(numSplited) >= Limit && Limit != -1) {
 				break;
 			}
 			tmpStr = tmpStr.substr(LastFindPlace + lastNewLineLength, tmpStr.length() - LastFindPlace - lastNewLineLength);
@@ -77,7 +77,7 @@ std::vector<std::pair<std::string::size_type,std::string>> EasyCrossPlatform::Pa
 			myTmpResult.push_back(std::pair<std::string::size_type,std::string>(NowAt,tmpStr.substr(0U, LastFindPlace)));
 			numSplited++;
 			NowAt += LastFindPlace + Divisor.length();
-			if (numSplited >= Limit && Limit != -1) {
+			if (static_cast<int>(numSplited) >= Limit && Limit != -1) {
 				break;
 			}
 			tmpStr = tmpStr.substr(LastFindPlace + Divisor.length(), tmpStr.length() - LastFindPlace - Divisor.length());
@@ -110,4 +110,22 @@ std::string EasyCrossPlatform::Parser::StringUtil::toUpper(const std::string & S
 	std::string myNewStr = StringToDealWith;
 	std::transform(StringToDealWith.begin(), StringToDealWith.end(), myNewStr.begin(), ::toupper);
 	return myNewStr;
+}
+
+std::string EasyCrossPlatform::Parser::StringUtil::fromBytes(const std::vector<byte>& Bytes)
+{
+	std::string myStr = "";
+	for (size_t i = 0U; i < Bytes.size(); i++) {
+		myStr += static_cast<const char>(Bytes[i]);
+	}
+	return myStr;
+}
+
+std::vector<byte> EasyCrossPlatform::Parser::StringUtil::toBytes(const std::string & myStr)
+{
+	std::vector<byte> mBytes;
+	for (size_t i = 0U; i < myStr.length(); i++) {
+		mBytes.push_back(static_cast<byte>(myStr[i]));
+	}
+	return mBytes;
 }

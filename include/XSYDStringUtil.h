@@ -13,6 +13,8 @@
 				std::vector<std::pair<std::string::size_type,std::string>> splitStringByDivisor(const std::string& StringToDealWith, const std::string& Divisor, int Limit = -1);
 				std::string toLower(const std::string& StringToDealWith);
 				std::string toUpper(const std::string& StringToDealWith);
+				std::string fromBytes(const std::vector<byte>& Bytes);
+				std::vector<byte> toBytes(const std::string& myStr);
 				#if defined(CROSSPLATFORM_OS_IS_WIN)
 				const constexpr char* newLineString = "\r\n";
 				#elif defined(CROSSPLATFORM_OS_IS_MAC)

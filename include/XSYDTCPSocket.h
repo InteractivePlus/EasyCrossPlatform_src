@@ -4,10 +4,11 @@
 	#include <XSYDMultiTask.h>
 	#include <libuv/uv.h>
 	#include <XSYDSocketResImpl.h>
+	#include <XSYDStringUtil.h>
 	namespace EasyCrossPlatform{
 		namespace Network{
 			namespace Socket{
-				typedef void(*TCPClientMsgCallBack)(const std::string&, void*);
+				typedef void(*TCPClientMsgCallBack)(const std::vector<byte>&, void*);
 				typedef void(*TCPClientConnectCallBack)(bool, void*);
 				typedef void(*TCPClientDisconnectCallBack)(void*);
 				typedef void(*TCPServerNewConnectionCallBack)(void*, void*);
@@ -24,7 +25,6 @@
 						bool m_Connected = false;
 						bool Inited = false;
 						bool Closing = false;
-						static std::mutex sharedMutex;
 						static void m_uv_connect_cb(uv_connect_t* req, int status);
 						static void m_uv_close_cb(uv_handle_t* handle);
 						static void m_uv_read_cb(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf);
@@ -34,7 +34,7 @@
 
 						SocketWorker* mySocketWorker = NULL;
 						void onConnected(bool Succeeded);
-						void onMsg(const std::string& Msg);
+						void onMsg(const std::vector<byte>& Msg);
 						void onDisconnect();
 						void onError(int errCode, const std::string& errDescription);
 					public:
@@ -48,14 +48,16 @@
 						void setRemoteIPAddr(const IpAddr& newIP);
 						IpAddr getMyIpAddr();
 						IpAddr getRemoteAddr();
+						bool isConnected();
 						void SendMsg(const std::string& Msg);
+						void SendMsg(const std::vector<byte>& Msg);
 						void Disconnect();
 						void Destroy();
 
-						TCPClientConnectCallBack ConnectCallBack;
-						TCPClientMsgCallBack MsgCallBack;
-						TCPClientErrorCallBack ErrorCallBack;
-						TCPClientDisconnectCallBack DisconnectCallBack;
+						TCPClientConnectCallBack ConnectCallBack = NULL;
+						TCPClientMsgCallBack MsgCallBack = NULL;
+						TCPClientErrorCallBack ErrorCallBack = NULL;
+						TCPClientDisconnectCallBack DisconnectCallBack = NULL;
 
 						~TCPAsyncClientSocket();
 				};

@@ -37,7 +37,7 @@ public:
 		}
 		myMutex.unlock();
 	}
-	static void onClientMsg(const std::string& data, void* ClientPtr) {
+	static void onClientMsg(const std::vector<byte>& data, void* ClientPtr) {
 		TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
 		//std::cout << MyClient->getRemoteAddr().getIPString() << ":(" << data << ")" << std::endl;
 		MyClient->SendMsg(data);

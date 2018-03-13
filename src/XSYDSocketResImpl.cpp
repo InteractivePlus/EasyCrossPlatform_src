@@ -6,11 +6,13 @@ EasyCrossPlatform::Thread::SingleWork EasyCrossPlatform::Network::Socket::Socket
 
 void EasyCrossPlatform::Network::Socket::SocketParam::Start()
 {
+	uv_loop_init(&SocketParam::m_uv_loop);
 	SocketParam::m_MTManager.StartJob(NULL, NULL);
 }
 
 void EasyCrossPlatform::Network::Socket::SocketParam::Stop()
 {
+	uv_stop(&SocketParam::m_uv_loop);
 	SocketParam::m_MTManager.StopJob();
 }
 
@@ -131,17 +133,24 @@ sockaddr EasyCrossPlatform::Network::Socket::IpAddr::getIPAddress()
 
 EasyCrossPlatform::Network::Socket::SocketWorker::SocketWorker()
 {
-	this->m_uv_loop = std::shared_ptr<uv_loop_t>(new uv_loop_t);
+	this->m_uv_loop = std::shared_ptr<uv_loop_t>(new uv_loop_t());
+}
+
+EasyCrossPlatform::Network::Socket::SocketWorker::SocketWorker(SocketWorker & LeftSocket)
+{
+	throw std::runtime_error("233");
 }
 
 void EasyCrossPlatform::Network::Socket::SocketWorker::Start()
 {
+	uv_loop_init(this->m_uv_loop.get());
 	this->m_MTManager.setWork(SocketWorker::m_MultiThread_Job);
 	this->m_MTManager.StartJob(NULL, (void*)this);
 }
 
 void EasyCrossPlatform::Network::Socket::SocketWorker::Stop()
 {
+	uv_stop(this->m_uv_loop.get());
 	this->m_MTManager.StopJob();
 }
 
@@ -162,5 +171,5 @@ void EasyCrossPlatform::Network::Socket::SocketWorker::m_MultiThread_Job(std::th
 
 EasyCrossPlatform::Network::Socket::SocketWorker::~SocketWorker()
 {
-	this->m_uv_loop.reset();
+	
 }

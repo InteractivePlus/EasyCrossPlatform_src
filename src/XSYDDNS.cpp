@@ -134,7 +134,6 @@ void EasyCrossPlatform::Network::Socket::DNSRequest::Init()
 	this->m_RequestHandle = new uv_getaddrinfo_t;
 	this->m_RequestHandle->data = (void*) this;
 	if (SocketParam::m_num_Client == 0U) {
-		uv_loop_init(&SocketParam::m_uv_loop);
 		SocketParam::Start();
 	}
 	SocketParam::m_num_Client++;
@@ -149,7 +148,6 @@ void EasyCrossPlatform::Network::Socket::DNSRequest::Destroy()
 	delete this->m_RequestHandle;
 	SocketParam::m_num_Client--;
 	if (SocketParam::m_num_Client == 0U) {
-		uv_stop(&SocketParam::m_uv_loop);
 		SocketParam::Stop();
 	}
 }

@@ -1,44 +1,48 @@
 ﻿#include <EasyCrossPlatform.h>
 #include <iostream>
+using namespace EasyCrossPlatform::Network::Socket;
 
 class MySocket {
 public:
 	static void ConnectCB(bool Succeeded, void* ClassPtr) {
-		EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket*) ClassPtr;
-		std::cout << "Socket Connected" << std::endl;
+		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
+		if (Succeeded) {
+			std::cout << "Socket Connected" << std::endl;
+			MyClass->SendMsg("GET / HTTP/1.1\r\nHOST:www.kvm.ink\r\nConnection: Keep-Alive\r\n\r\n");
+		}
 	}
 	static void MsgCB(const std::string& Msg, void* ClassPtr) {
-		EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket*) ClassPtr;
-		std::cout << "SocketMsg:" << Msg << std::endl;
+		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
+		std::cout << Msg;
 	}
 	static void DisconnectCB(void* ClassPtr) {
-		EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket*) ClassPtr;
+		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
 		std::cout << "SocketDis" << std::endl;
 	}
 	static void ErrorCB(int errCode, const std::string& errDescription, void* ClassPtr) {
-		EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket*) ClassPtr;
+		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
 		std::cout << "Error:" << errDescription << std::endl;
 	}
 };
-int main(int argc, char** args) {
-	std::cout << "hi" << std::endl;
 
-	EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket mSocket;
-	EasyCrossPlatform::Network::Socket::SocketWorker mSocketWorker;
-	mSocket.setWorker(&mSocketWorker);
-	mSocket.Init();
-	//Set CallBack
-	mSocket.ConnectCallBack = MySocket::ConnectCB;
-	mSocket.MsgCallBack = MySocket::MsgCB;
-	mSocket.DisconnectCallBack = MySocket::DisconnectCB;
-	mSocket.ErrorCallBack = MySocket::ErrorCB;
-	//Set CallBack finish.
-	mSocket.setRemoteIPAddr(EasyCrossPlatform::Network::Socket::IpAddr("127.0.0.1", 700, true));
-	mSocket.Connect();
+int main(int argc, char** args) {
+	std::string myTrustedCA = EasyCrossPlatform::File::FileIO::ReadFile("E:\\C++\\EasyCrossPlatform_VS\\CALIST.txt");
+	TLSAsyncClientSocket myClient;
+	SocketWorker myWorker;
+	myClient.setWorker(&myWorker);
+	myClient.ConnectCallBack = MySocket::ConnectCB;
+	myClient.DisconnectCallBack = MySocket::DisconnectCB;
+	myClient.MsgCallBack = MySocket::MsgCB;
+	myClient.ErrorCallBack = MySocket::ErrorCB;
+	myClient.VerifyServerCert = true;
+	myClient.Init();
+	myClient.setRemoteIPAddr(IpAddr("104.27.184.99", 443, true));
+	myClient.setTrustedCAChain(myTrustedCA);
+	myClient.serverHostName = "www.kvm.ink";
 	system("pause");
-	mSocket.SendMsg("2333");
+	myClient.Connect();
 	system("pause");
-	mSocket.Disconnect();
-	mSocket.Destroy();
-	return 0;
+	myClient.Disconnect();
+	myClient.Destroy();
+
 }

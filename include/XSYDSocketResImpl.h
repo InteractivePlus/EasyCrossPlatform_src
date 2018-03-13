@@ -50,6 +50,7 @@
 
 					public:
 						SocketWorker();
+						SocketWorker(SocketWorker& LeftSocket);
 						unsigned int m_num_Client = 0U;
 						std::shared_ptr<uv_loop_t> m_uv_loop;
 						EasyCrossPlatform::Thread::SingleWork m_MTManager;

@@ -13,4 +13,5 @@
 	#include <XSYDUDPSocket.h>
 	#include <XSYDDNS.h>
 	#include <XSYDHTTPParser.h>
+	#include <XSYDTLSSocket.h>
 #endif //__EasyCrossPlatformFile__
