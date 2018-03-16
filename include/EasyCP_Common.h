@@ -1,8 +1,9 @@
 #ifndef __XSYDCommonHeaderFile__
 	#define __XSYDCommonHeadersFile__
+	#define _CRT_SECURE_NO_WARNINGS  //Make sure VS compiles this file correctly.
 	#define NULL 0 //NULL can be interpreted using 0
 	typedef unsigned char byte; //Byte is unsigned char, you can cast it just from char
-	//Define系统类型
+	//Define System Type
 	#define EASYCROSSPLATFORM_VERSION 1;
 	#include <CrossPlatform_OSDetection.h>
 	//***************************************
@@ -13,7 +14,6 @@
 	#if defined(EASYCROSSPLATFORM_PLATFORM_UNIX)
 		#include <string.h>
 	#endif
-	#include <chrono> //时间
 	#include <assert.h>
 	#include <cassert> //Debug类
 	#include <exception> //Exception异常类

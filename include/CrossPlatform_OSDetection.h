@@ -1,9 +1,10 @@
 #ifndef __FILE_CROSSPLATFORM_OSDETECTION_INCLUDED__
 	#define __FILE_CROSSPLATFORM_OSDETECTION_INCLUDED__
 	//**********************************************OSDetection**********************************************
-	//CROSSPLATFORM_OS_TYPE will be deinfed. It is going to be either CROSSPLATFORM_OS_WIN or CROSSPLATFORM_OS_UNIX
+	//CROSSPLATFORM_OS_TYPE will be deinfed. It is going to be either CROSSPLATFORM_OS_WIN or CROSSPLATFORM_OS_UNIX or CROSSPLATFORM_OS_MAC
 	//CROSSPLATFORM_OS_IS_WIN, EASYCROSSPLATFORM_PLATFORM_WINDOWS will be defined if running windows.
 	//CROSSPLATFORM_OS_IS_UNIX, EASYCROSSPLATFORM_PLATFORM_UNIX will be defined if running UNIX.
+	//CROSSPLATFORM_OS_IS_MAC, EASYCROSSPLATFORM_PLATFORM_UNIX will be defined if running MacOSX.
 	//CROSSPLATFORM_OS_STRING will be defined to "windows", "linux", "macosx"
 	
 	#define CROSSPLATFORM_OS_WIN 0
@@ -18,7 +19,7 @@
 		#define CROSSPLATFORM_OS_TYPE CROSSPLATFORM_OS_UNIX
 		#define CROSSPLATFORM_OS_IS_UNIX 1
 		#define EASYCROSSPLATFORM_PLATFORM_UNIX 1
-		#define CROSSPLATFORM_OS_STRING "macosx"
+		#define CROSSPLATFORM_OS_STRING "linux"
 	#elif defined(__APPLE__) || defined(APPLE)
 		#define CROSSPLATFORM_OS_TYPE CROSSPLATFORM_OS_MAC
 		#define CROSSPLATFORM_OS_IS_MAC 1

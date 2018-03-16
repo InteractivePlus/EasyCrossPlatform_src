@@ -80,7 +80,7 @@ target("program")
 	end
 	--Always put the libs that need dependencies in front of their dependencies.
 	add_links("easycrossplatform_s")
-	add_links("cryptopp_s","libuv_s","jsoncpp_s","mbedtls_s")
+	add_links("cryptopp_s","libuv_s","jsoncpp_s","mbedtls_s","whereami_s")
 	add_links("mariadbclient")
 	if(is_plat("windows")) then
 		add_links("libcurl_s")

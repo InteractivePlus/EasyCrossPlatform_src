@@ -74,7 +74,7 @@
 
 						std::shared_ptr<uv_tcp_t> m_SocketHandle;
 						IpAddr m_myIP = IpAddr();
-						bool isListening = false;
+						bool m_isListening = false;
 						bool hasInted = false;
 						int m_QueueLength = 0;
 						SocketWorker* myListenWorker = NULL;
@@ -87,11 +87,13 @@
 						void Init();
 						void Destroy();
 
+
 						void setIP(const IpAddr& myIP, int QueLength = 0);
 						IpAddr getIP();
 						void Listen();
 						void Listen(const IpAddr& myIP, int QueLength = 0);
 						void StopListen();
+						bool isListening();
 
 						TCPClientConnectCallBack ClientConnectCallBack;
 						TCPClientMsgCallBack ClientMsgCallBack;

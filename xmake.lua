@@ -38,12 +38,13 @@ target("easycrossplatform_s")
 	end
 	--Source Files
 	add_includedirs("include")
-	includes("deps/cryptopp","deps/libuv","deps/jsoncpp","deps/mbedtls")
+	includes("deps/cryptopp","deps/libuv","deps/jsoncpp","deps/mbedtls","deps/wai")
 	add_files("src/*.cpp")
 	add_deps("cryptopp_s")
 	add_deps("libuv_s")
 	add_deps("jsoncpp_s")
 	add_deps("mbedtls_s")
+	add_deps("whereami_s")
 	--ExtLibs
 	add_defines("CURL_STATICLIB")
 	add_linkdirs("extlibs")
@@ -94,12 +95,13 @@ target("easycrossplatform")
 	end
 	--Source Files
 	add_includedirs("include")
-	includes("deps/cryptopp","deps/libuv","deps/jsoncpp","deps/mbedtls")
+	includes("deps/cryptopp","deps/libuv","deps/jsoncpp","deps/mbedtls","deps/wai")
 	add_files("src/*.cpp")
 	add_deps("cryptopp_s")
 	add_deps("libuv_s")
 	add_deps("jsoncpp_s")
 	add_deps("mbedtls_s")
+	add_deps("whereami_s")
 	--ExtLibs
 	add_linkdirs("extlibs")
 	add_links("curl")

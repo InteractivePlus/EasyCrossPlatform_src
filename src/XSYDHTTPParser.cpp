@@ -348,8 +348,24 @@ bool EasyCrossPlatform::Parser::HTTP::HTTPRequest::fromReqString(const std::stri
 				myItValue = myItValue.substr(1U, myItValue.length() - 1);
 			}
 			if (EasyCrossPlatform::Parser::StringUtil::toUpper(myItField) == "HOST") {
+				//Host: Host[:Port]
 				myItField = "Host";
-				this->RequestURL.Host = myItValue;
+				std::string::size_type HostSemiColmnPos = myItValue.rfind(':', myItValue.length());
+				if (HostSemiColmnPos != std::string::npos) {
+					this->RequestURL.Host = myItValue.substr(0U, HostSemiColmnPos);
+					if (HostSemiColmnPos < myItValue.length() - 1) {
+						try {
+							this->RequestURL.Port = static_cast<unsigned short>(std::stoul(myItValue.substr(HostSemiColmnPos + 1, myItValue.length() - HostSemiColmnPos - 1)));
+						}
+						catch (std::invalid_argument e) {
+							//Do Nothing
+							this->RequestURL.Port = 0U;
+						}
+					}
+				}
+				else {
+					this->RequestURL.Host = myItValue;
+				}
 			}
 			else if (EasyCrossPlatform::Parser::StringUtil::toUpper(myItField) == "CONTENT-TYPE") {
 				myItField = "Content-Type";
@@ -438,12 +454,15 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPRequest::toReqString()
 	myReqString += " HTTP/" + std::to_string(this->majorVersion) + "." + std::to_string(this->minorVersion);
 	myReqString += myCRLF;
 	//Set Host to Fields
-	if (!this->RequestURL.Host.empty()) {
+	if (!this->RequestURL.Host.empty() && this->RequestURL.Port == 0U) {
 		this->fields["Host"] = this->RequestURL.Host;
+	}
+	else if (!this->RequestURL.Host.empty() && this->RequestURL.Port != 0U) {
+		this->fields["Host"] = this->RequestURL.Host + ":" + std::to_string(this->RequestURL.Port);
 	}
 	//Set Content-Length to the length of the String
 	if (!this->data.empty()) {
-		this->fields["Content-Length"] = this->data.length();
+		this->fields["Content-Length"] = std::to_string(this->data.length());
 	}
 	else if(this->fields.find("Content-Length")!=this->fields.end()) {
 		this->fields.erase("Content-Length");

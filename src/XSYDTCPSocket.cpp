@@ -300,10 +300,10 @@ EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::~TCPAsyncClientSocket(
 std::map<uv_tcp_t*, std::vector<EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket*>> EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::m_MyClassPtrs;
 void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::onConnection(TCPAsyncClientSocket* newClient)
 {
-	newClient->onConnected(true);
 	if (this->ServerNewConnCallBack != NULL) {
 		this->ServerNewConnCallBack(newClient, (void*) this);
 	}
+	newClient->onConnected(true);
 }
 
 void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::onError(int errCode, const std::string & errorDescription)
@@ -326,7 +326,7 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::m_uv_connection_c
 		else if (acceptState != 0) {
 			
 		}
-		else if ((*iter)->isListening) {
+		else if ((*iter)->isListening()) {
 			MyNewClient = new TCPAsyncClientSocket();
 			MyNewClient->setWorker((*iter)->myListenWorker);
 			MyNewClient->Init();
@@ -366,7 +366,7 @@ EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::TCPAsyncServerSocket(c
 	
 	this->m_SocketHandle = oldServer.m_SocketHandle;
 	this->m_QueueLength = oldServer.m_QueueLength;
-	this->isListening = oldServer.isListening;
+	this->m_isListening = oldServer.m_isListening;
 	this->ServerErrorCallBack = oldServer.ServerErrorCallBack;
 	this->ServerNewConnCallBack = oldServer.ServerNewConnCallBack;
 	this->ClientConnectCallBack = oldServer.ClientConnectCallBack;
@@ -422,7 +422,7 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::Destroy()
 		}
 	}
 	if (MyVector.empty()) {
-		if (this->isListening) {
+		if (this->m_isListening) {
 			this->StopListen();
 		}
 		this->m_MyClassPtrs.erase(this->m_SocketHandle.get());
@@ -467,7 +467,7 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::Listen()
 		this->onError(listenState, uv_err_name(listenState));
 		return;
 	}
-	this->isListening = true;
+	this->m_isListening = true;
 }
 
 void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::Listen(const IpAddr & myIP, int QueLength)
@@ -479,8 +479,13 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::Listen(const IpAd
 
 void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::StopListen()
 {
-	this->isListening = false;
+	this->m_isListening = false;
 	uv_close((uv_handle_t*) this->m_SocketHandle.get(), NULL);
+}
+
+bool EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::isListening()
+{
+	return this->m_isListening;
 }
 
 EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::~TCPAsyncServerSocket()
