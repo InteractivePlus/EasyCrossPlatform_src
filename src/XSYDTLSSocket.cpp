@@ -22,6 +22,19 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPConnectCallBac
 		} else {
 			mbedtls_ssl_conf_authmode(&myTLSClient->m_sslConf, MBEDTLS_SSL_VERIFY_NONE);
 		}
+		if (!myTLSClient->SupportedALPNProtocols.empty()) {
+			myTLSClient->m_TMPALPNProtoNum = myTLSClient->SupportedALPNProtocols.size();
+			myTLSClient->m_TMPALPNProtoList = new char*[myTLSClient->m_TMPALPNProtoNum+1];
+			myTLSClient->m_TMPALPNProtoList[myTLSClient->m_TMPALPNProtoNum] = NULL;
+			for (unsigned int i = 0; i < myTLSClient->m_TMPALPNProtoNum; i++) {
+				myTLSClient->m_TMPALPNProtoList[i] = new char[myTLSClient->SupportedALPNProtocols[i].size() + 1];
+				for (unsigned int StringIt = 0U; StringIt < myTLSClient->SupportedALPNProtocols[i].size(); StringIt++) {
+					myTLSClient->m_TMPALPNProtoList[i][StringIt] = myTLSClient->SupportedALPNProtocols[i][StringIt];
+				}
+				myTLSClient->m_TMPALPNProtoList[i][myTLSClient->SupportedALPNProtocols[i].size()] = '\0';
+			}
+			mbedtls_ssl_conf_alpn_protocols(&myTLSClient->m_sslConf,(const char**) myTLSClient->m_TMPALPNProtoList);
+		}
 		mbedtls_ssl_conf_handshake_timeout(&myTLSClient->m_sslConf, myTLSClient->MinHandshakeTime, myTLSClient->MaxHandshakeTime);
 		mbedtls_ssl_conf_rng(&myTLSClient->m_sslConf, mbedtls_ctr_drbg_random, &myTLSClient->m_sslCtr_drbg);
 		mbedtls_ssl_conf_dbg(&myTLSClient->m_sslConf, TLSAsyncClientSocket::TLSDebugCallBack, myTLSClient);
@@ -109,6 +122,10 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::CompleteShakeProg
 			HandshakeRst = mbedtls_ssl_handshake(&myTLSClient->m_sslContext);
 
 			if (HandshakeRst == 0) {
+				const char* NegotiatedALPNProtol = mbedtls_ssl_get_alpn_protocol(&myTLSClient->m_sslContext);
+				if (NegotiatedALPNProtol == NULL) {
+					myTLSClient->NegotiatedALPNProtocols.assign(NegotiatedALPNProtol);
+				}
 				myTLSClient->onConnected(true);
 				myTLSClient->m_Shaked = true;
 				myTLSClient->CheckMsg();
@@ -257,6 +274,8 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::Init()
 	this->m_ClientSocket.DisconnectCallBack = TLSAsyncClientSocket::TCPDisconnectCallBack;
 	this->m_ClientSocket.MsgCallBack = TLSAsyncClientSocket::TCPMsgCallBack;
 	this->m_ClientSocket.ErrorCallBack = TLSAsyncClientSocket::TCPErrorCallBack;
+	this->m_TMPALPNProtoList = NULL;
+	this->m_TMPALPNProtoNum = 0U;
 }
 
 void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::Connect()
@@ -321,6 +340,13 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::Destroy()
 	mbedtls_entropy_free(&this->m_sslEntropy);
 	mbedtls_x509_crt_free(&this->m_sslCACert);
 	this->MyClassPtrs.erase(&this->m_ClientSocket);
+	this->SupportedALPNProtocols.clear();
+	if (this->m_TMPALPNProtoNum > 0U) {
+		for (unsigned int i = 0U; i < this->m_TMPALPNProtoNum; i++) {
+			delete[] this->m_TMPALPNProtoList[i];
+		}
+		delete[] this->m_TMPALPNProtoList;
+	}
 }
 
 EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::~TLSAsyncClientSocket()
@@ -338,6 +364,19 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPC
 		//mbedtls_ssl_conf_ca_chain(&myTLSClient->m_sslConf, &myTLSClient->m_sslCACert, NULL);
 		mbedtls_ssl_conf_authmode(&myTLSClient->m_sslConf,MBEDTLS_SSL_VERIFY_NONE);
 		//mbedtls_ssl_conf_handshake_timeout(&myTLSClient->m_sslConf, myTLSClient->MinHandshakeTime, myTLSClient->MaxHandshakeTime);
+		if (!myTLSClient->SupportedALPNProtocols.empty()) {
+			myTLSClient->m_TMPALPNProtoNum = myTLSClient->SupportedALPNProtocols.size();
+			myTLSClient->m_TMPALPNProtoList = new char*[myTLSClient->m_TMPALPNProtoNum + 1];
+			myTLSClient->m_TMPALPNProtoList[myTLSClient->m_TMPALPNProtoNum] = NULL;
+			for (unsigned int i = 0; i < myTLSClient->m_TMPALPNProtoNum; i++) {
+				myTLSClient->m_TMPALPNProtoList[i] = new char[myTLSClient->SupportedALPNProtocols[i].size() + 1];
+				for (unsigned int StringIt = 0U; StringIt < myTLSClient->SupportedALPNProtocols[i].size(); StringIt++) {
+					myTLSClient->m_TMPALPNProtoList[i][StringIt] = myTLSClient->SupportedALPNProtocols[i][StringIt];
+				}
+				myTLSClient->m_TMPALPNProtoList[i][myTLSClient->SupportedALPNProtocols[i].size()] = '\0';
+			}
+			mbedtls_ssl_conf_alpn_protocols(&myTLSClient->m_sslConf,(const char**) myTLSClient->m_TMPALPNProtoList);
+		}
 		mbedtls_ssl_conf_sni(&myTLSClient->m_sslConf, TLSSNIAsyncServerSingleConnection::TLSSNICallBack, myTLSClient);
 		mbedtls_ssl_conf_rng(&myTLSClient->m_sslConf, mbedtls_ctr_drbg_random, &myTLSClient->m_sslCtr_drbg);
 		mbedtls_ssl_conf_dbg(&myTLSClient->m_sslConf, TLSSNIAsyncServerSingleConnection::TLSDebugCallBack, myTLSClient);
@@ -512,6 +551,10 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::Comp
 			HandshakeRst = mbedtls_ssl_handshake(&myTLSClient->m_sslContext);
 
 			if (HandshakeRst == 0) {
+				const char* NegotiatedALPNProtol = mbedtls_ssl_get_alpn_protocol(&myTLSClient->m_sslContext);
+				if (NegotiatedALPNProtol == NULL) {
+					myTLSClient->NegotiatedALPNProtocols.assign(NegotiatedALPNProtol);
+				}
 				myTLSClient->onConnected(true);
 				myTLSClient->m_Shaked = true;
 				myTLSClient->CheckNewMsg();
@@ -649,6 +692,8 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::Init
 	this->m_ClientSocket->DisconnectCallBack = TLSSNIAsyncServerSingleConnection::TCPDisconnectCallBack;
 	this->m_ClientSocket->MsgCallBack = TLSSNIAsyncServerSingleConnection::TCPMsgCallBack;
 	this->m_ClientSocket->ErrorCallBack = TLSSNIAsyncServerSingleConnection::TCPErrorCallBack;
+	this->m_TMPALPNProtoList = NULL;
+	this->m_TMPALPNProtoNum = 0U;
 }
 
 void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::Disconnect()
@@ -716,6 +761,12 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::Dest
 	if (this->m_ClientSocket != NULL) {
 		delete this->m_ClientSocket;
 	}
+	if (this->m_TMPALPNProtoNum > 0U) {
+		for (unsigned int i = 0U; i < this->m_TMPALPNProtoNum; i++) {
+			delete[] this->m_TMPALPNProtoList[i];
+		}
+		delete[] this->m_TMPALPNProtoList;
+	}
 }
 
 void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::setCACert(const std::string & newCAChain)
@@ -747,6 +798,7 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServer::TCPServerNewConnCall
 	mSingleNewConn->m_ClientSocket = myClient;
 	mSingleNewConn->setSrvCert(&myTLSServer->m_SrvCerts);
 	mSingleNewConn->setCACert(myTLSServer->m_sslCACert);
+	mSingleNewConn->SupportedALPNProtocols = myTLSServer->SupportedALPNProtocols;
 	mSingleNewConn->Init();
 	myTLSServer->onConnection(mSingleNewConn);
 	return;

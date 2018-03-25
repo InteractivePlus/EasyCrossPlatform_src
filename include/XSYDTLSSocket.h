@@ -38,7 +38,8 @@
 						mbedtls_ssl_config m_sslConf;
 						mbedtls_x509_crt m_sslCACert;
 						bool m_Shaked = false;
-						
+						char** m_TMPALPNProtoList = NULL;
+						unsigned int m_TMPALPNProtoNum = 0U;
 						
 						EasyCrossPlatform::Thread::SingleWork myWorkCls;
 
@@ -69,6 +70,8 @@
 						unsigned int MinHandshakeTime = 1000U;
 						unsigned int MaxHandshakeTime = 60000U;
 
+						std::vector<std::string> SupportedALPNProtocols;
+						std::string NegotiatedALPNProtocols;
 						bool VerifyServerCert = true;
 						void setWorker(SocketWorker* newWorker);
 						void setRemoteIPAddr(const IpAddr& newIP);
@@ -104,6 +107,8 @@
 					mbedtls_pk_context m_sslDefaultPK;
 					mbedtls_x509_crt m_sslCACert;
 
+					char** m_TMPALPNProtoList = NULL;
+					unsigned int m_TMPALPNProtoNum = 0U;
 					bool m_Shaked = false;
 					EasyCrossPlatform::Thread::SingleWork myWorkCls;
 
@@ -145,6 +150,9 @@
 					unsigned int MinHandshakeTime = 1000U;
 					unsigned int MaxHandshakeTime = 60000U;
 
+					std::vector<std::string> SupportedALPNProtocols;
+					std::string NegotiatedALPNProtocols = "";
+
 					TLSSNIAsyncServerSingleConnection();
 					TLSSNIAsyncServerSingleConnection(TLSSNIAsyncServerSingleConnection& oldClient);
 					void Disconnect();
@@ -175,6 +183,8 @@
 						unsigned int MaxHandshakeTime = 60000U;
 						TLSSNIAsyncServer();
 						TLSSNIAsyncServer(TLSSNIAsyncServer& oldServer);
+						std::vector<std::string> SupportedALPNProtocols;
+						
 						TLSServerNewConnectionCallBack ConnectionCallback = NULL;
 						TLSServerErrorCallBack SrvErrorCallBack = NULL;
 						TLSClientConnectCallBack ConnectCallBack = NULL;

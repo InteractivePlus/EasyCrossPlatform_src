@@ -112,6 +112,46 @@ std::string EasyCrossPlatform::Parser::StringUtil::toUpper(const std::string & S
 	return myNewStr;
 }
 
+std::string EasyCrossPlatform::Parser::StringUtil::toSentence(const std::string & StringToDealWith)
+{
+	std::string myNewStr = StringToDealWith;
+	myNewStr = toLower(myNewStr);
+	if (myNewStr.size() >= 1U) {
+		if (myNewStr.size() >= 2U) {
+			myNewStr = toUpper(myNewStr.substr(0U, 1U)) + myNewStr.substr(1U, myNewStr.size() - 1U);
+		}
+		else {
+			myNewStr = toUpper(myNewStr);
+		}
+	}
+	return myNewStr;
+}
+
+std::string EasyCrossPlatform::Parser::StringUtil::leftTrim(const std::string & StringToDealWith)
+{
+	std::string mString = StringToDealWith;
+	std::string::size_type FirstNotSpace = mString.find_first_not_of(' ', 0U);
+	if (FirstNotSpace != std::string::npos && FirstNotSpace > 0) {
+		mString = mString.substr(FirstNotSpace, mString.length() - FirstNotSpace);
+	}
+	return mString;
+}
+
+std::string EasyCrossPlatform::Parser::StringUtil::rightTrim(const std::string & StringToDealWith)
+{
+	std::string mString = StringToDealWith;
+	std::string::size_type LastNotSpace = mString.find_last_not_of(' ', mString.length());
+	if (LastNotSpace != std::string::npos && LastNotSpace < mString.length() - 1) {
+		mString = mString.substr(0U, LastNotSpace+1);
+	}
+	return mString;
+}
+
+std::string EasyCrossPlatform::Parser::StringUtil::trim(const std::string & StringToDealWith)
+{
+	return leftTrim(rightTrim(StringToDealWith));
+}
+
 std::string EasyCrossPlatform::Parser::StringUtil::fromBytes(const std::vector<byte>& Bytes)
 {
 	std::string myStr = "";

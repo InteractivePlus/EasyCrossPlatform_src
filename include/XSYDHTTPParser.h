@@ -3,9 +3,24 @@
 	#include <EasyCP_Common.h>
 	#include <httpParser/http_parser.h>
 	#include <XSYDStringUtil.h>
+	#include <XSYDCompression.h>
+
 	namespace EasyCrossPlatform {
 		namespace Parser {
 			namespace HTTP {
+				const constexpr char* AcceptEncoding[2] = { "gzip","br" };
+				const constexpr unsigned int MaxReqAnalyzeSize = 256U;
+				const constexpr unsigned int ChunckedSplitSize = 512U;
+				struct HTTPParseReturnVal {
+					bool msgIsHTTP = false;
+					bool msgIsEnough = true;
+					bool canDecode = true;
+					bool onError = false;
+					std::string RemainMsg = "";
+				};
+				unsigned int FromHexStringToDec(const std::string& HexString);
+				std::string FromDecToHexString(const unsigned int Num);
+				HTTPParseReturnVal DecodeChunckedData(const std::string& EncryptedData, std::string& DataForWriting);
 				class URL {
 					private:
 
@@ -26,39 +41,57 @@
 						std::pair<std::string, std::string> getAccessCert();
 						void cleanUp();
 				};
+				class HTTPRequestHeader {
+					private:
+
+					protected:
+						bool ParseFirstLine(const std::string& FirstLine);
+						std::string WriteFirstLine();
+						void AnalyzeField(const std::string& SingleLine);
+						std::string WriteField(const std::string& FieldName);
+					public:
+						void cleanUp();
+						unsigned int MajorVersion = 1U;
+						unsigned int MinorVersion = 1U;
+						std::string Method = "GET";
+						URL RequestedURL;
+						std::map<std::string, std::string> FieldsValues;
+						HTTPParseReturnVal fromReqString(const std::string& ReqString); //Returns part of the string that is not parsed.
+						std::string toReqString();
+				};
 				class HTTPRequest {
 					private:
 
 					protected:
-						void analyzeFirstLine(std::string& firstLine);
+						HTTPParseReturnVal parseHeader(const std::string& ReqString);
+						void AnalyzeAcceptEncodingValue(const std::string& AcceptEncodingVal);
+						void AnalyzeContentEncodingValue(const std::string& ContentEncodingVal);
+						void AnalyzeTransferEncodingValue(const std::string& TransferEncodingVal);
+						HTTPParseReturnVal DecodeData();
+						
+						std::string WriteAcceptEncodingValue();
+						std::string WriteContentEncodingValue();
+						std::string WriteTransferEncodingValue();
+						void EncodeData();
 					public:
-						unsigned short majorVersion = 0U; //Major version of http, can be 1U or 2U
-						unsigned short minorVersion = 0U; //Minor version of http, can be 0U or 1U
-						URL RequestURL; //host can be left empty due to http1.0
-						void* customData = NULL;
-						std::string method = "";
-						std::string connection = "";
-						std::string data = "";
-						std::map<std::string, std::string> fields;
-						void cleanUp();
-						bool fromReqString(const std::string& Request);
+						unsigned int MajorVersion = 1U;
+						unsigned int MinorVersion = 1U;
+						unsigned int CompressionLevel = 9U;
+						std::string Method = "GET";
+						URL RequestedURL;
+						std::map<std::string, std::string> FieldsValues;
+						std::vector<std::string> ContentEncoding;
+						std::vector<std::string> TransferEncoding;
+						std::vector<std::pair<std::string,float>> AcceptEncoding;
+						std::string OriginalData = "";
+						std::string EncodedData = "";
+						std::string Connection = "";
+
+						HTTPParseReturnVal fromReqString(const std::string& ReqString);
+						std::string WriteHeader();
 						std::string toReqString();
-				};
-				class HTTPResponse {
-					private:
-
-					protected:
-
-					public:
-						unsigned short int statusCode = 0U;
-						std::string statusDescription = "";
-						unsigned short int majorVersion = 0U;
-						unsigned short int minorVersion = 0U;
-						std::string data = "";
-						std::map<std::string, std::string> fields;
 						void cleanUp();
-						bool fromResponseString(const std::string& Request);
-						std::string toResponseString();
+						
 				};
 			}
 		}
