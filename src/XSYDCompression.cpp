@@ -53,11 +53,13 @@ std::vector<byte> EasyCrossPlatform::Compression::Brotli::Encrypt(const std::vec
 	size_t newArrLength = mArrLength * 2U;
 	uint8_t* mNewArray = new uint8_t[newArrLength];
 	
+	int mCompressionLevel = static_cast<int>(std::round(static_cast<double>(CompressionLevel) * 11.0 / 9.0));
+
 	for (unsigned int i = 0U; i < mArrLength; i++) {
 		mArray[i] = static_cast<uint8_t>(OriginalData[i]);
 	}
 	
-	int CResult = BrotliEncoderCompress(static_cast<int>(CompressionLevel),BROTLI_DEFAULT_WINDOW,BROTLI_DEFAULT_MODE,mArrLength,mArray,&newArrLength,mNewArray);
+	int CResult = BrotliEncoderCompress(mCompressionLevel,BROTLI_DEFAULT_WINDOW,BROTLI_DEFAULT_MODE,mArrLength,mArray,&newArrLength,mNewArray);
 	if (CResult == BROTLI_FALSE) {
 		mResult.clear();
 	}

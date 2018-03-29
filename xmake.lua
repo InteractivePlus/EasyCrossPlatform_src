@@ -50,11 +50,6 @@ target("easycrossplatform_s")
 	add_defines("CURL_STATICLIB")
 	add_linkdirs("extlibs")
 	add_links("mariadbclient")
-	if is_os("windows") then
-		add_links("curl_s")
-	else
-		add_links("curl")
-	end
 
 target("easycrossplatform")
 	add_options("build-on-linux",
@@ -106,6 +101,5 @@ target("easycrossplatform")
 	add_deps("brotli_s")
 	--ExtLibs
 	add_linkdirs("extlibs")
-	add_links("curl")
 	add_links("mariadb")
 	

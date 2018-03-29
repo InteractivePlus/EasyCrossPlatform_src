@@ -27,7 +27,7 @@ public:
 };
 
 int main(int argc, char** args) {
-	std::string myTrustedCA = EasyCrossPlatform::File::FileIO::ReadFile(EasyCrossPlatform::Runtime::Path::APPPath() + std::string("CALIST.txt"));
+	std::string myTrustedCA = std::string(EasyCrossPlatform::Network::Request::TrustedCA, EasyCrossPlatform::Network::Request::TrustedCA_length);
 	TLSAsyncClientSocket myClient;
 	SocketWorker myWorker;
 	myClient.setWorker(&myWorker);

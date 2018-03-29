@@ -36,3 +36,8 @@ double EasyCrossPlatform::Runtime::Chrono::fromTimeStruct(std::tm TimeStruct)
 	double mDoubleTime = static_cast<double>(mTime_T);
 	return mDoubleTime;
 }
+
+void EasyCrossPlatform::Runtime::Chrono::sleepFor(double Second)
+{
+	std::this_thread::sleep_for(std::chrono::duration<double>(Second));
+}

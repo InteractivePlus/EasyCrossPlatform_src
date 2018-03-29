@@ -10,13 +10,11 @@ void EasyCrossPlatform::Network::Socket::DNSRequest::m_uv_resolved_cb(uv_getaddr
 		return;
 	}
 	MyClass->progressSucceed = true;
-	MyClass->valuebackArray.NumResults = 0;
-	MyClass->valuebackArray.Ips.clear();
+	MyClass->valuebackArray.clear();
 	addrinfo* myResAddr = res;
 	
 	while (myResAddr != NULL) {
-		MyClass->valuebackArray.NumResults++;
-		MyClass->valuebackArray.Ips.push_back(IpAddr((*(myResAddr->ai_addr))));
+		MyClass->valuebackArray.push_back(IpAddr((*(myResAddr->ai_addr))));
 		if (myResAddr != res->ai_next) {
 			myResAddr = res->ai_next;
 		}
@@ -54,35 +52,34 @@ EasyCrossPlatform::Network::Socket::DNSRequest::DNSRequest(const DNSRequest & ol
 	this->Init();
 }
 
-EasyCrossPlatform::Network::Socket::DNSResult EasyCrossPlatform::Network::Socket::DNSRequest::getDomainAddr_IPv4v6(const std::string& Domain, unsigned short Port)
+std::vector<EasyCrossPlatform::Network::Socket::IpAddr> EasyCrossPlatform::Network::Socket::DNSRequest::getDomainAddr_IPv4v6(const std::string& Domain, unsigned short Port)
 {
-	DNSResult myResultv4 = this->getDomainAddr_IPv4Only(Domain, Port);
-	DNSResult myResultv6 = this->getDomainAddr_IPv6Only(Domain, Port);
-	DNSResult myResultv4v6;
-	myResultv4v6.NumResults = myResultv4.NumResults + myResultv6.NumResults;
-	myResultv4v6.Ips.reserve(myResultv4v6.NumResults);
-	if (!myResultv4.Ips.empty()) {
-		for (auto i = myResultv4.Ips.begin(); i != myResultv4.Ips.end(); i++) {
-			myResultv4v6.Ips.push_back((*i));
+	std::vector<EasyCrossPlatform::Network::Socket::IpAddr> myResultv4 = this->getDomainAddr_IPv4Only(Domain, Port);
+	std::vector<EasyCrossPlatform::Network::Socket::IpAddr> myResultv6 = this->getDomainAddr_IPv6Only(Domain, Port);
+	std::vector<EasyCrossPlatform::Network::Socket::IpAddr> myResultv4v6;
+	myResultv4v6.reserve(myResultv4.size() + myResultv4v6.size());
+	if (!myResultv4.empty()) {
+		for (auto i = myResultv4.begin(); i != myResultv4.end(); i++) {
+			myResultv4v6.push_back((*i));
 		}
 	}
-	if (!myResultv6.Ips.empty()) {
-		for (auto i = myResultv6.Ips.begin(); i != myResultv6.Ips.end(); i++) {
-			myResultv4v6.Ips.push_back((*i));
+	if (!myResultv6.empty()) {
+		for (auto i = myResultv6.begin(); i != myResultv6.end(); i++) {
+			myResultv4v6.push_back((*i));
 		}
 	}
 	return myResultv4v6;
 }
 
-EasyCrossPlatform::Network::Socket::DNSResult EasyCrossPlatform::Network::Socket::DNSRequest::getDomainAddr_IPv4Only(const std::string& Domain, unsigned short Port)
+std::vector<EasyCrossPlatform::Network::Socket::IpAddr> EasyCrossPlatform::Network::Socket::DNSRequest::getDomainAddr_IPv4Only(const std::string& Domain, unsigned short Port)
 {
 	this->resetHint();
 	this->m_RequestHints.ai_family = PF_INET;
 	this->onProgress = true;
 	this->progressSucceed = false;
 	std::string PortStr;
-	DNSResult myResult;
-	myResult.NumResults = 0;
+	std::vector<EasyCrossPlatform::Network::Socket::IpAddr> myResult;
+	myResult.clear();
 	PortStr = std::to_string(Port);
 	int reqState = uv_getaddrinfo(&SocketParam::m_uv_loop, this->m_RequestHandle, DNSRequest::m_uv_resolved_cb, Domain.c_str(), PortStr.c_str(), &this->m_RequestHints);
 	if (reqState < 0) {
@@ -99,15 +96,15 @@ EasyCrossPlatform::Network::Socket::DNSResult EasyCrossPlatform::Network::Socket
 	}
 }
 
-EasyCrossPlatform::Network::Socket::DNSResult EasyCrossPlatform::Network::Socket::DNSRequest::getDomainAddr_IPv6Only(const std::string& Domain, unsigned short Port)
+std::vector<EasyCrossPlatform::Network::Socket::IpAddr> EasyCrossPlatform::Network::Socket::DNSRequest::getDomainAddr_IPv6Only(const std::string& Domain, unsigned short Port)
 {
 	this->resetHint();
 	this->m_RequestHints.ai_family = PF_INET6;
 	this->onProgress = true;
 	this->progressSucceed = false;
 	std::string PortStr;
-	DNSResult myResult;
-	myResult.NumResults = 0;
+	std::vector<EasyCrossPlatform::Network::Socket::IpAddr> myResult;
+	myResult.clear();
 	PortStr = std::to_string(Port);
 	int reqState = uv_getaddrinfo(&SocketParam::m_uv_loop, this->m_RequestHandle, DNSRequest::m_uv_resolved_cb, Domain.c_str(), PortStr.c_str(), &this->m_RequestHints);
 	if (reqState < 0) {

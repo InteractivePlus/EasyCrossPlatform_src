@@ -4,11 +4,12 @@
 	#include <httpParser/http_parser.h>
 	#include <XSYDStringUtil.h>
 	#include <XSYDCompression.h>
+	#include <math.h>
+	#include <cmath>
 
 	namespace EasyCrossPlatform {
 		namespace Parser {
 			namespace HTTP {
-				const constexpr char* AcceptEncoding[2] = { "gzip","br" };
 				const constexpr unsigned int MaxReqAnalyzeSize = 256U;
 				const constexpr unsigned int ChunckedSplitSize = 512U;
 				struct HTTPParseReturnVal {
@@ -21,6 +22,7 @@
 				unsigned int FromHexStringToDec(const std::string& HexString);
 				std::string FromDecToHexString(const unsigned int Num);
 				HTTPParseReturnVal DecodeChunckedData(const std::string& EncryptedData, std::string& DataForWriting);
+				std::string EncodeChunckedData(const std::string& OriginalData);
 				class URL {
 					private:
 
@@ -92,6 +94,55 @@
 						std::string toReqString();
 						void cleanUp();
 						
+				};
+				class HTTPResponseHeader {
+				private:
+
+				protected:
+					bool ParseFirstLine(const std::string& FirstLine);
+					std::string WriteFirstLine();
+					void AnalyzeField(const std::string& SingleLine);
+					std::string WriteField(const std::string& FieldName);
+				public:
+					void cleanUp();
+					unsigned int ResponseCode = 200U;
+					std::string ResponseDescription = "OK";
+					unsigned int MajorVersion = 1U;
+					unsigned int MinorVersion = 1U;
+					std::map<std::string, std::string> FieldsValues;
+					HTTPParseReturnVal fromResponseString(const std::string& ResponseString); //Returns part of the string that is not parsed.
+					std::string toResponseString();
+				};
+				
+				class HTTPResponse {
+				private:
+
+				protected:
+					HTTPParseReturnVal parseHeader(const std::string& ResponseString);
+					void AnalyzeContentEncodingValue(const std::string& ContentEncodingVal);
+					void AnalyzeTransferEncodingValue(const std::string& TransferEncodingVal);
+					HTTPParseReturnVal DecodeData();
+
+					std::string WriteContentEncodingValue();
+					std::string WriteTransferEncodingValue();
+					void EncodeData();
+				public:
+					unsigned int MajorVersion = 1U;
+					unsigned int MinorVersion = 1U;
+					unsigned int CompressionLevel = 9U;
+					unsigned int ResponseCode = 200U;
+					std::string ResponseDescription = "";
+					std::map<std::string, std::string> FieldsValues;
+					std::vector<std::string> ContentEncoding;
+					std::vector<std::string> TransferEncoding;
+					std::string OriginalData = "";
+					std::string EncodedData = "";
+					std::string Connection = "";
+
+					HTTPParseReturnVal fromResponseString(const std::string& ResponseString);
+					std::string WriteHeader();
+					std::string toResponseString();
+					void cleanUp();
 				};
 			}
 		}

@@ -18,7 +18,7 @@
 				std::vector<byte> Decrypt(const std::vector<byte>& EncryptedData);
 			}
 			namespace Brotli { //HTTP br Encoding, Brotli Algorithm
-				std::vector<byte> Encrypt(const std::vector<byte>& OriginalData, const unsigned int CompressionLevel = 11U); //Compression Level from 1U to 11U
+				std::vector<byte> Encrypt(const std::vector<byte>& OriginalData, const unsigned int CompressionLevel = 9U); //Compression Level from 1U to 9U
 				std::vector<byte> Decrypt(const std::vector<byte>& EncryptedData);
 			}
 		}

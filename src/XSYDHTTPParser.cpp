@@ -578,14 +578,14 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 			mResult.onError = false;
 			return mResult;
 		}
-		else if(this->TransferEncoding[this->TransferEncoding.size() -1U] != "chuncked") {
+		else if(this->TransferEncoding[this->TransferEncoding.size() -1U] != "chunked") {
 			mResult.canDecode = true;
 			mResult.msgIsEnough = true;
 			mResult.RemainMsg = this->EncodedData;
 			mResult.onError = false;
 			return mResult;
 		}
-		else if (this->TransferEncoding[this->TransferEncoding.size() - 1U] == "chuncked") {
+		else if (this->TransferEncoding[this->TransferEncoding.size() - 1U] == "chunked") {
 			ActualMsgNeedToDecode = this->EncodedData;
 		}
 	}
@@ -606,19 +606,25 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 		return mResult;
 	}else{ //MsgLength <= this->EncodedData.size()
 		ActualMsgNeedToDecode = this->EncodedData.substr(0U, MsgLength);
-		ActualRemainingMsg = this->EncodedData.substr(MsgLength, this->EncodedData.size() - MsgLength);
+		if (MsgLength > this->EncodedData.size()) {
+			ActualRemainingMsg = this->EncodedData.substr(MsgLength, this->EncodedData.size() - MsgLength);
+		}
 	}
 	std::vector<std::string> MethodToProceed;
-	for (auto i = this->TransferEncoding.end() - 1; i >= this->TransferEncoding.begin(); i--) {
-		MethodToProceed.push_back((*i));
+	if (!this->TransferEncoding.empty()) {
+		for (auto i = this->TransferEncoding.end() - 1; i >= this->TransferEncoding.begin(); i--) {
+			MethodToProceed.push_back((*i));
+		}
 	}
-	for (auto i = this->ContentEncoding.end() - 1; i >= this->ContentEncoding.begin(); i--) {
-		MethodToProceed.push_back((*i));
+	if (!this->ContentEncoding.empty()) {
+		for (auto i = this->ContentEncoding.end() - 1; i >= this->ContentEncoding.begin(); i--) {
+			MethodToProceed.push_back((*i));
+		}
 	}
 	std::string TmpEncodedData = ActualMsgNeedToDecode;
 	std::string TmpDecodeData = "";
 	for (auto i = MethodToProceed.begin(); i != MethodToProceed.end(); i++) {
-		if ((*i) == "chuncked") {
+		if ((*i) == "chunked") {
 			HTTPParseReturnVal mChunckedResult = DecodeChunckedData(TmpEncodedData, TmpDecodeData);
 			if (!mChunckedResult.msgIsEnough || !mChunckedResult.canDecode || !mChunckedResult.msgIsHTTP || mChunckedResult.onError) {
 				mResult = mChunckedResult;
@@ -668,7 +674,10 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPRequest::WriteHeader()
 	if (!this->Connection.empty()) {
 		this->FieldsValues["Connection"] = this->Connection;
 	}
-	if (this->TransferEncoding.empty() || (!this->TransferEncoding.empty() && this->TransferEncoding[this->TransferEncoding.size()-1U] != "chuncked")) {
+	if (this->TransferEncoding.empty() && this->ContentEncoding.empty()) {
+		this->EncodedData = this->OriginalData;
+	}
+	else {
 		if (!this->OriginalData.empty()) {
 			this->EncodeData();
 		}
@@ -694,9 +703,15 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPRequest::WriteAcceptEncodingVal
 {
 	/* Accept-Encoding: Method1;q=0.8, Method2;q=1.0*/
 	std::string mResult = "";
+	std::string WeightStr = "";
+
 	if (!this->AcceptEncoding.empty()) {
 		for (auto i = this->AcceptEncoding.begin(); i != this->AcceptEncoding.end(); i++) {
-			mResult += (*i).first + ";q=" + std::to_string((*i).second) + ", ";
+			WeightStr = std::to_string((*i).second);
+			if (WeightStr.size() >= 3U) {
+				WeightStr = WeightStr.substr(0U, 3U);
+			}
+			mResult += (*i).first + ";q=" + WeightStr + ", ";
 		}
 		mResult = mResult.substr(0U, mResult.size() - 2U);
 	}
@@ -741,20 +756,8 @@ void EasyCrossPlatform::Parser::HTTP::HTTPRequest::EncodeData()
 	std::string TmpEncodedString = "";
 	std::string TmpOriginalString = this->OriginalData;
 	for (auto i = EncodingMethodLists.begin(); i != EncodingMethodLists.end(); i++) {
-		if ((*i) == "chuncked") {
-			std::string::size_type NumRead = 0U;
-			std::string TempHexString = "";
-			std::string RemainingStr = TmpOriginalString;
-			while (RemainingStr.length() >= ChunckedSplitSize) {
-				TmpEncodedString += FromDecToHexString(ChunckedSplitSize) + newLineStr;
-				TmpEncodedString += RemainingStr.substr(0U, ChunckedSplitSize) + newLineStr;
-				RemainingStr = RemainingStr.substr(ChunckedSplitSize, RemainingStr.size() - ChunckedSplitSize);
-			}
-			TmpEncodedString += FromDecToHexString(RemainingStr.size()) + newLineStr;
-			TmpEncodedString += RemainingStr + newLineStr;
-			RemainingStr = "";
-			TmpEncodedString += "0" + newLineStr;
-			TmpEncodedString += newLineStr;
+		if ((*i) == "chunked") {
+			TmpEncodedString  = EncodeChunckedData(TmpOriginalString);
 			TmpOriginalString = TmpEncodedString;
 		}
 		else if ((*i) == "deflate") {
@@ -812,6 +815,7 @@ void EasyCrossPlatform::Parser::HTTP::HTTPRequest::cleanUp()
 	this->MinorVersion = 0U;
 	this->AcceptEncoding.clear();
 	this->ContentEncoding.clear();
+	this->TransferEncoding.clear();
 	this->EncodedData = "";
 	this->OriginalData = "";
 	this->Connection = "";
@@ -827,8 +831,8 @@ unsigned int EasyCrossPlatform::Parser::HTTP::FromHexStringToDec(const std::stri
 	unsigned int CurrentNum = 0U;
 	unsigned int TotalNum = 0U;
 	char tmpChar = ' ';
-	for (unsigned int i = 0; i < HexString.size(); i++) {
-		tmpChar = HexString[HexString.size() - 1U - i];
+	for (unsigned int i = 0; i < mHexString.size(); i++) {
+		tmpChar = mHexString[mHexString.size() - 1U - i];
 		if (tmpChar == 'A') {
 			CurrentNum = 10U;
 		}
@@ -853,7 +857,7 @@ unsigned int EasyCrossPlatform::Parser::HTTP::FromHexStringToDec(const std::stri
 		else {
 			return 0U;
 		}
-		TotalNum += (CurrentNum * (16 ^ i));
+		TotalNum += (CurrentNum * static_cast<unsigned int>(std::pow(16, i)));
 	}
 	return TotalNum;
 }
@@ -865,9 +869,9 @@ std::string EasyCrossPlatform::Parser::HTTP::FromDecToHexString(const unsigned i
 	unsigned int TempNum = 0U;
 	unsigned int RemainNum = Num;
 	std::string TempStr;
-	for (unsigned int i = 8U; i >= 0; i--) {
-		TempNum = RemainNum / (16 ^ i);
-		RemainNum -= (TempNum * (16 ^ i));
+	for (int i = 8; i >= 0; i--) {
+		TempNum = static_cast<unsigned int>(std::round(RemainNum / (std::pow(16,i))));
+		RemainNum -= static_cast<unsigned int>((TempNum * (std::pow(16,i))));
 		if (TempNum >= 1U && TempNum <= 9U) {
 			TempStr += (char) (TempNum + '0');
 		}
@@ -889,6 +893,17 @@ std::string EasyCrossPlatform::Parser::HTTP::FromDecToHexString(const unsigned i
 		else if (TempNum == 15U) {
 			TempStr += 'F';
 		}
+		else if(TempNum == 0U){
+			if (TempStr.empty()) {
+				continue;
+			}
+			else {
+				TempStr += '0';
+			}
+		}
+		else {
+			break;
+		}
 	}
 	return TempStr;
 }
@@ -906,22 +921,41 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 	std::vector<std::pair<std::string::size_type, std::string>> mSeparatedStrs = EasyCrossPlatform::Parser::StringUtil::splitStringByDivisor(EncryptedData, newLineStr, -1);
 	std::string::size_type NumContent;
 
+	bool MsgIsEnough = false;
+	bool CounterError = false;
+	
 	unsigned int mCurrentLine = 0U;
 	unsigned int NumReaded = 0U;
 	for(;mCurrentLine<mSeparatedStrs.size();mCurrentLine++){
 		mTempHexNum = mSeparatedStrs[mCurrentLine].second;
+		if (mTempHexNum.empty()) {
+			if (mCurrentLine == mSeparatedStrs.size() - 1U) {
+				MsgIsEnough = false;
+				CounterError = false;
+				break;
+			}
+			else {
+				MsgIsEnough = true;
+				CounterError = true;
+				break;
+			}
+		}
 		NumContent = FromHexStringToDec(mTempHexNum);
 		if (NumContent == 0U) {
 			EndingPlace = mSeparatedStrs[mCurrentLine].first + 2*newLineStr.size();
+			MsgIsEnough = true;
+			CounterError = false;
 			break;
 		}
 		mCurrentLine++;
 		if (mSeparatedStrs.size() == mCurrentLine) {
-			EndingPlace = std::string::npos;
+			MsgIsEnough = false;
+			CounterError = false;
 			break;
 		}
 		else if(EncryptedData.size() - mSeparatedStrs[mCurrentLine].first < NumContent) {
-			EndingPlace = std::string::npos;
+			MsgIsEnough = false;
+			CounterError = false;
 			break;
 		}
 		NumReaded = 0U;
@@ -935,26 +969,27 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 			}
 		}
 		if (NumReaded > NumContent) {
-			EndingPlace = std::string::npos;
+			MsgIsEnough = true;
+			CounterError = true;
 			break;
 		}
 		OverallContent += mTempContent;
 	}
-	if (mCurrentLine == mSeparatedStrs.size() && EndingPlace==std::string::npos) {
+	if (!MsgIsEnough) {
 		mReturnVal.msgIsHTTP = true;
 		mReturnVal.canDecode = true;
 		mReturnVal.msgIsEnough = false;
 		mReturnVal.onError = false;
 		mReturnVal.RemainMsg = EncryptedData;
 	}
-	if (mCurrentLine < mSeparatedStrs.size() && EndingPlace == std::string::npos) {
+	else if (CounterError) {
 		mReturnVal.msgIsHTTP = true;
 		mReturnVal.canDecode = false;
 		mReturnVal.msgIsEnough = true;
 		mReturnVal.onError = true;
 		mReturnVal.RemainMsg = EncryptedData;
 	}
-	else{ //EndingPlace != std::string::npos
+	else{ //MsgIsEnough = true and CounterError = false
 		mReturnVal.msgIsHTTP = true;
 		mReturnVal.canDecode = true;
 		mReturnVal.msgIsEnough = true;
@@ -968,4 +1003,523 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 		DataForWriting = OverallContent;
 	}
 	return mReturnVal;
+}
+
+std::string EasyCrossPlatform::Parser::HTTP::EncodeChunckedData(const std::string & OriginalData)
+{
+	std::string::size_type NumRead = 0U;
+	std::string newLineStr = "\r\n";
+	std::string TempHexString = "";
+	std::string TmpEncodedString = "";
+	std::string RemainingStr = OriginalData;
+	while (RemainingStr.length() >= ChunckedSplitSize) {
+		TmpEncodedString += FromDecToHexString(ChunckedSplitSize) + newLineStr;
+		TmpEncodedString += RemainingStr.substr(0U, ChunckedSplitSize) + newLineStr;
+		RemainingStr = RemainingStr.substr(ChunckedSplitSize, RemainingStr.size() - ChunckedSplitSize);
+	}
+	TmpEncodedString += FromDecToHexString(RemainingStr.size()) + newLineStr;
+	TmpEncodedString += RemainingStr + newLineStr;
+	RemainingStr = "";
+	TmpEncodedString += "0" + newLineStr;
+	TmpEncodedString += newLineStr;
+	return TmpEncodedString;
+}
+
+bool EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::ParseFirstLine(const std::string & FirstLine)
+{
+	//HTTP/Major.Minor ResponseCode Description
+	std::string::size_type LastPos = 0U;
+	std::string mFirstLine = FirstLine;
+	LastPos = mFirstLine.find("HTTP/", 0U);
+	if (LastPos != 0U) {
+		return false;
+	}
+	else {
+		mFirstLine = mFirstLine.substr(5U, FirstLine.size() - 5U);
+	}
+	//Major.Minor ResponseCode Description
+	LastPos = mFirstLine.find('.', 0U);
+	if (LastPos == std::string::npos || LastPos >= mFirstLine.size() - 1U) {
+		return false;
+	}
+	try {
+		this->MajorVersion = static_cast<unsigned int>(std::stoul(mFirstLine.substr(0U, LastPos)));
+	}
+	catch (std::invalid_argument e) {
+		return false;
+	}
+	mFirstLine = mFirstLine.substr(LastPos + 1U, mFirstLine.size() - LastPos - 1U);
+	//Minor ResponseCode Description
+	LastPos = mFirstLine.find(' ', 0U);
+	if (LastPos == std::string::npos || LastPos >= mFirstLine.size() - 1U) {
+		return false;
+	}
+	try {
+		this->MinorVersion = static_cast<unsigned int>(std::stoul(mFirstLine.substr(0U, LastPos)));
+	}
+	catch (std::invalid_argument e) {
+		return false;
+	}
+	mFirstLine = mFirstLine.substr(LastPos + 1U, mFirstLine.size() - LastPos - 1U);
+	//ReponseCode Description
+	LastPos = mFirstLine.find(' ', 0U);
+	if (LastPos == std::string::npos) {
+		return false;
+	}
+	try {
+		this->ResponseCode = static_cast<unsigned int>(std::stoul(mFirstLine.substr(0U, LastPos)));
+	}
+	catch (std::invalid_argument e) {
+		return false;
+	}
+	mFirstLine = mFirstLine.substr(LastPos + 1U, mFirstLine.size() - LastPos - 1U);
+	//Description
+	this->ResponseDescription = mFirstLine;
+	return true;
+}
+
+std::string EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::WriteFirstLine()
+{
+	//HTTP/Major.Minor ReponseCode ResponseDescription
+	std::string mResult = "";
+	mResult += "HTTP/" + std::to_string(this->MajorVersion) + "." + std::to_string(this->MinorVersion) + " " + std::to_string(this->ResponseCode) + " " + this->ResponseDescription;
+	return mResult;
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::AnalyzeField(const std::string & SingleLine)
+{
+	/*
+	Field: Value
+	*/
+	std::string::size_type FirstPos = SingleLine.find(':', 0U);
+	if (FirstPos == std::string::npos) {
+		return;
+	}
+	std::string FieldName = SingleLine.substr(0U, FirstPos);
+	std::string newFieldName = "";
+	std::string FieldValue = "";
+	if (FirstPos < SingleLine.size() - 1U) {
+		FieldValue = SingleLine.substr(FirstPos + 1U, SingleLine.size() - FirstPos - 1U);
+	}
+	FieldValue = EasyCrossPlatform::Parser::StringUtil::leftTrim(FieldValue);
+	std::vector<std::pair<std::string::size_type, std::string>> mSeparatedFieldName = EasyCrossPlatform::Parser::StringUtil::splitStringByDivisor(FieldName, "-", -1);
+	for (unsigned int i = 0; i < mSeparatedFieldName.size(); i++) {
+		newFieldName += EasyCrossPlatform::Parser::StringUtil::toSentence(mSeparatedFieldName[i].second) + "-";
+	}
+	newFieldName = newFieldName.substr(0U, newFieldName.size() - 1U);
+	this->FieldsValues[newFieldName] = FieldValue;
+	return;
+}
+
+std::string EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::WriteField(const std::string & FieldName)
+{
+	//Field: Value
+	std::string newFieldName = "";
+	std::vector<std::pair<std::string::size_type, std::string>> mSeparatedFieldName = EasyCrossPlatform::Parser::StringUtil::splitStringByDivisor(FieldName, "-", -1);
+	for (unsigned int i = 0; i < mSeparatedFieldName.size(); i++) {
+		newFieldName += EasyCrossPlatform::Parser::StringUtil::toSentence(mSeparatedFieldName[i].second) + "-";
+	}
+	newFieldName = newFieldName.substr(0U, newFieldName.size() - 1U);
+	std::string mResult = newFieldName + ": " + this->FieldsValues[FieldName];
+	return mResult;
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::cleanUp()
+{
+	this->ResponseCode = 0U;
+	this->ResponseDescription = "";
+	this->MajorVersion = 0U;
+	this->MinorVersion = 0U;
+	this->FieldsValues.clear();
+}
+
+EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::fromResponseString(const std::string & ResponseString)
+{
+	HTTPParseReturnVal mReturnVal;
+	std::vector<std::pair<std::string::size_type, std::string>> mSeparateLines = EasyCrossPlatform::Parser::StringUtil::splitStringByNewLine(ResponseString, -1);
+
+	std::string myFirstLine = mSeparateLines[0].second;
+	mReturnVal.msgIsHTTP = this->ParseFirstLine(myFirstLine);
+	if (!mReturnVal.msgIsHTTP) {
+		if (mSeparateLines.size() <= 1U && ResponseString.size() < MaxReqAnalyzeSize) { //Not Big Enough for Analyze if the Msg is HTTP
+			mReturnVal.msgIsEnough = false;
+			mReturnVal.msgIsHTTP = false;
+			mReturnVal.canDecode = false;
+			mReturnVal.onError = false;
+			mReturnVal.RemainMsg = ResponseString;
+		}
+		else { //Msg is big enough for analyze if the msg is http, but it is not HTTP.
+			mReturnVal.msgIsEnough = true;
+			mReturnVal.msgIsHTTP = false;
+			mReturnVal.canDecode = false;
+			mReturnVal.onError = false;
+			mReturnVal.RemainMsg = ResponseString;
+		}
+		return mReturnVal;
+	}
+	size_t mCurrentLine = 1U;
+	std::string CurrentLineData = "";
+	for (; mCurrentLine < mSeparateLines.size(); mCurrentLine++) {
+		CurrentLineData = mSeparateLines[mCurrentLine].second;
+		this->AnalyzeField(CurrentLineData);
+		//Waiting Until Hits an Empty String
+		if (CurrentLineData.empty()) {
+			break;
+		}
+	}
+	if (mCurrentLine < mSeparateLines.size()) {
+		mCurrentLine++;
+		if (mCurrentLine == mSeparateLines.size()) {
+			mReturnVal.msgIsEnough = false;
+			mReturnVal.msgIsHTTP = true;
+			mReturnVal.canDecode = true;
+			mReturnVal.onError = false;
+			mReturnVal.RemainMsg = ResponseString;
+			return mReturnVal;
+		}
+		std::string::size_type DataStartPlace = mSeparateLines[mCurrentLine].first;
+		mReturnVal.msgIsEnough = true;
+		mReturnVal.msgIsHTTP = true;
+		mReturnVal.canDecode = true;
+		mReturnVal.onError = false;
+		mReturnVal.RemainMsg = ResponseString.substr(DataStartPlace, ResponseString.size() - DataStartPlace);
+		return mReturnVal;
+	}
+	else {
+		mReturnVal.msgIsEnough = false;
+		mReturnVal.msgIsHTTP = true;
+		mReturnVal.canDecode = true;
+		mReturnVal.onError = false;
+		mReturnVal.RemainMsg = ResponseString;
+		return mReturnVal;
+	}
+}
+
+std::string EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::toResponseString()
+{
+	std::string newLineStr = "\r\n";
+	std::string mResult = "";
+	mResult += this->WriteFirstLine() + newLineStr;
+	for (auto i = this->FieldsValues.begin(); i != this->FieldsValues.end(); i++) {
+		mResult += this->WriteField((*i).first) + newLineStr;
+	}
+	mResult += newLineStr;
+	return mResult;
+}
+
+EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::HTTP::HTTPResponse::parseHeader(const std::string & ResponseString)
+{
+	HTTPParseReturnVal mResult;
+	HTTPResponseHeader mHeaderCls;
+	HTTPParseReturnVal mHeaderResult = mHeaderCls.fromResponseString(ResponseString);
+	if (!mHeaderResult.msgIsEnough || !mHeaderResult.msgIsHTTP || !mHeaderResult.canDecode || mHeaderResult.onError) {
+		mResult = mHeaderResult;
+		return mResult;
+	}
+	this->FieldsValues = mHeaderCls.FieldsValues;
+	this->MajorVersion = mHeaderCls.MajorVersion;
+	this->MinorVersion = mHeaderCls.MinorVersion;
+	this->ResponseCode = mHeaderCls.ResponseCode;
+	this->ResponseDescription = mHeaderCls.ResponseDescription;
+	
+	if (this->FieldsValues.find("Content-Encoding") != this->FieldsValues.end()) {
+		std::string ContentEncodingOriginStr = this->FieldsValues["Content-Encoding"];
+		this->AnalyzeContentEncodingValue(ContentEncodingOriginStr);
+	}
+	if (this->FieldsValues.find("Transfer-Encoding") != this->FieldsValues.end()) {
+		std::string TransferEncodingOriginStr = this->FieldsValues["Transfer-Encoding"];
+		this->AnalyzeTransferEncodingValue(TransferEncodingOriginStr);
+	}
+	if (this->FieldsValues.find("Connection") != this->FieldsValues.end()) {
+		this->Connection = this->FieldsValues["Connection"];
+	}
+	mResult.canDecode = true;
+	mResult.msgIsEnough = true;
+	mResult.msgIsHTTP = true;
+	mResult.RemainMsg = mHeaderResult.RemainMsg;
+	return mResult;
+}
+
+
+void EasyCrossPlatform::Parser::HTTP::HTTPResponse::AnalyzeContentEncodingValue(const std::string & ContentEncodingVal)
+{
+	if (ContentEncodingVal.empty()) {
+		return;
+	}
+	std::vector<std::pair<std::string::size_type, std::string>> mSplitEncoding = EasyCrossPlatform::Parser::StringUtil::splitStringByDivisor(ContentEncodingVal, ",", -1);
+	std::string SingleEncoding = "";
+	std::string::size_type LastPos = 0U;
+	float tempWeight = 0.0F;
+	for (auto i = mSplitEncoding.begin(); i != mSplitEncoding.end(); i++) {
+		SingleEncoding = (*i).second;
+		SingleEncoding = EasyCrossPlatform::Parser::StringUtil::trim(SingleEncoding);
+		if (SingleEncoding.empty()) {
+			continue;
+		}
+		this->ContentEncoding.push_back(EasyCrossPlatform::Parser::StringUtil::toLower(SingleEncoding));
+	}
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPResponse::AnalyzeTransferEncodingValue(const std::string & TransferEncodingVal)
+{
+	if (TransferEncodingVal.empty()) {
+		return;
+	}
+	std::vector<std::pair<std::string::size_type, std::string>> mSplitEncoding = EasyCrossPlatform::Parser::StringUtil::splitStringByDivisor(TransferEncodingVal, ",", -1);
+	std::string SingleEncoding = "";
+	std::string::size_type LastPos = 0U;
+	float tempWeight = 0.0F;
+	for (auto i = mSplitEncoding.begin(); i != mSplitEncoding.end(); i++) {
+		SingleEncoding = (*i).second;
+		SingleEncoding = EasyCrossPlatform::Parser::StringUtil::trim(SingleEncoding);
+		if (SingleEncoding.empty()) {
+			continue;
+		}
+		this->TransferEncoding.push_back(EasyCrossPlatform::Parser::StringUtil::toLower(SingleEncoding));
+	}
+}
+
+EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::HTTP::HTTPResponse::DecodeData()
+{
+	HTTPParseReturnVal mResult;
+	mResult.msgIsHTTP = true;
+	std::string::size_type MsgLength = 0U;
+	std::string ActualMsgNeedToDecode = "";
+	std::string ActualRemainingMsg = "";
+	if (this->FieldsValues.find("Content-Length") != this->FieldsValues.end()) {
+		try {
+			MsgLength = static_cast<std::string::size_type>(std::stoul(this->FieldsValues["Content-Length"]));
+		}
+		catch (std::invalid_argument e) {
+			MsgLength = std::string::npos;
+		}
+	}
+	else {
+		MsgLength = 0U;
+	}
+	if (MsgLength == 0U) {
+		if (!this->TransferEncoding.empty() && this->TransferEncoding[this->TransferEncoding.size() - 1U] == "chunked") {
+			ActualMsgNeedToDecode = this->EncodedData;
+		}
+		else if (this->FieldsValues.find("Connection") != this->FieldsValues.end() && EasyCrossPlatform::Parser::StringUtil::toLower(this->FieldsValues["Connection"]) == "close") {
+			ActualMsgNeedToDecode = this->EncodedData;
+		}
+		else {
+			mResult.canDecode = true;
+			mResult.msgIsEnough = true;
+			mResult.RemainMsg = this->EncodedData;
+			mResult.onError = false;
+			return mResult;
+		}
+	}
+	else if (MsgLength == std::string::npos) {
+		mResult.canDecode = false;
+		mResult.msgIsEnough = true;
+		mResult.msgIsHTTP = true;
+		mResult.onError = true;
+		mResult.RemainMsg = this->EncodedData;
+		return mResult;
+	}
+	else if (MsgLength > this->EncodedData.size()) {
+		mResult.canDecode = true;
+		mResult.msgIsEnough = false;
+		mResult.msgIsHTTP = true;
+		mResult.onError = false;
+		mResult.RemainMsg = this->EncodedData;
+		return mResult;
+	}
+	else { //MsgLength <= this->EncodedData.size()
+		ActualMsgNeedToDecode = this->EncodedData.substr(0U, MsgLength);
+		if (MsgLength > this->EncodedData.size()) {
+			ActualRemainingMsg = this->EncodedData.substr(MsgLength, this->EncodedData.size() - MsgLength);
+		}
+	}
+	std::vector<std::string> MethodToProceed;
+	if (!this->TransferEncoding.empty()) {
+		for (auto i = this->TransferEncoding.end() - 1; i >= this->TransferEncoding.begin(); i--) {
+			MethodToProceed.push_back((*i));
+		}
+	}
+	if (!this->ContentEncoding.empty()) {
+		for (auto i = this->ContentEncoding.end() - 1; i >= this->ContentEncoding.begin(); i--) {
+			MethodToProceed.push_back((*i));
+		}
+	}
+	std::string TmpEncodedData = ActualMsgNeedToDecode;
+	std::string TmpDecodeData = ActualMsgNeedToDecode;
+	for (auto i = MethodToProceed.begin(); i != MethodToProceed.end(); i++) {
+		if ((*i) == "chunked") {
+			HTTPParseReturnVal mChunckedResult = DecodeChunckedData(TmpEncodedData, TmpDecodeData);
+			if (!mChunckedResult.msgIsEnough || !mChunckedResult.canDecode || !mChunckedResult.msgIsHTTP || mChunckedResult.onError) {
+				mResult = mChunckedResult;
+				mResult.RemainMsg = this->EncodedData;
+				return mResult;
+			}
+			ActualRemainingMsg = mChunckedResult.RemainMsg + ActualRemainingMsg;
+			TmpEncodedData = TmpDecodeData;
+		}
+		else if ((*i) == "deflate") {
+			TmpDecodeData = EasyCrossPlatform::Parser::StringUtil::fromBytes(EasyCrossPlatform::Compression::Deflate::Decrypt(EasyCrossPlatform::Parser::StringUtil::toBytes(TmpEncodedData)));
+			TmpEncodedData = TmpDecodeData;
+		}
+		else if ((*i) == "gzip") {
+			TmpDecodeData = EasyCrossPlatform::Parser::StringUtil::fromBytes(EasyCrossPlatform::Compression::GZip::Decrypt(EasyCrossPlatform::Parser::StringUtil::toBytes(TmpEncodedData)));
+			TmpEncodedData = TmpDecodeData;
+		}
+		else if ((*i) == "br") {
+			TmpDecodeData = EasyCrossPlatform::Parser::StringUtil::fromBytes(EasyCrossPlatform::Compression::Brotli::Decrypt(EasyCrossPlatform::Parser::StringUtil::toBytes(TmpEncodedData)));
+			TmpEncodedData = TmpDecodeData;
+		}
+		else if ((*i) == "identity") {
+			TmpDecodeData = TmpEncodedData;
+		}
+	}
+	mResult.canDecode = true;
+	mResult.msgIsEnough = true;
+	mResult.msgIsHTTP = true;
+	mResult.onError = false;
+	mResult.RemainMsg = ActualRemainingMsg;
+	this->OriginalData = TmpDecodeData;
+	return mResult;
+}
+
+std::string EasyCrossPlatform::Parser::HTTP::HTTPResponse::WriteHeader()
+{
+	HTTPResponseHeader mReqHeaderCls;
+	if (!this->ContentEncoding.empty()) {
+		this->FieldsValues["Content-Encoding"] = this->WriteContentEncodingValue();
+	}
+	if (!this->TransferEncoding.empty()) {
+		this->FieldsValues["Tranfer-Encoding"] = this->WriteTransferEncodingValue();
+	}
+	if (!this->Connection.empty()) {
+		this->FieldsValues["Connection"] = this->Connection;
+	}
+	if (this->TransferEncoding.empty() && this->ContentEncoding.empty()) {
+		this->EncodedData = this->OriginalData;
+	}else{
+		if (!this->OriginalData.empty()) {
+			this->EncodeData();
+		}
+		this->FieldsValues["Content-Length"] = std::to_string(this->EncodedData.size());
+	}
+	mReqHeaderCls.FieldsValues = this->FieldsValues;
+	mReqHeaderCls.MajorVersion = this->MajorVersion;
+	mReqHeaderCls.MinorVersion = this->MinorVersion;
+	mReqHeaderCls.ResponseCode = this->ResponseCode;
+	mReqHeaderCls.ResponseDescription = this->ResponseDescription;
+	return mReqHeaderCls.toResponseString();
+}
+
+std::string EasyCrossPlatform::Parser::HTTP::HTTPResponse::toResponseString()
+{
+	std::string mResult;
+	mResult += this->WriteHeader(); //WriteHeader will automatically call EncodeData() method, no need to call twice.
+	mResult += this->EncodedData;
+	return mResult;
+}
+
+std::string EasyCrossPlatform::Parser::HTTP::HTTPResponse::WriteContentEncodingValue()
+{
+	std::string mResult = "";
+	if (!this->ContentEncoding.empty()) {
+		for (auto i = this->ContentEncoding.begin(); i != this->ContentEncoding.end(); i++) {
+			mResult += (*i) + ", ";
+		}
+		mResult = mResult.substr(0U, mResult.size() - 2U);
+	}
+	return mResult;
+}
+
+std::string EasyCrossPlatform::Parser::HTTP::HTTPResponse::WriteTransferEncodingValue()
+{
+	std::string mResult = "";
+	if (!this->TransferEncoding.empty()) {
+		for (auto i = this->TransferEncoding.begin(); i != this->TransferEncoding.end(); i++) {
+			mResult += (*i) + ", ";
+		}
+		mResult = mResult.substr(0U, mResult.size() - 2U);
+	}
+	return mResult;
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPResponse::EncodeData()
+{
+	std::string newLineStr = "\r\n";
+	std::string mEncodedData;
+	std::vector<std::string> EncodingMethodLists;
+	for (auto i = this->ContentEncoding.begin(); i != this->ContentEncoding.end(); i++) {
+		EncodingMethodLists.push_back((*i));
+	}
+	for (auto i = this->TransferEncoding.begin(); i != this->TransferEncoding.end(); i++) {
+		EncodingMethodLists.push_back((*i));
+	}
+	std::string TmpEncodedString = "";
+	std::string TmpOriginalString = this->OriginalData;
+	for (auto i = EncodingMethodLists.begin(); i != EncodingMethodLists.end(); i++) {
+		if ((*i) == "chunked") {
+			TmpEncodedString = EncodeChunckedData(TmpOriginalString);
+			TmpOriginalString = TmpEncodedString;
+		}
+		else if ((*i) == "deflate") {
+			TmpEncodedString = EasyCrossPlatform::Parser::StringUtil::fromBytes(EasyCrossPlatform::Compression::Deflate::Encrypt(EasyCrossPlatform::Parser::StringUtil::toBytes(TmpOriginalString), this->CompressionLevel));
+			TmpOriginalString = TmpEncodedString;
+		}
+		else if ((*i) == "gzip") {
+			TmpEncodedString = EasyCrossPlatform::Parser::StringUtil::fromBytes(EasyCrossPlatform::Compression::GZip::Encrypt(EasyCrossPlatform::Parser::StringUtil::toBytes(TmpOriginalString), this->CompressionLevel));
+			TmpOriginalString = TmpEncodedString;
+		}
+		else if ((*i) == "br") {
+			TmpEncodedString = EasyCrossPlatform::Parser::StringUtil::fromBytes(EasyCrossPlatform::Compression::Brotli::Encrypt(EasyCrossPlatform::Parser::StringUtil::toBytes(TmpOriginalString), this->CompressionLevel));
+			TmpOriginalString = TmpEncodedString;
+		}
+		else if ((*i) == "identity") {
+			TmpEncodedString = TmpOriginalString;
+		}
+		else {
+			TmpEncodedString = TmpOriginalString;
+		}
+	}
+	this->EncodedData = TmpEncodedString;
+	return;
+}
+
+EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::HTTP::HTTPResponse::fromResponseString(const std::string & ResponseString)
+{
+	this->cleanUp();
+	HTTPParseReturnVal mResult;
+	HTTPParseReturnVal mParseHeaderResult = this->parseHeader(ResponseString);
+	if (!mParseHeaderResult.canDecode || !mParseHeaderResult.msgIsEnough || !mParseHeaderResult.msgIsHTTP || mParseHeaderResult.onError) {
+		mResult = mParseHeaderResult;
+		mResult.RemainMsg = ResponseString;
+		return mResult;
+	}
+	std::string mEncodedData = mParseHeaderResult.RemainMsg;
+	this->EncodedData = mEncodedData;
+	HTTPParseReturnVal mParseBodyResult = this->DecodeData();
+	if (!mParseBodyResult.canDecode || !mParseBodyResult.msgIsEnough || !mParseBodyResult.msgIsHTTP || mParseBodyResult.onError) {
+		mResult = mParseBodyResult;
+		mResult.RemainMsg = ResponseString;
+		return mResult;
+	}
+	mResult.canDecode = true;
+	mResult.msgIsEnough = true;
+	mResult.msgIsHTTP = true;
+	mResult.onError = false;
+	mResult.RemainMsg = mParseBodyResult.RemainMsg;
+	return mResult;
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPResponse::cleanUp()
+{
+	this->MajorVersion = 0U;
+	this->MinorVersion = 0U;
+	this->ContentEncoding.clear();
+	this->TransferEncoding.clear();
+	this->EncodedData = "";
+	this->OriginalData = "";
+	this->Connection = "";
+	this->ResponseCode = 0U;
+	this->ResponseDescription = "";
+	this->FieldsValues.clear();
 }

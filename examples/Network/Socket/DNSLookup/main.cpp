@@ -4,12 +4,12 @@ using namespace EasyCrossPlatform::Network::Socket;
 
 int main(int argc, char** args) {
 	std::cout << "hi" << std::endl;
-	DNSRequest myRequest;
+	std::vector<EasyCrossPlatform::Network::Socket::IpAddr> myRequest;
 	myRequest.Init();
-	DNSResult myResult = myRequest.getDomainAddr_IPv4v6("www.xsyds.cn",80);
-	std::cout << "Request " << (myResult.NumResults != 0 ? "succeeded" : "failed") << std::endl;
-	if (myResult.NumResults > 0) {
-		for (auto iter = myResult.Ips.begin(); iter != myResult.Ips.end(); iter++) {
+	std::vector<EasyCrossPlatform::Network::Socket::IpAddr> myResult = myRequest.getDomainAddr_IPv4v6("www.xsyds.cn",80);
+	std::cout << "Request " << (!myResult.empty() ? "succeeded" : "failed") << std::endl;
+	if (!myResult.empty()) {
+		for (auto iter = myResult.begin(); iter != myResult.end(); iter++) {
 			std::cout << "IpAddress: " << (*iter).getIPString() << std::endl;
 		}
 	}

@@ -82,7 +82,6 @@ target("program")
 	add_links("cryptopp_s","libuv_s","jsoncpp_s","mbedtls_s","whereami_s","brotli_s")
 	add_links("mariadb")
 	if(is_plat("windows")) then
-		add_links("libcurl")
 		add_links('iphlpapi','psapi','shell32','user32','userenv',"winmm","ws2_32","wldap32","advapi32","Normaliz","Crypt32")
 	else
 		if is_option("build-on-solaris") then
@@ -97,5 +96,4 @@ target("program")
 		if is_option("build-on-linux") then
 			add_links("dl","rt")
 		end
-		add_links("curl")
 	end

@@ -24,4 +24,5 @@
 	#include <map> //STD Dictionary
 	#include <utility> //Utilities, now using pairs in them.
 	#include <stdlib.h> //StdLib
+	#include <cmath> //std::pow, std::round, etc.
 #endif

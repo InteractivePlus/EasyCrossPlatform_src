@@ -6,10 +6,6 @@
 	namespace EasyCrossPlatform {
 		namespace Network {
 			namespace Socket {
-				struct DNSResult {
-					unsigned int NumResults;
-					std::vector<IpAddr> Ips;
-				};
 				class DNSRequest {
 					private:
 
@@ -18,7 +14,7 @@
 						bool Inited;
 						addrinfo m_RequestHints;
 						bool onProgress;
-						DNSResult valuebackArray;
+						std::vector<IpAddr> valuebackArray;
 						bool progressSucceed;
 						static void m_uv_resolved_cb(uv_getaddrinfo_t* resolver, int status, struct addrinfo *res);
 						void resetHint();
@@ -26,9 +22,9 @@
 						DNSRequest();
 						DNSRequest(const DNSRequest& oldRequest);
 
-						DNSResult getDomainAddr_IPv4v6(const std::string& Domain, unsigned short Port);
-						DNSResult getDomainAddr_IPv4Only(const std::string& Domain, unsigned short Port);
-						DNSResult getDomainAddr_IPv6Only(const std::string& Domain, unsigned short Port);
+						std::vector<IpAddr> getDomainAddr_IPv4v6(const std::string& Domain, unsigned short Port);
+						std::vector<IpAddr> getDomainAddr_IPv4Only(const std::string& Domain, unsigned short Port);
+						std::vector<IpAddr> getDomainAddr_IPv6Only(const std::string& Domain, unsigned short Port);
 						void Init();
 						void Destroy();
 

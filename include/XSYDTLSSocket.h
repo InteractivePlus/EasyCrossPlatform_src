@@ -6,7 +6,7 @@
 	#include <XSYDSocketResImpl.h>
 	#include <XSYDTCPSocket.h>
 	#include <XSYDMultiTask.h>	
-
+	#include <XSYDTrustedCert.h>
 	#include <mbedtls/net.h>
 	#include <mbedtls/ssl.h>
 	#include <mbedtls/entropy.h>
@@ -31,7 +31,6 @@
 					protected:
 						std::deque<byte> m_MsgWaitingForRead;
 						bool m_Inited = false;
-						static std::map<TCPAsyncClientSocket*, TLSAsyncClientSocket*> MyClassPtrs;
 						mbedtls_entropy_context m_sslEntropy;
 						mbedtls_ctr_drbg_context m_sslCtr_drbg;
 						mbedtls_ssl_context m_sslContext;
@@ -81,6 +80,7 @@
 
 						TLSAsyncClientSocket();
 						TLSAsyncClientSocket(TLSAsyncClientSocket& oldClient);
+						void* CustomData = NULL;
 						void Init();
 						void Connect();
 						void Disconnect();
@@ -96,7 +96,6 @@
 				protected:
 					std::deque<byte> m_MsgWaitingForRead;
 					bool m_Inited = false;
-					static std::map<TCPAsyncClientSocket*, TLSSNIAsyncServerSingleConnection*> MyClassPtrs;
 					mbedtls_entropy_context m_sslEntropy;
 					mbedtls_ctr_drbg_context m_sslCtr_drbg;
 					mbedtls_ssl_context m_sslContext;
@@ -141,6 +140,7 @@
 					TLSClientDisconnectCallBack DisconnectCallBack = NULL;
 					std::string serverHostName = "localhost";
 
+					void* CustomData = NULL;
 
 					bool VerifyServerCert = true;
 
@@ -166,7 +166,6 @@
 					private:
 
 					protected:
-						static std::map<TCPAsyncServerSocket*, TLSSNIAsyncServer*> MyClassPtrs;
 						TCPAsyncServerSocket m_ServerSocket;
 						static void TCPServerNewConnCallBack(void* newClientSocket, void* ServerClassPtr);
 						static void TCPServerErrorCallBack(int errCode, const std::string& errInfo, void* ServerClassPtr);
@@ -192,6 +191,7 @@
 						TLSClientErrorCallBack ErrorCallBack = NULL;
 						TLSClientDisconnectCallBack DisconnectCallBack = NULL;
 						void setIP(const IpAddr& myIP, int QueueLength = 0);
+						void* CustomData = NULL;
 						IpAddr getIP();
 						void Listen();
 						void StopListen();

@@ -19,7 +19,6 @@
 					private:
 						
 					protected:
-						static std::map<SocketWorker*,std::map<uv_tcp_t*, std::vector<TCPAsyncClientSocket*>>> m_MyClassPtrs;
 						IpAddr m_remoteAddr;
 						std::shared_ptr<uv_tcp_t> m_ClientSocketHandle;
 						bool m_Connected = false;
@@ -53,7 +52,7 @@
 						void SendMsg(const std::vector<byte>& Msg);
 						void Disconnect();
 						void Destroy();
-
+						void* CustomData = NULL;
 						TCPClientConnectCallBack ConnectCallBack = NULL;
 						TCPClientMsgCallBack MsgCallBack = NULL;
 						TCPClientErrorCallBack ErrorCallBack = NULL;
@@ -69,10 +68,9 @@
 						void onConnection(TCPAsyncClientSocket* newClient);
 						void onError(int errCode, const std::string& errorDescription);
 						
-						static std::map<uv_tcp_t*, std::vector<TCPAsyncServerSocket*>> m_MyClassPtrs;
 						static void m_uv_connection_cb(uv_stream_t* server, int status);
 
-						std::shared_ptr<uv_tcp_t> m_SocketHandle;
+						uv_tcp_t m_SocketHandle;
 						IpAddr m_myIP = IpAddr();
 						bool m_isListening = false;
 						bool hasInted = false;
@@ -95,6 +93,7 @@
 						void StopListen();
 						bool isListening();
 
+						void* CustomData = NULL;
 						TCPClientConnectCallBack ClientConnectCallBack;
 						TCPClientMsgCallBack ClientMsgCallBack;
 						TCPClientErrorCallBack ClientErrorCallBack;
