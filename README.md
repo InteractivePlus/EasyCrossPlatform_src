@@ -10,7 +10,7 @@ Supported System: LINUX / WIN / MacOS
 Supported Architecture: x86(i386) / x64(x86_64) / ARMv5 / ARMv6 / ARMv7 / ARMv8  
 Powered by [BlueAirTechGroup](https://www.xsyds.cn/)  
 Contribution List: [Windy](https://github.com/ToiletCommander)  
-Libs: MultiThreadPool | MultiThread | FileIO | TLS & ~~DTLS~~ & TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption | Compression(Deflate-Gzip, Deflate-Zlib, Brotli) | HTTP(s)_Requests | JSON | ~~HTTP1.X Parser~~  
+Libs: MultiThreadPool | MultiThread | FileIO | TLS & ~~DTLS~~ & TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption | Compression(Deflate-Gzip, Deflate-Zlib, Brotli) | HTTP(s)_Requests | JSON | HTTP1.X Parser  
 Require Support: MacOSX / Linux / Windows System and C++ 11 Support  
 ## Uncompromising Performances?
 Right, we use LibUV as our basis for our socket class.  
@@ -21,7 +21,6 @@ The development of EasyCrossPlatform is given power by the following lib:
 [Crypto++](https://github.com/weidai11/cryptopp) - Encryption Lib, EasyCrossPlatform Encryption built based on it.  
 [Crypto++ Examples](https://github.com/sechaser/CryptoPP) - Crypto++ AES Example, EasyCrossPlatform AES Encryption built based on it.  
 [MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB Connector Lib.  
-[LibCurl](https://curl.haxx.se/) - EasyCrossPlatform Request Lib built based on it.  
 [JSONCPP](https://github.com/henshao/jsoncpp) - A quicker version of JSONCPP, a JSON parser, EasyCrossPlatform JSON class completely built based on it.  
 [mbedtls](https://github.com/ARMmbed/mbedtls) - A encryption and TLS/SSL lib for building TLS-connected sockets.  
 [whereami](https://github.com/gpakosz/whereami) - A two-files lib which tells the program where it is.  

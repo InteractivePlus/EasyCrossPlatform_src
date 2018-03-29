@@ -10,7 +10,7 @@ Language: [English](README.md)
 支持CPU架构: x86(i386) / x64(x86_64) / ARMv5 / ARMv6 / ARMv7 / ARMv8  
 [形随意动](https://www.xsyds.cn/)作品  
 贡献列表: [年迈的老秋风](https://github.com/ToiletCommander)  
-包含库: 多线程池 | 多线程 | 文件读写 | TLS & ~~DTLS~~ & TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | 压缩库(Deflate-Gzip, Deflate Zlib, Brotli) | HTTP(s)请求 | JSON | ~~HTTP1.X解析器~~  
+包含库: 多线程池 | 多线程 | 文件读写 | TLS & ~~DTLS~~ & TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | 压缩库(Deflate-Gzip, Deflate Zlib, Brotli) | HTTP(s)请求 | JSON | HTTP1.X解析器  
 需要支持: Unix / Linux / Windows系统 + C++11  
 ## 毫不妥协的性能
 Socket库以Libuv为底层, 开发了跨平台的Socket库.  
@@ -21,7 +21,6 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 [Crypto++](https://github.com/weidai11/cryptopp) - 加密库, 未来的EasyCrossPlatform加密库会基于此加密库.  
 [Crypto++ Examples](https://github.com/sechaser/CryptoPP) - Crypto++ AES例子, EasyCrossPlatform AES 加密库基于此实例搭建  
 [MariaDB](https://mariadb.com/downloads/mariadb-tx/connector) - MySQL / MariaDB 连接器.  
-[LibCurl](https://curl.haxx.se/) - EasyCrossPlatform的HTTP(s)请求库完全基于此库编写.  
 [JSONCPP](https://github.com/henshao/jsoncpp) - 一个魔改版的JSONCPP, 比原版的快速很多, EasyCrossPlatform的JSON解析库完全基于此库编写  
 [mbedtls](https://github.com/ARMmbed/mbedtls) - 一个SSL/TLS和其他加密方法的库, 用于编写TLS加密的套接字  
 [whereami](https://github.com/gpakosz/whereami) - 两个文件的小型库, 告诉程序它自己在哪  
