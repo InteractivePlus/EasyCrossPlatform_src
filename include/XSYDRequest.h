@@ -25,7 +25,6 @@
 				private:
 					
 				protected:
-					EasyCrossPlatform::Parser::HTTP::HTTPRequest m_ResquestContent;
 					EasyCrossPlatform::Network::Socket::DNSRequest m_DNSRequest;
 					EasyCrossPlatform::Network::Socket::SocketWorker m_SharedSocketWorker;
 					EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket m_ClientSocket;
@@ -44,8 +43,10 @@
 					std::string m_MsgWaitingForRead = "";
 				public:
 					void cleanUp();
+					void cleanRequest();
 					std::string RequestURL = "";
 					bool SucceedRequest = true;
+					EasyCrossPlatform::Parser::HTTP::HTTPRequest m_ResquestContent;
 					EasyCrossPlatform::Parser::HTTP::HTTPResponse ResponseContent;
 					RequestMethod Method = RequestMethod::GET;
 					std::string RequestData;

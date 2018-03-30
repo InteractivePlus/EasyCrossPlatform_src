@@ -66,7 +66,9 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPMsgCallBack(co
 		myTLSClient->m_MsgWaitingForRead.push_back(Data[i]);
 	}
 	myTLSClient->ReadTCPMsgMutex.unlock();
-	myTLSClient->CheckMsg();
+	while (myTLSClient->CheckMsg() == true) {
+		//Checking Msg!
+	}
 }
 
 void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPErrorCallBack(int ErrNo, const std::string & ErrDescription, void * ClientSocketPtr)
@@ -129,7 +131,11 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::CompleteShakeProg
 				}
 				myTLSClient->onConnected(true);
 				myTLSClient->m_Shaked = true;
-				myTLSClient->CheckMsg();
+				if (!myTLSClient->m_MsgWaitingForRead.empty()) {
+					while (myTLSClient->CheckMsg() == true) {
+						//Checking New Msg!
+					}
+				}
 				return;
 			}
 			else if(HandshakeRst != MBEDTLS_ERR_SSL_WANT_READ && HandshakeRst != MBEDTLS_ERR_SSL_WANT_WRITE) {
@@ -146,7 +152,9 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::onDisconnected()
 {
 	this->myWorkCls.StopJob();
 	if (!this->m_MsgWaitingForRead.empty()) {
-		this->CheckMsg();
+		while (this->CheckMsg() == true) {
+			//Checking Msg!
+		}
 	}
 	this->m_Shaked = false;
 	mbedtls_ssl_session_reset(&this->m_sslContext);
@@ -183,30 +191,35 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::onMbedTLSError(in
 	this->onErrorOccured(mbedErrNo, std::string(ErrorMsg));
 }
 
-void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::CheckMsg()
+bool EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::CheckMsg()
 {
 	if (this->m_Shaked) {
+		if (this->m_MsgWaitingForRead.empty()) {
+			return false;
+		}
 		//Because New Data has been added. Call for read
 		byte myBuf[25565] = "";
 		int ReadRst = mbedtls_ssl_read(&this->m_sslContext, (unsigned char*)myBuf, 25565U);
 		if (ReadRst == MBEDTLS_ERR_SSL_WANT_READ || ReadRst == MBEDTLS_ERR_SSL_WANT_WRITE) {
-			return;
+			return false;
 		}
 		else if (ReadRst == MBEDTLS_ERR_SSL_CONN_EOF || ReadRst == 0 || ReadRst == MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY) {
 			this->Disconnect();
-			return;
+			return false;
 		}
 		else if (ReadRst < 0) {
 			this->onMbedTLSError(ReadRst);
 			this->Disconnect();
-			return;
+			return false;
 		}
 		std::vector<byte> realBuf;
 		for (int i = 0; i < ReadRst; i++) {
 			realBuf.push_back(myBuf[i]);
 		}
 		this->onMsgCB(realBuf);
+		return true;
 	}
+	return false;
 }
 
 
@@ -434,7 +447,9 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPM
 		myTLSClient->m_MsgWaitingForRead.push_back(Data[i]);
 	}
 	myTLSClient->ReadTCPMsgMutex.unlock();
-	myTLSClient->CheckNewMsg();
+	while (myTLSClient->CheckNewMsg() == true) {
+		//Checking New Msg
+	}
 }
 
 void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPErrorCallBack(int ErrNo, const std::string & ErrDescription, void * ClientSocketPtr)
@@ -562,7 +577,11 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::Comp
 				}
 				myTLSClient->onConnected(true);
 				myTLSClient->m_Shaked = true;
-				myTLSClient->CheckNewMsg();
+				if (!myTLSClient->m_MsgWaitingForRead.empty()) {
+					while (myTLSClient->CheckNewMsg() == true) {
+						//Checking New Msg!
+					}
+				}
 				return;
 			}
 			else if (HandshakeRst != MBEDTLS_ERR_SSL_WANT_READ && HandshakeRst != MBEDTLS_ERR_SSL_WANT_WRITE) {
@@ -580,7 +599,9 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::onDi
 {
 	this->myWorkCls.StopJob();
 	if (!this->m_MsgWaitingForRead.empty()) {
-		this->CheckNewMsg();
+		while (this->CheckNewMsg() == true) {
+			//Checking New Msg!
+		}
 	}
 	this->m_Shaked = false;
 	mbedtls_ssl_session_reset(&this->m_sslContext);
@@ -628,30 +649,35 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::setS
 	this->m_SrvCerts = newCerts;
 }
 
-void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::CheckNewMsg()
+bool EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::CheckNewMsg()
 {
 	if (this->m_Shaked) {
+		if (this->m_MsgWaitingForRead.empty()) {
+			return false;
+		}
 		//Because New Data has been added. Call for read
 		byte myBuf[25565] = "";
 		int ReadRst = mbedtls_ssl_read(&this->m_sslContext, (unsigned char*)myBuf, 25565U);
 		if (ReadRst == MBEDTLS_ERR_SSL_WANT_READ || ReadRst == MBEDTLS_ERR_SSL_WANT_WRITE) {
-			return;
+			return false;
 		}
 		else if (ReadRst == MBEDTLS_ERR_SSL_CONN_EOF || ReadRst == 0 || ReadRst == MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY) {
 			this->Disconnect();
-			return;
+			return false;
 		}
 		else if (ReadRst < 0) {
 			this->onMbedTLSError(ReadRst);
 			this->Disconnect();
-			return;
+			return false;
 		}
 		std::vector<byte> realBuf;
 		for (int i = 0; i < ReadRst; i++) {
 			realBuf.push_back(myBuf[i]);
 		}
 		this->onMsgCB(realBuf);
+		return true;
 	}
+	return false;
 }
 
 EasyCrossPlatform::Network::Socket::IpAddr EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::getMyIpAddr()

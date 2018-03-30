@@ -1,8 +1,9 @@
 #include <XSYDCompression.h>
+#include <iostream>
 
 std::vector<byte> EasyCrossPlatform::Compression::GZip::Encrypt(const std::vector<byte>& OriginalData, const unsigned int CompressionLevel)
 {
-	std::string EncryptedData;
+	std::string EncryptedData = "";
 	CryptoPP::Gzip mEncoder(new CryptoPP::StringSink(EncryptedData),CompressionLevel);
 	for (size_t i = 0; i < OriginalData.size(); i++) {
 		mEncoder.Put(OriginalData[i], true);
@@ -13,8 +14,9 @@ std::vector<byte> EasyCrossPlatform::Compression::GZip::Encrypt(const std::vecto
 
 std::vector<byte> EasyCrossPlatform::Compression::GZip::Decrypt(const std::vector<byte>& EncryptedData)
 {
-	std::string DecryptedData;
+	std::string DecryptedData = "";
 	CryptoPP::Gunzip mDecoder(new CryptoPP::StringSink(DecryptedData));
+
 	for (size_t i = 0; i < EncryptedData.size(); i++) {
 		mDecoder.Put(EncryptedData[i], true);
 	}
@@ -24,7 +26,7 @@ std::vector<byte> EasyCrossPlatform::Compression::GZip::Decrypt(const std::vecto
 
 std::vector<byte> EasyCrossPlatform::Compression::Deflate::Encrypt(const std::vector<byte>& OriginalData, const unsigned int CompressionLevel)
 {
-	std::string EncryptedData;
+	std::string EncryptedData = "";
 	CryptoPP::ZlibCompressor mEncoder(new CryptoPP::StringSink(EncryptedData),CompressionLevel);
 	for (size_t i = 0; i < OriginalData.size(); i++) {
 		mEncoder.Put(OriginalData[i], true);
@@ -36,7 +38,7 @@ std::vector<byte> EasyCrossPlatform::Compression::Deflate::Encrypt(const std::ve
 
 std::vector<byte> EasyCrossPlatform::Compression::Deflate::Decrypt(const std::vector<byte>& EncryptedData)
 {
-	std::string DecryptedData;
+	std::string DecryptedData = "";
 	CryptoPP::ZlibDecompressor mDecoder(new CryptoPP::StringSink(DecryptedData));
 	for (size_t i = 0; i < EncryptedData.size(); i++) {
 		mDecoder.Put(EncryptedData[i], true);
@@ -47,10 +49,10 @@ std::vector<byte> EasyCrossPlatform::Compression::Deflate::Decrypt(const std::ve
 
 std::vector<byte> EasyCrossPlatform::Compression::Brotli::Encrypt(const std::vector<byte>& OriginalData, const unsigned int CompressionLevel)
 {
-	std::vector<byte> mResult;
+	std::vector<byte> mResult = std::vector<byte>();
 	size_t mArrLength = OriginalData.size();
 	uint8_t* mArray = new uint8_t[mArrLength];
-	size_t newArrLength = mArrLength * 2U;
+	size_t newArrLength = mArrLength * 3U;
 	uint8_t* mNewArray = new uint8_t[newArrLength];
 	
 	int mCompressionLevel = static_cast<int>(std::round(static_cast<double>(CompressionLevel) * 11.0 / 9.0));
@@ -76,11 +78,12 @@ std::vector<byte> EasyCrossPlatform::Compression::Brotli::Encrypt(const std::vec
 
 std::vector<byte> EasyCrossPlatform::Compression::Brotli::Decrypt(const std::vector<byte>& EncryptedData)
 {
-	std::vector<byte> mResult;
+	std::vector<byte> mResult = std::vector<byte>();
 	size_t mArrLength = EncryptedData.size();
 	uint8_t* mArray = new uint8_t[mArrLength];
-	uint8_t* mNewArray = new uint8_t[mArrLength*2U];
-	size_t newArrLength = mArrLength*2U;
+	size_t newArrLength = mArrLength * 20U;
+	uint8_t* mNewArray = new uint8_t[newArrLength];
+	
 	for (unsigned int i = 0U; i < mArrLength; i++) {
 		mArray[i] = static_cast<uint8_t>(EncryptedData[i]);
 	}

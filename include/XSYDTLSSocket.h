@@ -58,7 +58,7 @@
 						void onMsgCB(const std::vector<byte>& Data);
 						void onErrorOccured(int errNo, const std::string& ErrDescription);
 						void onMbedTLSError(int mbedErrNo);
-						void CheckMsg();
+						bool CheckMsg();
 					public:
 						TLSClientConnectCallBack ConnectCallBack = NULL;
 						TLSClientMsgCallBack MsgCallBack = NULL;
@@ -131,7 +131,7 @@
 					void onMbedTLSError(int mbedErrNo);
 					void setWorker(SocketWorker* newWorker);
 					void setSrvCert(const std::map < std::string,std::pair<std::string, std::pair<std::string,std::string>>> *newCerts); //first string is the hostname, default means all that does not match, first string in the pair is the cert content, second string in the pair is the private key.
-					void CheckNewMsg();
+					bool CheckNewMsg();
 					const std::map<std::string, std::pair<std::string, std::pair<std::string,std::string>>>* m_SrvCerts;
 				public:
 					TLSClientConnectCallBack ConnectCallBack = NULL;

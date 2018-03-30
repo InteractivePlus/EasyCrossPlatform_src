@@ -82,11 +82,14 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::cleanUp()
 	this->m_operationSucceed = true;
 	this->m_IsHTTPS = false;
 	this->m_MsgWaitingForRead = "";
-	this->m_ResquestContent.cleanUp();
 	this->ResponseContent.cleanUp();
 	this->m_ResquestContent.MajorVersion = 1U;
 	this->m_ResquestContent.MinorVersion = 1U;
+}
 
+void EasyCrossPlatform::Network::Request::WebsiteRequest::cleanRequest()
+{
+	this->m_ResquestContent.cleanUp();
 }
 
 void EasyCrossPlatform::Network::Request::WebsiteRequest::performRequest()
@@ -178,6 +181,12 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::performRequest()
 				EasyCrossPlatform::Runtime::Chrono::sleepFor(0.05);
 			}
 			mParseResult = this->ResponseContent.fromResponseString(this->m_MsgWaitingForRead);
+			if (mParseResult.canDecode && mParseResult.msgIsEnough && mParseResult.msgIsHTTP & !mParseResult.onError) {
+				if (this->ResponseContent.ResponseCode == 100U) { //100 Continue is useless!
+					this->m_MsgWaitingForRead = mParseResult.RemainMsg;
+					mParseResult.msgIsEnough = false;
+				}
+			}
 			this->m_IsProcessing = true;
 			if (this->m_operationSucceed == false) {
 				break;
@@ -239,6 +248,12 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::performRequest()
 				EasyCrossPlatform::Runtime::Chrono::sleepFor(0.05);
 			}
 			mParseResult = this->ResponseContent.fromResponseString(this->m_MsgWaitingForRead);
+			if (mParseResult.canDecode && mParseResult.msgIsEnough && mParseResult.msgIsHTTP & !mParseResult.onError) {
+				if (this->ResponseContent.ResponseCode == 100U) { //100 Continue is useless!
+					this->m_MsgWaitingForRead = mParseResult.RemainMsg;
+					mParseResult.msgIsEnough = false;
+				}
+			}
 			this->m_IsProcessing = true;
 			if (this->m_operationSucceed == false) {
 				break;

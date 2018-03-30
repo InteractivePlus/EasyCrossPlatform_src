@@ -912,14 +912,14 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 {
 	HTTPParseReturnVal mReturnVal;
 	mReturnVal.msgIsHTTP = true;
-	std::string mTempHexNum;
+	std::string mTempHexNum = "";
 	std::string newLineStr = "\r\n";
 
 	std::string::size_type EndingPlace = std::string::npos;
-	std::string mTempContent;
-	std::string OverallContent;
+	std::string mTempContent = "";
+	std::string OverallContent = "";
 	std::vector<std::pair<std::string::size_type, std::string>> mSeparatedStrs = EasyCrossPlatform::Parser::StringUtil::splitStringByDivisor(EncryptedData, newLineStr, -1);
-	std::string::size_type NumContent;
+	std::string::size_type NumContent = 0U;
 
 	bool MsgIsEnough = false;
 	bool CounterError = false;
@@ -927,6 +927,7 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 	unsigned int mCurrentLine = 0U;
 	unsigned int NumReaded = 0U;
 	for(;mCurrentLine<mSeparatedStrs.size();mCurrentLine++){
+		mTempContent.clear();
 		mTempHexNum = mSeparatedStrs[mCurrentLine].second;
 		if (mTempHexNum.empty()) {
 			if (mCurrentLine == mSeparatedStrs.size() - 1U) {
