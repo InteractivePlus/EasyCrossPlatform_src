@@ -1,6 +1,7 @@
 #ifndef __XSYDCommonHeaderFile__
 	#define __XSYDCommonHeadersFile__
 	#define _CRT_SECURE_NO_WARNINGS  //Make sure VS compiles this file correctly.
+	#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 0 //Make sure CrytoPP compiles correctly
 	#define NULL 0 //NULL can be interpreted using 0
 	typedef unsigned char byte; //Byte is unsigned char, you can cast it just from char
 	//Define System Type
@@ -14,6 +15,7 @@
 	#if defined(EASYCROSSPLATFORM_PLATFORM_UNIX)
 		#include <string.h>
 	#endif
+	#include <stdint.h>
 	#include <assert.h>
 	#include <cassert> //Debug¿‡
 	#include <exception> //Exception“Ï≥£¿‡

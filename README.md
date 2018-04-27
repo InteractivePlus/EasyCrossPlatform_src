@@ -10,7 +10,7 @@ Supported System: LINUX / WIN / MacOS
 Supported Architecture: x86(i386) / x64(x86_64) / ARMv5 / ARMv6 / ARMv7 / ARMv8  
 Powered by [BlueAirTechGroup](https://www.xsyds.cn/)  
 Contribution List: [Windy](https://github.com/ToiletCommander)  
-Libs: MultiThreadPool | MultiThread | FileIO | TLS & ~~DTLS~~ & TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption | Compression(Deflate-Gzip, Deflate-Zlib, Brotli) | HTTP(s)_Requests | JSON | HTTP1.X Parser  
+Libs: MultiThreadPool | MultiThread | FileIO | TLS & ~~DTLS~~ & TCP & UDP Sockets | MySQL / MariaDB (Using MariaDB C Connector) | Encryption | Compression(Deflate-Gzip, Deflate-Zlib, Brotli) | HTTP(s)_Requests | JSON | HTTP1.X Parser | ~~International Charsets~~  
 Require Support: MacOSX / Linux / Windows System and C++ 11 Support  
 ## Uncompromising Performances?
 Right, we use LibUV as our basis for our socket class.  

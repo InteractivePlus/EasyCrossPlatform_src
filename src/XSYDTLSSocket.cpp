@@ -233,6 +233,16 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::setRemoteIPAddr(c
 	this->m_ClientSocket.setRemoteIPAddr(newIP);
 }
 
+void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::setSelfPort(const unsigned short Port)
+{
+	try {
+		this->m_ClientSocket.setSelfPort(Port);
+	}
+	catch (std::runtime_error e) {
+		throw e;
+	}
+}
+
 EasyCrossPlatform::Network::Socket::IpAddr EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::getMyIpAddr()
 {
 	return this->m_ClientSocket.getMyIpAddr();

@@ -358,7 +358,7 @@ std::vector<byte> EasyCrossPlatform::Parser::StringUtil::toBytes(const std::wstr
 {
 	std::vector<byte> mBytes = std::vector<byte>();
 	std::mbstate_t mbState = std::mbstate_t();
-	size_t mStringChar = myStr.size() * 3U;
+	size_t mStringChar = myStr.size() * 4U;
 	byte* mByte = new byte[mStringChar + 1U];
 	char* mBytesArr = reinterpret_cast<char*>(mByte);
 	wchar_t* mWCharArr = new wchar_t[myStr.size() + 1U];
@@ -409,4 +409,40 @@ unsigned int EasyCrossPlatform::Parser::StringUtil::replace(std::wstring & str, 
 		NumReplaced++;
 	}
 	return NumReplaced;
+}
+
+std::string EasyCrossPlatform::Parser::StringUtil::TransformLocalEncoding(const std::string & str, const std::string & fromLocale, const std::string & toLocale)
+{
+	std::setlocale(LC_CTYPE, "");
+	char* OldLocale = std::setlocale(LC_CTYPE, NULL);
+	std::setlocale(LC_CTYPE, fromLocale.c_str());
+	size_t WCharLength = str.length() + 1U;
+	wchar_t* mWideChars = new wchar_t[WCharLength];
+	mbstate_t mMBState;
+	const char* myStrPtr = str.c_str();
+	WCharLength = std::mbsrtowcs(mWideChars,(const char**) &myStrPtr, WCharLength, &mMBState);
+	if (WCharLength != std::numeric_limits<size_t>::max()) {
+		mWideChars[WCharLength] = L'\0';
+	}
+	else {
+		std::setlocale(LC_CTYPE, OldLocale);
+		delete[] mWideChars;
+		return str;
+	}
+	std::setlocale(LC_CTYPE, toLocale.c_str());
+	size_t newCharLength = WCharLength * 4U + 1U;
+	char* mNewChars = new char[newCharLength];
+	newCharLength = std::wcsrtombs(mNewChars, (const wchar_t**) &mWideChars, newCharLength, &mMBState);
+	if (newCharLength == std::numeric_limits<size_t>::max()) {
+		std::setlocale(LC_CTYPE, OldLocale);
+		delete[] mWideChars;
+		delete[] mNewChars;
+		return str;
+	}
+	mNewChars[newCharLength] = '\0';
+	std::setlocale(LC_CTYPE, OldLocale);
+	std::string mResult(mNewChars, newCharLength);
+	delete[] mWideChars;
+	delete[] mNewChars;
+	return mResult;
 }

@@ -18,7 +18,12 @@ std::vector<byte> EasyCrossPlatform::Compression::GZip::Decrypt(const std::vecto
 	CryptoPP::Gunzip mDecoder(new CryptoPP::StringSink(DecryptedData));
 
 	for (size_t i = 0; i < EncryptedData.size(); i++) {
-		mDecoder.Put(EncryptedData[i], true);
+		try {
+			mDecoder.Put(EncryptedData[i], true);
+		}
+		catch (...) {
+			throw std::runtime_error("Data is not a valid compressed data");
+		}
 	}
 	mDecoder.MessageEnd(-1, true);
 	return EasyCrossPlatform::Parser::StringUtil::toBytes(DecryptedData);
@@ -41,7 +46,12 @@ std::vector<byte> EasyCrossPlatform::Compression::Deflate::Decrypt(const std::ve
 	std::string DecryptedData = "";
 	CryptoPP::ZlibDecompressor mDecoder(new CryptoPP::StringSink(DecryptedData));
 	for (size_t i = 0; i < EncryptedData.size(); i++) {
-		mDecoder.Put(EncryptedData[i], true);
+		try {
+			mDecoder.Put(EncryptedData[i], true);
+		}
+		catch (...) {
+			throw std::runtime_error("Data is not a valid compressed data");
+		}
 	}
 	mDecoder.MessageEnd(-1, true);
 	return EasyCrossPlatform::Parser::StringUtil::toBytes(DecryptedData);
@@ -90,6 +100,7 @@ std::vector<byte> EasyCrossPlatform::Compression::Brotli::Decrypt(const std::vec
 
 	BrotliDecoderResult CResult = BrotliDecoderDecompress(mArrLength, mArray, &newArrLength, mNewArray);
 	if (CResult == BROTLI_DECODER_RESULT_ERROR) {
+		throw std::runtime_error("Data is not a valid compressed data");
 		mResult.clear();
 	}
 	else { //CResult == BROTLI_DECODER_RESULT_SUCCESS

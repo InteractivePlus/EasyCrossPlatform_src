@@ -45,6 +45,7 @@
 						void Init();
 						void Connect();
 						void setRemoteIPAddr(const IpAddr& newIP);
+						void setSelfPort(const unsigned short Port);
 						IpAddr getMyIpAddr();
 						IpAddr getRemoteAddr();
 						bool isConnected();

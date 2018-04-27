@@ -96,7 +96,7 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::performRequest()
 {
 	this->cleanUp();
 	this->m_ResquestContent.RequestedURL.fromURLString(this->RequestURL);
-	unsigned int mRequestPort = 0U;
+	unsigned short mRequestPort = 0U;
 	std::string tmpProtoStr = EasyCrossPlatform::Parser::StringUtil::toLower(m_ResquestContent.RequestedURL.Protocol);
 	if (tmpProtoStr.empty() || tmpProtoStr == "http") {
 		this->m_IsHTTPS = false;

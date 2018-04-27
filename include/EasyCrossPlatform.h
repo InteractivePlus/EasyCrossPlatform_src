@@ -17,4 +17,5 @@
 	#include <XSYDDNS.h>
 	#include <XSYDHTTPParser.h>
 	#include <XSYDTrustedCert.h>
+	#include <XSYDHTTPDownload.h>
 #endif //__EasyCrossPlatformFile__

@@ -8,13 +8,12 @@ public:
 		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
 		if (Succeeded) {
 			std::cout << "Socket Connected" << std::endl;
-			MyClass->SendMsg("GET / HTTP/1.1\r\nHOST:www.kvm.ink\r\nConnection: Keep-Alive\r\nC\r\n\r\n");
+			MyClass->SendMsg("GET / HTTP/1.1\r\nHOST:www.kvm.ink\r\nConnection: Keep-Alive\r\n\r\n");
 		}
 	}
-	static void MsgCB(const std::vector<byte>& Data, void* ClassPtr) {
+	static void MsgCB(const std::vector<byte>& Msg, void* ClassPtr) {
 		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
-		std::string Msg = EasyCrossPlatform::Parser::StringUtil::fromBytes(Data);
-		std::cout << Msg;
+		std::cout << EasyCrossPlatform::Parser::StringUtil::fromBytes(Msg);
 	}
 	static void DisconnectCB(void* ClassPtr) {
 		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
@@ -27,7 +26,7 @@ public:
 };
 
 int main(int argc, char** args) {
-	std::string myTrustedCA = std::string(EasyCrossPlatform::Network::Request::TrustedCA, EasyCrossPlatform::Network::Request::TrustedCA_length);
+	std::string myTrustedCA = EasyCrossPlatform::File::FileIO::ReadFile(EasyCrossPlatform::Runtime::Path::APPPath() + "CALIST.txt");
 	TLSAsyncClientSocket myClient;
 	SocketWorker myWorker;
 	myClient.setWorker(&myWorker);
@@ -38,6 +37,7 @@ int main(int argc, char** args) {
 	myClient.VerifyServerCert = true;
 	myClient.Init();
 	myClient.setRemoteIPAddr(IpAddr("104.27.184.99", 443, true));
+	myClient.setSelfPort(700); //This Line is Optional, you can delete it so that the Port will be assigned by the system. It throws out Runtime Error when an error is occured when binding
 	myClient.setTrustedCAChain(myTrustedCA);
 	myClient.serverHostName = "www.kvm.ink";
 	system("pause");

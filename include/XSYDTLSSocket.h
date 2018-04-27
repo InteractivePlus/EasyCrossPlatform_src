@@ -74,6 +74,7 @@
 						bool VerifyServerCert = true;
 						void setWorker(SocketWorker* newWorker);
 						void setRemoteIPAddr(const IpAddr& newIP);
+						void setSelfPort(const unsigned short Port);
 						IpAddr getMyIpAddr();
 						IpAddr getRemoteAddr();
 						void setTrustedCAChain(const std::string& newCAChain);

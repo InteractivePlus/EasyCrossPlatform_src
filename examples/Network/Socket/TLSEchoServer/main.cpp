@@ -46,7 +46,8 @@ int main(int argc, char** args) {
 	std::map<std::string, std::pair<std::string, std::pair<std::string,std::string>>> mSrvCerts;
 	//Reading Server Crt Files
 	mSrvCerts["default"] = std::pair<std::string,std::pair<std::string,std::string>>(EasyCrossPlatform::File::FileIO::ReadFile(EasyCrossPlatform::Runtime::Path::APPPath() + "XSYDGW.crt"), std::pair<std::string,std::string>(EasyCrossPlatform::File::FileIO::ReadFile(EasyCrossPlatform::Runtime::Path::APPPath() + "XSYDGW.key"),""));
-
+	//std::pair<Cert,std::pair<Private Key, Key Password>
+	
 	//Setting up
 	mServer.ConnectCallBack = MyTLSFunctions::TLSClientConnectCallBack;
 	mServer.DisconnectCallBack = MyTLSFunctions::TLSClientDisconnectCallBack;

@@ -113,12 +113,13 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Init()
 	this->Inited = true;
 	this->m_ClientSocketHandle = std::shared_ptr<uv_tcp_t>(new uv_tcp_t);
 	this->m_ClientSocketHandle.get()->data = (void*)this;
-
+	
 	if (this->mySocketWorker->m_num_Client == 0U) {
 		this->mySocketWorker->Start();
 	}
-	uv_tcp_init(this->mySocketWorker->m_uv_loop.get(), this->m_ClientSocketHandle.get());
 	this->mySocketWorker->m_num_Client++;
+
+	uv_tcp_init(this->mySocketWorker->m_uv_loop.get(), this->m_ClientSocketHandle.get());
 	
 }
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Connect()
@@ -135,6 +136,21 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Connect()
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::setRemoteIPAddr(const IpAddr & newIP)
 {
 	this->m_remoteAddr = newIP;
+}
+void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::setSelfPort(const unsigned short Port)
+{
+	IpAddr mIp;
+	if (this->m_remoteAddr.addrIsIPV4()) {
+		 mIp.setIPAddress("0.0.0.0", Port, true);
+	}
+	else {
+		mIp.setIPAddress("::", Port, false);
+	}
+	sockaddr mAddr = mIp.getIPAddress();
+	int rst = uv_tcp_bind(this->m_ClientSocketHandle.get(), &mAddr, 0);
+	if (rst < 0) {
+		throw std::runtime_error("The Port cannot be binded");
+	}
 }
 EasyCrossPlatform::Network::Socket::IpAddr EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::getMyIpAddr()
 {
@@ -208,7 +224,6 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Destroy()
 	}
 	this->Inited = false;
 	this->Disconnect();
-	this->m_ClientSocketHandle.reset();
 	this->mySocketWorker->m_num_Client--;
 	if (this->mySocketWorker->m_num_Client == 0U) {
 		this->mySocketWorker->Stop();
