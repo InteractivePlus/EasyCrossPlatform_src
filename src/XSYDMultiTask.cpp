@@ -110,6 +110,10 @@ void EasyCrossPlatform::Thread::WorkPool::SuperviseThreads(std::thread::id Threa
 			}
 			MyWork.push_back(TmpWorkerInfo);
 		}
+		else if (PendingWork.empty()) {
+			//如果没有任务等待执行, 则睡眠Supervising Thread 25毫秒
+			std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(25));
+		}
 	}
 	//不Running了,销毁其余
 	if (!MyWork.empty()) {
