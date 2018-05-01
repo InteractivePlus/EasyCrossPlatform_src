@@ -36,12 +36,13 @@ With less code, developers can develop more safe code preventing memory leaks an
 ## Build
 This project is not even released with beta and it is still in its early stage of development.  
 If you cannot wait to see it, 
-1) Enter the /extlibs/mariadb directory and put the correct Files in the /lib directory  
+1. You need to install [XMake](http://xmake.io/), the build tool that we use to simplify our building process.
+2. Enter the /extlibs/mariadb directory and put the correct Files in the /lib directory  
 	- e.g. 
 	- Copy extlibs/mariadb/Win_x86/mariadbclient.lib to extlibs/mariadbclient.lib
 	- Copy extlibs/mariadb/Win_x86/mariadb.lib to extlibs/mariadb.lib
 	- Copy extlibs/mariadb/Win_x86/mariadb.dll to extlibs/mariadb.dll
-2) simply run xmake in the directory to generate a static/shared library that you can use.  
+3. simply run xmake in the directory to generate a static/shared library that you can use.  
 Remeber that the lib file generated is not cross-platform betweeen Win and Linux, and between different versions of Linux.  
 *If you are running Linux, please read Linux_BuildOptions.txt  
 You need to generate lib file each time when you are switching platforms.  

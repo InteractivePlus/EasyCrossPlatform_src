@@ -35,13 +35,13 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 用EasyCrossPlatform开发, 可以有效的减少代码行数, 意味着更少Bug和溢出漏洞的可能性. EasyCrossPlatform在实现层趋向于将底层代码封装的更简易, 但是仍旧保留不妥协的性能  
 ## 编译
 此项目仍在早期开发阶段, 且并没有考虑开始发行, Beta版都不! 不过如果您等不及了, 可以编译此库以使用它.  
-注意, 目前我们使用的编译工具*xmake不支持在ARM64上进行运行/编译*, 除非您在X86/X64机器上进行交叉编译, 否则您将无法使用ARM64版本的EASYCROSSPLATFORM.  
-1) 在/extlibs/MariaDB文件夹中选择您系统对应的正确版本, 并将系统版本文件夹内的文件拷贝到/extlibs目录下
+1. 我们使用[XMake](http://xmake.io/)来简化我们的编译过程, 您需要首先安装Xmake.
+2. 在/extlibs/MariaDB文件夹中选择您系统对应的正确版本, 并将系统版本文件夹内的文件拷贝到/extlibs目录下
 	- e.g. 
 	- 复制 extlibs/mariadb/Win_x86/mariadbclient.lib 到 extlibs/mariadbclient.lib
 	- 复制 extlibs/mariadb/Win_x86/mariadb.lib 到 extlibs/mariadb.lib
 	- 复制 extlibs/mariadb/Win_x86/mariadb.dll 到 extlibs/mariadb.dll
-3) 目录下运行xmake即可生成静态/动态链接库.  
+3. 目录下运行xmake即可生成静态/动态链接库.  
 (注意Windows和Linux的库互不通用, 不同版本的Linux静态库也不通用).  
 *如果您运行的是Unix / Linux系统, 您需要指定您的Linux系统类型, 请查看Linux_BuildOptions.txt  
 ## 贡献
