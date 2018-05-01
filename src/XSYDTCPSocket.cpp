@@ -1,5 +1,4 @@
 ﻿#include <XSYDTCPSocket.h>
-#include "..\include\XSYDTCPSocket.h"
 
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::m_uv_connect_cb(uv_connect_t * req, int status)
 {

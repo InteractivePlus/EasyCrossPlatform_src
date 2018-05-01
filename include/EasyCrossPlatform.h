@@ -18,4 +18,5 @@
 	#include <XSYDHTTPParser.h>
 	#include <XSYDTrustedCert.h>
 	#include <XSYDHTTPDownload.h>
+	#include <XSYDRegex.h>
 #endif //__EasyCrossPlatformFile__

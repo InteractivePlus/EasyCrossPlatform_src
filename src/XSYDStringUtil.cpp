@@ -377,11 +377,11 @@ std::vector<byte> EasyCrossPlatform::Parser::StringUtil::toBytes(const std::wstr
 	return mBytes;
 }
 
-unsigned int EasyCrossPlatform::Parser::StringUtil::replace(std::string & str, const std::string & find, const std::string & replace, int Limit)
+unsigned int EasyCrossPlatform::Parser::StringUtil::replace(std::string & str, const std::string & find, const std::string & replace, int Limit, std::string::size_type Start)
 {
 	unsigned int NumReplaced = 0U;
 	std::string::size_type lastPos = 0U;
-	std::string::size_type startPos = 0U;
+	std::string::size_type startPos = Start;
 	while (Limit == -1 || NumReplaced < static_cast<unsigned int>(Limit)) {
 		startPos = str.find(find,lastPos);
 		if (startPos == std::string::npos) {
@@ -394,11 +394,11 @@ unsigned int EasyCrossPlatform::Parser::StringUtil::replace(std::string & str, c
 	return NumReplaced;
 }
 
-unsigned int EasyCrossPlatform::Parser::StringUtil::replace(std::wstring & str, const std::wstring & find, const std::wstring & replace, int Limit)
+unsigned int EasyCrossPlatform::Parser::StringUtil::replace(std::wstring & str, const std::wstring & find, const std::wstring & replace, int Limit, std::wstring::size_type Start)
 {
 	unsigned int NumReplaced = 0U;
 	std::wstring::size_type lastPos = 0U;
-	std::wstring::size_type startPos = 0U;
+	std::wstring::size_type startPos = Start;
 	while (Limit == -1 || NumReplaced < static_cast<unsigned int>(Limit)) {
 		startPos = str.find(find, lastPos);
 		if (startPos == std::wstring::npos) {

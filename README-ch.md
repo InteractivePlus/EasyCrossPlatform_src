@@ -10,7 +10,7 @@ Language: [English](README.md)
 支持CPU架构: x86(i386) / x64(x86_64) / ARMv5 / ARMv6 / ARMv7 / ARMv8  
 [形随意动](https://www.xsyds.cn/)作品  
 贡献列表: [年迈的老秋风](https://github.com/ToiletCommander)  
-包含库: 多线程池 | 多线程 | 文件读写 | TLS & ~~DTLS~~ & TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | 压缩库(Deflate-Gzip, Deflate Zlib, Brotli) | HTTP(s)请求 | JSON | HTTP1.X解析器 | 国际编码(正在进行)  
+包含库: 多线程池 | 多线程 | 文件读写 | TLS & ~~DTLS~~ & TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | 压缩库(Deflate-Gzip, Deflate Zlib, Brotli) | HTTP(s)请求 | JSON | HTTP1.X解析器 | 国际编码(正在施工) | 正则表达式匹配/替换/查找  
 需要支持: Unix / Linux / Windows系统 + C++11  
 ## 毫不妥协的性能
 Socket库以Libuv为底层, 开发了跨平台的Socket库.  

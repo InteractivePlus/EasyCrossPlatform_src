@@ -1,46 +1,167 @@
-﻿#include <EasyCrossPlatform.h>
-#include <iostream>
-using namespace EasyCrossPlatform::Network::Socket;
+﻿#include <XSYDSocketResImpl.h>
 
-class MySocket {
-public:
-	static void ConnectCB(bool Succeeded, void* ClassPtr) {
-		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
-		if (Succeeded) {
-			std::cout << "Socket Connected" << std::endl;
-			MyClass->SendMsg("GET / HTTP/1.1\r\nHOST:www.kvm.ink\r\nConnection: Keep-Alive\r\n\r\n");
-		}
-	}
-	static void MsgCB(const std::vector<byte>& Msg, void* ClassPtr) {
-		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
-		std::cout << EasyCrossPlatform::Parser::StringUtil::fromBytes(Msg);
-	}
-	static void DisconnectCB(void* ClassPtr) {
-		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
-		std::cout << "SocketDis" << std::endl;
-	}
-	static void ErrorCB(int errCode, const std::string& errDescription, void* ClassPtr) {
-		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* MyClass = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
-		std::cout << "Error:" << errDescription << std::endl;
-	}
-};
+uv_loop_t EasyCrossPlatform::Network::Socket::SocketParam::m_uv_loop;
+unsigned int EasyCrossPlatform::Network::Socket::SocketParam::m_num_Client = 0U;
+EasyCrossPlatform::Thread::SingleWork EasyCrossPlatform::Network::Socket::SocketParam::m_MTManager = EasyCrossPlatform::Thread::SingleWork(SocketParam::m_MultiThread_Job);
 
-int main(int argc, char** args) {
-	std::string myTrustedCA = EasyCrossPlatform::File::FileIO::ReadFile("E:\\C++\\EasyCrossPlatform_VS\\CALIST.txt");
-	TCPAsyncClientSocket myClient;
-	SocketWorker myWorker;
-	myClient.setWorker(&myWorker);
-	myClient.ConnectCallBack = MySocket::ConnectCB;
-	myClient.DisconnectCallBack = MySocket::DisconnectCB;
-	myClient.MsgCallBack = MySocket::MsgCB;
-	myClient.ErrorCallBack = MySocket::ErrorCB;
-	myClient.Init();
-	myClient.setRemoteIPAddr(IpAddr("104.27.184.99", 443, true));
-	myClient.setSelfPort(700); //This line is optional, you can delete this line and the system will allocate a port for your socket. This Line throws a std::runtime_error when encounter an error allocating the port.
-	system("pause");
-	myClient.Connect();
-	system("pause");
-	myClient.Disconnect();
-	myClient.Destroy();
+void EasyCrossPlatform::Network::Socket::SocketParam::Start()
+{
+	uv_loop_init(&SocketParam::m_uv_loop);
+	SocketParam::m_MTManager.StartJob(NULL, NULL);
+}
 
+void EasyCrossPlatform::Network::Socket::SocketParam::Stop()
+{
+	uv_stop(&SocketParam::m_uv_loop);
+	SocketParam::m_MTManager.StopJob();
+}
+
+void EasyCrossPlatform::Network::Socket::SocketParam::m_MultiThread_Job(std::thread::id ThreadID, void * Parameters, bool * RunningSign, std::mutex * Mutex)
+{
+	while ((*RunningSign)) {
+		uv_run(&SocketParam::m_uv_loop, UV_RUN_DEFAULT);
+		std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(200));
+	}
+	uv_loop_close(&SocketParam::m_uv_loop);
+	return;
+}
+
+
+EasyCrossPlatform::Network::Socket::IpAddr::IpAddr()
+{
+	this->m_isIpV4 = true;
+}
+
+EasyCrossPlatform::Network::Socket::IpAddr::IpAddr(const std::string & IpAddress, const unsigned short Port, bool AddrIpV4) : IpAddr(IpAddress.c_str(), Port, AddrIpV4)
+{
+
+}
+
+EasyCrossPlatform::Network::Socket::IpAddr::IpAddr(const char * IpAddress, const unsigned short Port, bool AddrIpV4)
+{
+	this->setIPAddress(IpAddress, Port, AddrIpV4);
+}
+
+EasyCrossPlatform::Network::Socket::IpAddr::IpAddr(const sockaddr & newAddr)
+{
+	this->setIPAddress(newAddr);
+}
+
+EasyCrossPlatform::Network::Socket::IpAddr::IpAddr(const IpAddr & oldAddr)
+{
+	this->m_isIpV4 = oldAddr.m_isIpV4;
+	this->m_Addr = oldAddr.m_Addr;
+}
+
+bool EasyCrossPlatform::Network::Socket::IpAddr::setIPAddress(const std::string & IpAddress, const unsigned short Port, bool AddrIpV4)
+{
+	return setIPAddress(IpAddress.c_str(), Port, AddrIpV4);
+}
+
+bool EasyCrossPlatform::Network::Socket::IpAddr::setIPAddress(const char * IpAddress, const unsigned short Port, bool AddrIpV4)
+{
+	int setState = 0;
+	if (AddrIpV4) {
+		setState = uv_ip4_addr(IpAddress, static_cast<int>(Port), (sockaddr_in*)&this->m_Addr);
+	}
+	else {
+		setState = uv_ip6_addr(IpAddress, static_cast<int>(Port), (sockaddr_in6*)&this->m_Addr);
+	}
+	if (setState < 0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+bool EasyCrossPlatform::Network::Socket::IpAddr::setIPAddress(const sockaddr & newAddr) {
+	if (newAddr.sa_family == AF_INET) {
+		this->m_isIpV4 = true;
+	}
+	else if (newAddr.sa_family == AF_INET6) {
+		this->m_isIpV4 = false;
+	}
+	else {
+		return false;
+	}
+	this->m_Addr = newAddr;
+	return true;
+}
+
+std::string EasyCrossPlatform::Network::Socket::IpAddr::getIPString()
+{
+	if (this->m_isIpV4) {
+		char myNewAddr[16] = "";
+		memset(myNewAddr, 0, 16);
+		int State = uv_ip4_name((sockaddr_in*)&(this->m_Addr), (char*)myNewAddr, 16);
+		return std::string(myNewAddr);
+	}
+	else {
+		char myNewAddr[40] = "";
+		memset(myNewAddr, 0, 40);
+		int State = uv_ip6_name((sockaddr_in6*) &(this->m_Addr), (char*)myNewAddr, 40);
+		return std::string(myNewAddr);
+	}
+}
+
+bool EasyCrossPlatform::Network::Socket::IpAddr::addrIsIPV4()
+{
+	return this->m_isIpV4;
+}
+
+unsigned short EasyCrossPlatform::Network::Socket::IpAddr::getPort()
+{
+	if (this->m_isIpV4) {
+		sockaddr_in* mySocketAddr = (sockaddr_in*)&this->m_Addr;
+		return ntohs(mySocketAddr->sin_port);
+	}
+	else {
+		sockaddr_in6* mySocketAddr = (sockaddr_in6*)&this->m_Addr;
+		return ntohs(mySocketAddr->sin6_port);
+	}
+}
+
+sockaddr EasyCrossPlatform::Network::Socket::IpAddr::getIPAddress()
+{
+	return this->m_Addr;
+}
+
+EasyCrossPlatform::Network::Socket::SocketWorker::SocketWorker()
+{
+	this->m_uv_loop = std::shared_ptr<uv_loop_t>(new uv_loop_t());
+}
+
+EasyCrossPlatform::Network::Socket::SocketWorker::SocketWorker(SocketWorker & LeftSocket)
+{
+	throw std::runtime_error("233");
+}
+
+void EasyCrossPlatform::Network::Socket::SocketWorker::Start()
+{
+	uv_loop_init(this->m_uv_loop.get());
+	this->m_MTManager.setWork(SocketWorker::m_MultiThread_Job);
+	this->m_MTManager.StartJob(NULL, (void*)this);
+}
+
+void EasyCrossPlatform::Network::Socket::SocketWorker::Stop()
+{
+	uv_stop(this->m_uv_loop.get());
+	this->m_MTManager.StopJob();
+}
+
+void EasyCrossPlatform::Network::Socket::SocketWorker::m_MultiThread_Job(std::thread::id ThreadID, void * Parameters, bool * RunningSign, std::mutex * Mutex)
+{
+	SocketWorker* myWorker = (SocketWorker*)Parameters;
+	while ((*RunningSign)) {
+		uv_run(myWorker->m_uv_loop.get(), UV_RUN_DEFAULT);
+		std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(200));
+	}
+	uv_loop_close(myWorker->m_uv_loop.get());
+	return;
+}
+
+EasyCrossPlatform::Network::Socket::SocketWorker::~SocketWorker()
+{
+	this->Stop();
 }
