@@ -24,10 +24,15 @@
 				HTTPParseReturnVal DecodeChunckedData(const std::string& EncryptedData, std::string& DataForWriting);
 				std::string EncodeChunckedData(const std::string& OriginalData);
 				class URL {
+					friend class HTTPRequestHeader;
+					friend class HTTPResponseHeader;
 					private:
-
+						static unsigned char ToHex(unsigned char x);
+						static unsigned char FromHex(unsigned char x);
 					protected:
 						
+						static std::string UrlEncode(const std::string& szToEncode);
+						static std::string UrlDecode(const std::string& szToDecode);
 					public:
 						std::string Protocol = ""; //Example: http
 						std::string AccessCert = ""; //Example: Empty / admin:xsyd666

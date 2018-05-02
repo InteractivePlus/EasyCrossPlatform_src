@@ -12,6 +12,67 @@ void EasyCrossPlatform::Parser::HTTP::URL::cleanUp()
 	this->FragmentID = "";
 }
 
+unsigned char EasyCrossPlatform::Parser::HTTP::URL::ToHex(unsigned char x)
+{
+	return  x > 9 ? x + 55 : x + 48;
+}
+
+unsigned char EasyCrossPlatform::Parser::HTTP::URL::FromHex(unsigned char x)
+{
+	unsigned char y;
+	if (x >= 'A' && x <= 'Z') y = x - 'A' + 10;
+	else if (x >= 'a' && x <= 'z') y = x - 'a' + 10;
+	else if (x >= '0' && x <= '9') y = x - '0';
+	else assert(0);
+	return y;
+}
+
+std::string EasyCrossPlatform::Parser::HTTP::URL::UrlEncode(const std::string & szToEncode)
+{
+	std::string strTemp = "";
+	size_t length = szToEncode.length();
+	for (size_t i = 0; i < length; i++)
+	{
+		if (isalnum((unsigned char)szToEncode[i]) ||
+			(szToEncode[i] == '-') ||
+			(szToEncode[i] == '_') ||
+			(szToEncode[i] == '.') ||
+			(szToEncode[i] == '~'))
+			//Those special symbols will not be converted.
+			strTemp += szToEncode[i];
+		else if (szToEncode[i] == ' ')
+			strTemp += "+";
+		else
+		{
+			strTemp += '%';
+			strTemp += ToHex((unsigned char)szToEncode[i] >> 4);
+			strTemp += ToHex((unsigned char)szToEncode[i] % 16);
+		}
+	}
+	return strTemp;
+}
+
+std::string EasyCrossPlatform::Parser::HTTP::URL::UrlDecode(const std::string & szToDecode)
+{
+	std::string strTemp = "";
+	size_t length = szToDecode.length();
+	for (size_t i = 0; i < length; i++)
+	{
+		if (szToDecode[i] == '+') {
+			strTemp += ' ';
+		}
+		else if (szToDecode[i] == '%')
+		{
+			assert(i + 2 < length);
+			unsigned char high = FromHex((unsigned char)szToDecode[++i]);
+			unsigned char low = FromHex((unsigned char)szToDecode[++i]);
+			strTemp += high * 16 + low;
+		}
+		else strTemp += szToDecode[i];
+	}
+	return strTemp;
+}
+
 std::string EasyCrossPlatform::Parser::HTTP::URL::toURLString()
 {
 	/*
@@ -40,10 +101,10 @@ std::string EasyCrossPlatform::Parser::HTTP::URL::toURLString()
 	}
 	myURL += "/";
 	if (!this->FileName.empty()) {
-		myURL += this->FileName;
+		myURL += this->UrlEncode(this->FileName);
 	}
 	if (!this->QueryString.empty()) {
-		myURL += "?" + this->QueryString;
+		myURL += "?" + this->UrlEncode(this->QueryString);
 	}
 	if (!this->FragmentID.empty()) {
 		myURL += "#" + this->FragmentID;
@@ -82,7 +143,7 @@ void EasyCrossPlatform::Parser::HTTP::URL::fromURLString(const std::string& urlS
 	*/
 	std::string::size_type QueryPos = tmpURL.rfind("?", tmpURL.length());
 	if (QueryPos != std::string::npos) {
-		this->QueryString = tmpURL.substr(QueryPos + 1, tmpURL.length() - QueryPos - 1);
+		this->QueryString = this->UrlDecode(tmpURL.substr(QueryPos + 1, tmpURL.length() - QueryPos - 1));
 		tmpURL = tmpURL.substr(0U, QueryPos);
 	}
 	/*
@@ -133,7 +194,7 @@ void EasyCrossPlatform::Parser::HTTP::URL::fromURLString(const std::string& urlS
 	std::string::size_type FilePos = tmpURL.rfind("/", tmpURL.length());
 	if (FilePos != std::string::npos) {
 		//Has [Path]/[FileName]
-		this->FileName = tmpURL.substr(FilePos + 1, tmpURL.length() - FilePos - 1);
+		this->FileName = this->UrlDecode(tmpURL.substr(FilePos + 1, tmpURL.length() - FilePos - 1));
 		tmpURL = tmpURL.substr(0U, FilePos);
 		/*
 		Analyze Path
@@ -295,10 +356,10 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPRequestHeader::WriteFirstLine()
 		mFirstLine += this->RequestedURL.Path;
 	}
 	mFirstLine += '/';
-	mFirstLine += this->RequestedURL.FileName;
+	mFirstLine += URL::UrlEncode(this->RequestedURL.FileName);
 	if (!this->RequestedURL.QueryString.empty()) {
 		mFirstLine += '?';
-		mFirstLine += this->RequestedURL.QueryString;
+		mFirstLine += URL::UrlEncode(this->RequestedURL.QueryString);
 	}
 	mFirstLine += ' ';
 	mFirstLine += "HTTP/";
