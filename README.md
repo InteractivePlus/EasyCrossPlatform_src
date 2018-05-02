@@ -8,7 +8,7 @@ Language: [中文](README-ch.md)
 A easy-to-use cross-platform C++ library designed for PHP and Python Users.  
 Supported System: LINUX / WIN / MacOS  
 Supported Architecture: x86(i386) / x64(x86_64) / ARMv5 / ARMv6 / ARMv7 / ARMv8  
-**We did not test on Big Endian Machines, please be noticed that Socket might not work according to expection when communicating between an Big-Endian and Small-Endian Machines**  
+**We did not test on Big Endian Machines, please be noticed that Socket might not work according to expectation when communicating between an Big-Endian and Small-Endian Machines**  
 *Luckily, our modern CPUs are almost ALL Small-Endian*  
 Powered by [BlueAirTechGroup](https://www.xsyds.cn/)  
 Contribution List: [Windy](https://github.com/ToiletCommander)  
