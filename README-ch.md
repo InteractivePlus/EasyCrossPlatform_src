@@ -8,6 +8,8 @@ Language: [English](README.md)
 为了PHP与Python用户创建的快速开发且跨平台的C++框架  
 支持系统: LINUX / WIN / MacOS  
 支持CPU架构: x86(i386) / x64(x86_64) / ARMv5 / ARMv6 / ARMv7 / ARMv8  
+**我们没有对大端序(Big-Endian)的CPU机器进行测试, 请注意, 如果您在一台大端序(Big-Endian)和一台小端序(Small-Endian)的机器上进行Socket连接, 他们交换的信息可能不会按照预测的那样进行**  
+*所幸现在大多数的CPU都是小端序的*  
 [形随意动](https://www.xsyds.cn/)作品  
 贡献列表: [年迈的老秋风](https://github.com/ToiletCommander)  
 包含库: 多线程池 | 多线程 | 文件读写 | TLS & ~~DTLS~~ & TCP & UDP Sockets 套接字 | MySQL / MariaDB(使用MariaDB C Connector) | 加密库 | 压缩库(Deflate-Gzip, Deflate Zlib, Brotli) | HTTP(s)请求 | JSON | HTTP1.X解析器 | 国际编码(正在施工) | 正则表达式匹配/替换/查找  
