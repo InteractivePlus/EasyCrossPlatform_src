@@ -35,7 +35,6 @@
 				std::vector<byte> toBytes(const std::wstring& myStr);
 				unsigned int replace(std::string& str, const std::string& find, const std::string& replace, int Limit = -1, std::string::size_type Start = 0U);
 				unsigned int replace(std::wstring& str, const std::wstring& find, const std::wstring& replace, int Limit = -1, std::wstring::size_type Start = 0U);
-				std::string TransformLocalEncoding(const std::string& str, const std::string& fromLocale, const std::string& toLocale);
 				#if defined(CROSSPLATFORM_OS_IS_WIN)
 				const constexpr char* newLineString = "\r\n";
 				#elif defined(CROSSPLATFORM_OS_IS_MAC)

@@ -50,7 +50,7 @@ std::string EasyCrossPlatform::File::FileIO::ReadPartFile(const char * Path, lon
 {
 	std::string myTempRst;
 	FILE *myfile;
-	myfile = OpenFile(Path, "r");
+	myfile = OpenFile(Path, "rb");
 	if (myfile==NULL) {
 		//文件不存在, 或无权限获取
 		throw std::runtime_error("File cannot be opened");
@@ -81,7 +81,7 @@ bool EasyCrossPlatform::File::FileIO::BinaryReadFile(const std::string & Path, c
 bool EasyCrossPlatform::File::FileIO::BinaryReadFile(const char * Path, const long StartPos, void * _Buffer, unsigned int ElementSize, unsigned int Count)
 {
 	FILE *myfile;
-	myfile = OpenFile(Path, "r");
+	myfile = OpenFile(Path, "rb");
 	if (myfile == NULL) {
 		//文件不存在, 或无权限获取
 		throw std::runtime_error("File cannot be opened");
@@ -108,7 +108,7 @@ std::string EasyCrossPlatform::File::FileIO::ReadFile(const char * Path)
 	std::string myTempRst;
 	FILE *myfile;
 
-	myfile = OpenFile(Path, "r");
+	myfile = OpenFile(Path, "rb");
 	if (myfile == NULL) {
 		//文件不存在, 或无权限获取
 		throw std::runtime_error("File cannot be opened");
@@ -136,7 +136,7 @@ bool EasyCrossPlatform::File::FileIO::WriteFile_ReplaceAt(long BytesMoved, const
 bool EasyCrossPlatform::File::FileIO::WriteFile_ReplaceAt(long BytesMoved, const char * Path, const std::string & Content)
 {
 	FILE* myfile;
-	myfile = OpenFile(Path, "w");
+	myfile = OpenFile(Path, "wb");
 	if (myfile == NULL) {
 		throw std::runtime_error("File cannot be opened");
 		return false;
@@ -173,7 +173,7 @@ bool EasyCrossPlatform::File::FileIO::BinaryWriteFile(const std::string & Path, 
 bool EasyCrossPlatform::File::FileIO::BinaryWriteFile(const char * Path, const long StartPos, void * _Buffer, unsigned int ElementSize, unsigned int Count)
 {
 	FILE *myfile;
-	myfile = OpenFile(Path, "w");
+	myfile = OpenFile(Path, "wb");
 	if (myfile == NULL) {
 		//文件不存在, 或无权限获取
 		throw std::runtime_error("File cannot be opened");
@@ -198,7 +198,7 @@ bool EasyCrossPlatform::File::FileIO::WriteFile_Append(const std::string & Path,
 bool EasyCrossPlatform::File::FileIO::WriteFile_Append(const char * Path, const std::string & Content)
 {
 	FILE* myfile;
-	myfile = OpenFile(Path, "a");
+	myfile = OpenFile(Path, "ab");
 	if (myfile == NULL) {
 		throw std::runtime_error("File cannot be opened");
 		return false;
@@ -218,7 +218,7 @@ bool EasyCrossPlatform::File::FileIO::BinaryWriteFile_Append(const std::string &
 bool EasyCrossPlatform::File::FileIO::BinaryWriteFile_Append(const char * Path, void * _Buffer, unsigned int ElementSize, unsigned int Count)
 {
 	FILE *myfile;
-	myfile = OpenFile(Path, "a");
+	myfile = OpenFile(Path, "ab");
 	if (myfile == NULL) {
 		//文件不存在, 或无权限获取
 		throw std::runtime_error("File cannot be opened");
@@ -240,7 +240,7 @@ unsigned long EasyCrossPlatform::File::FileIO::GetFileLength(const std::string &
 unsigned long EasyCrossPlatform::File::FileIO::GetFileLength(const char * Path)
 {
 	FILE* myfile;
-	myfile = OpenFile(Path, "r");
+	myfile = OpenFile(Path, "rb");
 	if (myfile == NULL) {
 		throw std::runtime_error("File cannot be opened");
 		return false;

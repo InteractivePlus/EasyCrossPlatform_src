@@ -38,7 +38,7 @@ target("easycrossplatform_s")
 	end
 	--Source Files
 	add_includedirs("include")
-	includes("deps/cryptopp","deps/libuv","deps/jsoncpp","deps/mbedtls","deps/wai","deps/brotli")
+	includes("deps/cryptopp","deps/libuv","deps/jsoncpp","deps/mbedtls","deps/wai","deps/brotli","deps/iconv")
 	add_files("src/*.cpp")
 	add_deps("cryptopp_s")
 	add_deps("libuv_s")
@@ -46,8 +46,9 @@ target("easycrossplatform_s")
 	add_deps("mbedtls_s")
 	add_deps("whereami_s")
 	add_deps("brotli_s")
+	add_defines("USING_STATIC_LIBICONV")
+	add_deps("iconv_s")
 	--ExtLibs
-	add_defines("CURL_STATICLIB")
 	add_linkdirs("extlibs")
 	add_links("mariadbclient")
 
@@ -91,7 +92,7 @@ target("easycrossplatform")
 	end
 	--Source Files
 	add_includedirs("include")
-	includes("deps/cryptopp","deps/libuv","deps/jsoncpp","deps/mbedtls","deps/wai","deps/brotli")
+	includes("deps/cryptopp","deps/libuv","deps/jsoncpp","deps/mbedtls","deps/wai","deps/brotli","deps/iconv")
 	add_files("src/*.cpp")
 	add_deps("cryptopp_s")
 	add_deps("libuv_s")
@@ -99,6 +100,9 @@ target("easycrossplatform")
 	add_deps("mbedtls_s")
 	add_deps("whereami_s")
 	add_deps("brotli_s")
+	add_defines("USING_STATIC_LIBICONV")
+	add_deps("iconv_s")
+	
 	--ExtLibs
 	add_linkdirs("extlibs")
 	add_links("mariadb")
