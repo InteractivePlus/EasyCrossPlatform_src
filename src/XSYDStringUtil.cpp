@@ -306,74 +306,65 @@ std::wstring EasyCrossPlatform::Parser::StringUtil::trim(const std::wstring & St
 
 std::string EasyCrossPlatform::Parser::StringUtil::fromBytes(const std::vector<byte>& Bytes)
 {
-	std::string myStr = "";
-	byte* mByte = new byte[Bytes.size()];
-
-	for (unsigned int i = 0U; i < Bytes.size(); i++) {
-		mByte[i] = Bytes[i];
+	std::string mResult = std::string();
+	const unsigned int SizeOfChar = sizeof(char);
+	byte mWcharArray[SizeOfChar];
+	unsigned int TotalWCharNum = Bytes.size() / SizeOfChar;
+	mResult.reserve(TotalWCharNum);
+	for (unsigned int i = 0U; i < TotalWCharNum; i++) {
+		for (unsigned int j = 0U; j < SizeOfChar; j++) {
+			mWcharArray[j] = Bytes[i*SizeOfChar + j];
+		}
+		mResult += StringUtil::ConvertFrom<char>(mWcharArray);
 	}
-	char* mChar = reinterpret_cast<char*>(mByte);
-	myStr.assign(mChar, Bytes.size());
-	delete[] mByte;
-	return myStr;
+	return mResult;
 }
 
 std::vector<byte> EasyCrossPlatform::Parser::StringUtil::toBytes(const std::string & myStr)
 {
 	std::vector<byte> mBytes = std::vector<byte>();
-	char* mChar = new char[myStr.size()];
-	byte* mByte = reinterpret_cast<byte*>(mChar);
-	for (unsigned int i = 0U; i < myStr.length(); i++) {
-		mChar[i] = myStr[i];
-		mBytes.push_back(mByte[i]);
+	const unsigned int SizeOfChar = sizeof(char);
+	byte mByteArray[SizeOfChar];
+	unsigned int TotalByteNum = myStr.length() * SizeOfChar;
+	unsigned int TotalCharNum = myStr.length();
+	for (unsigned int i = 0U; i < TotalCharNum; i++) {
+		StringUtil::ConvertTo(myStr[i], mByteArray);
+		for (byte tempByte : mByteArray) {
+			mBytes.push_back(tempByte);
+		}
 	}
 	return mBytes;
 }
 
 std::wstring EasyCrossPlatform::Parser::StringUtil::wFromBytes(const std::vector<byte>& Bytes)
 {
-	std::wstring myStr = L"";
-	size_t mStringChar;
-	std::mbstate_t mbState = std::mbstate_t();
-	byte* mByte = new byte[Bytes.size() + 1U];
-	char* mBytesArr = reinterpret_cast<char*>(mByte);
-	for (unsigned int i = 0U; i < Bytes.size(); i++) {
-		mByte[i] = Bytes[i];
+	std::wstring mResult = std::wstring();
+	const unsigned int SizeOfWChar = sizeof(wchar_t);
+	byte mWcharArray[SizeOfWChar];
+	unsigned int TotalWCharNum = Bytes.size() / SizeOfWChar;
+	mResult.reserve(TotalWCharNum);
+	for (unsigned int i = 0U; i < TotalWCharNum; i++) {
+		for (unsigned int j = 0U; j < SizeOfWChar; j++) {
+			mWcharArray[j] = Bytes[i*SizeOfWChar + j];
+		}
+		mResult += StringUtil::ConvertFrom<wchar_t>(mWcharArray);
 	}
-	mBytesArr[Bytes.size()] = '\0';
-	wchar_t* mWCharArr = new wchar_t[Bytes.size()+1U];
-	mStringChar = std::mbsrtowcs(mWCharArr, (const char**) &mBytesArr, Bytes.size()+1U,&mbState);
-	if (mStringChar == std::numeric_limits<size_t>::max()) {
-		myStr = L"";
-	}
-	else {
-		myStr.assign(mWCharArr, mStringChar);
-	}
-	delete[] mByte;
-	delete[] mWCharArr;
-	return myStr;
+	return mResult;
 }
 
 std::vector<byte> EasyCrossPlatform::Parser::StringUtil::toBytes(const std::wstring & myStr)
 {
 	std::vector<byte> mBytes = std::vector<byte>();
-	std::mbstate_t mbState = std::mbstate_t();
-	size_t mStringChar = myStr.size() * 4U;
-	byte* mByte = new byte[mStringChar + 1U];
-	char* mBytesArr = reinterpret_cast<char*>(mByte);
-	wchar_t* mWCharArr = new wchar_t[myStr.size() + 1U];
-	for (unsigned int i = 0U; i < myStr.size(); i++) {
-		mWCharArr[i] = myStr[i];
-	}
-	mWCharArr[myStr.size()] = L'\0';
-	mStringChar = std::wcsrtombs(mBytesArr,(const wchar_t**) &mWCharArr, mStringChar + 1U, &mbState);
-	if (mStringChar != std::numeric_limits<size_t>::max()) {
-		for (unsigned int i = 0U; i < mStringChar; i++) {
-			mBytes.push_back(mByte[i]);
+	const unsigned int SizeOfWChar = sizeof(wchar_t);
+	byte mByteArray[SizeOfWChar];
+	unsigned int TotalByteNum = myStr.length() * SizeOfWChar;
+	unsigned int TotalWCharNum = myStr.length();
+	for (unsigned int i = 0U; i < TotalWCharNum; i++) {
+		StringUtil::ConvertTo(myStr[i], mByteArray);
+		for (byte tempByte : mByteArray) {
+			mBytes.push_back(tempByte);
 		}
 	}
-	delete[] mByte;
-	delete[] mWCharArr;
 	return mBytes;
 }
 

@@ -27,6 +27,8 @@
 				std::wstring leftTrim(const std::wstring& StringToDealWith);
 				std::wstring rightTrim(const std::wstring& StringToDealWith);
 				std::wstring trim(const std::wstring& StringToDealWith);
+				template <typename T> inline void ConvertTo(T Element, byte* RecieveArray); //The length of RecieveArray must equal to sizeof(Element)
+				template <typename T> inline T ConvertFrom(byte* GivenArray);//The length of GivenArray must be equal to sizeof(T)
 				std::string fromBytes(const std::vector<byte>& Bytes);
 				std::vector<byte> toBytes(const std::string& myStr);
 				std::wstring wFromBytes(const std::vector<byte>& Bytes);
@@ -41,6 +43,29 @@
 				#else //CROSSPLATFORM_OS_IS_UNIX
 				const constexpr char* newLineString = "\n";
 				#endif
+				template<typename T>
+				void ConvertTo(T Element, byte * RecieveArray)
+				{
+					T mElement = Element;
+					const constexpr unsigned int ElementSize = sizeof(T);
+					byte TempByte = 0x0;
+					for (unsigned int i = 0U; i < ElementSize; i++) {
+						TempByte = mElement & 0xFF; //Get the 8 bits of the element
+						RecieveArray[ElementSize - i - 1U] = TempByte;
+						mElement >> 8; //Throw this set of data
+					}
+				}
+				template<typename T>
+				T ConvertFrom(byte * GivenArray)
+				{
+					T mResult = 0x0;
+					const constexpr unsigned int ElementSize = sizeof(T);
+					for (unsigned int i = 0U; i < ElementSize; i++) {
+						mResult |= GivenArray[i];
+						mResult << 8;
+					}
+					return mResult;
+				}
 			}
 		}
 	}
