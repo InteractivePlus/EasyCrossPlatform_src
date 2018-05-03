@@ -31,6 +31,10 @@
 				template <typename T> inline T ConvertFrom(byte* GivenArray);//The length of GivenArray must be equal to sizeof(T)
 				std::string fromBytes(const std::vector<byte>& Bytes);
 				std::vector<byte> toBytes(const std::string& myStr);
+				std::u16string u16FromBytes(const std::vector<byte>& Bytes);
+				std::vector<byte> toBytes(const std::u16string& myStr);
+				std::u32string u32FromBytes(const std::vector<byte>& Bytes);
+				std::vector<byte> toBytes(const std::u32string& myStr);
 				std::wstring wFromBytes(const std::vector<byte>& Bytes);
 				std::vector<byte> toBytes(const std::wstring& myStr);
 				unsigned int replace(std::string& str, const std::string& find, const std::string& replace, int Limit = -1, std::string::size_type Start = 0U);
