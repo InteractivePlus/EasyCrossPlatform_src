@@ -30,7 +30,6 @@
 						UDPAsyncSocket(const IpAddr& ListeningAddr);
 						UDPAsyncSocket(UDPAsyncSocket& oldUDP);
 
-						void setmyIP(const IpAddr& myNewIP);
 						void sendMsg(const IpAddr& Destination,const std::string& Data);
 						void Listen();
 						void Listen(const IpAddr& myNewAddr);

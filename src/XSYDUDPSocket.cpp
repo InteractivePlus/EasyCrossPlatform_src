@@ -63,10 +63,6 @@ EasyCrossPlatform::Network::Socket::UDPAsyncSocket::UDPAsyncSocket(UDPAsyncSocke
 		this->mySocketWorker->m_num_Client++;
 	}
 }
-void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::setmyIP(const IpAddr& myNewIP)
-{
-	this->m_myAddr = myNewIP;
-}
 void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::sendMsg(const IpAddr& Destination, const std::string& Data)
 {
 	uv_udp_send_t* mySendReq = (uv_udp_send_t*)malloc(sizeof(uv_udp_send_t));
