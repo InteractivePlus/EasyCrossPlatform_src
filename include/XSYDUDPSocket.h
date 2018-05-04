@@ -34,6 +34,7 @@
 						void sendMsg(const IpAddr& Destination,const std::string& Data);
 						void Listen();
 						void Listen(const IpAddr& myNewAddr);
+						void setSelfAddr(const IpAddr& myNewAddr);
 						void StopListen();
 
 						void setWorker(SocketWorker& myWorker);

@@ -48,8 +48,7 @@ EasyCrossPlatform::Network::Socket::UDPAsyncSocket::UDPAsyncSocket()
 }
 EasyCrossPlatform::Network::Socket::UDPAsyncSocket::UDPAsyncSocket(const IpAddr& ListeningAddr)
 {
-	this->m_isListenMode = true;
-	this->m_myAddr = ListeningAddr;
+	this->setSelfAddr(ListeningAddr);
 	this->Init();
 }
 EasyCrossPlatform::Network::Socket::UDPAsyncSocket::UDPAsyncSocket(UDPAsyncSocket & oldUDP)
@@ -88,15 +87,7 @@ void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::Listen()
 	if (!this->m_isListenMode) {
 		return;
 	}
-	sockaddr myAddress = this->m_myAddr.getIPAddress();
-
-	int state = uv_udp_bind(this->m_SocketHandle.get(), &myAddress, 0);
-	if (state < 0) {
-		std::string errorMsg;
-		errorMsg = uv_err_name(state);
-		this->onError(state, errorMsg);
-		return;
-	}
+	
 	int recvState = uv_udp_recv_start(this->m_SocketHandle.get(), UDPAsyncSocket::m_uv_alloc_buffer, UDPAsyncSocket::m_uv_read_cb);
 	if (recvState < 0) {
 		this->onError(recvState, uv_err_name(recvState));
@@ -106,10 +97,24 @@ void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::Listen()
 }
 void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::Listen(const IpAddr& myNewAddr)
 {
-	this->m_isListenMode = true;
-	this->m_myAddr = myNewAddr;
+	this->setSelfAddr(myNewAddr);
 	this->Listen();
 }
+
+void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::setSelfAddr(const IpAddr & myNewAddr)
+{
+	this->m_myAddr = myNewAddr;
+	this->m_isListenMode = true;
+	sockaddr myAddress = this->m_myAddr.getIPAddress();
+	int state = uv_udp_bind(this->m_SocketHandle.get(), &myAddress, 0);
+	if (state < 0) {
+		std::string errorMsg;
+		errorMsg = uv_err_name(state);
+		this->onError(state, errorMsg);
+		return;
+	}
+}
+
 void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::StopListen()
 {
 	if (this->m_isListenMode && this->m_isListening) {
