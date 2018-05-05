@@ -327,6 +327,7 @@ std::vector<byte> EasyCrossPlatform::Parser::StringUtil::toBytes(const std::stri
 	byte mByteArray[SizeOfChar];
 	unsigned int TotalByteNum = myStr.length() * SizeOfChar;
 	unsigned int TotalCharNum = myStr.length();
+	mBytes.reserve(TotalByteNum);
 	for (unsigned int i = 0U; i < TotalCharNum; i++) {
 		StringUtil::ConvertTo(myStr[i], mByteArray);
 		for (byte tempByte : mByteArray) {
@@ -359,6 +360,7 @@ std::vector<byte> EasyCrossPlatform::Parser::StringUtil::toBytes(const std::u16s
 	byte mByteArray[SizeOfChar];
 	unsigned int TotalByteNum = myStr.length() * SizeOfChar;
 	unsigned int TotalCharNum = myStr.length();
+	mBytes.reserve(TotalByteNum);
 	for (unsigned int i = 0U; i < TotalCharNum; i++) {
 		StringUtil::ConvertTo(myStr[i], mByteArray);
 		for (byte tempByte : mByteArray) {
@@ -391,6 +393,7 @@ std::vector<byte> EasyCrossPlatform::Parser::StringUtil::toBytes(const std::u32s
 	byte mByteArray[SizeOfChar];
 	unsigned int TotalByteNum = myStr.length() * SizeOfChar;
 	unsigned int TotalCharNum = myStr.length();
+	mBytes.reserve(TotalByteNum);
 	for (unsigned int i = 0U; i < TotalCharNum; i++) {
 		StringUtil::ConvertTo(myStr[i], mByteArray);
 		for (byte tempByte : mByteArray) {
@@ -423,6 +426,7 @@ std::vector<byte> EasyCrossPlatform::Parser::StringUtil::toBytes(const std::wstr
 	byte mByteArray[SizeOfWChar];
 	unsigned int TotalByteNum = myStr.length() * SizeOfWChar;
 	unsigned int TotalWCharNum = myStr.length();
+	mBytes.reserve(TotalByteNum);
 	for (unsigned int i = 0U; i < TotalWCharNum; i++) {
 		StringUtil::ConvertTo(myStr[i], mByteArray);
 		for (byte tempByte : mByteArray) {

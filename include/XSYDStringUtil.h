@@ -55,8 +55,9 @@
 					for (unsigned int i = 0U; i < ElementSize; i++) {
 						TempByte = mElement & 0xFF; //Get the 8 bits of the element
 						RecieveArray[ElementSize - i - 1U] = TempByte;
-						mElement >> 8; //Throw this set of data
+						mElement >>= 8; //Throw this set of data
 					}
+					return;
 				}
 				template<typename T>
 				T ConvertFrom(byte * GivenArray)
@@ -64,8 +65,8 @@
 					T mResult = 0x0;
 					const constexpr unsigned int ElementSize = sizeof(T);
 					for (unsigned int i = 0U; i < ElementSize; i++) {
+						mResult <<= 8;
 						mResult |= GivenArray[i];
-						mResult << 8;
 					}
 					return mResult;
 				}
