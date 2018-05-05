@@ -1,6 +1,7 @@
 target("mbedtls_s")
 	set_kind("static")
 	add_files("*.c")
+	add_includedirs("mbedtls")
 	
 	if(is_plat("windows")) then --Windows, Only x86 and x64
 		add_links("ws2_32","Crypt32","advapi32")
@@ -8,6 +9,7 @@ target("mbedtls_s")
 target("mbedtls")
 	set_kind("shared")
 	add_files("*.c")
+	add_includedirs("mbedtls")
 	
 	if(is_plat("windows")) then --Windows, Only x86 and x64
 		add_links("ws2_32","Crypt32","advapi32")

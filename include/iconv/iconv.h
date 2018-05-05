@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 1999-2003, 2005-2006, 2008-2011 Free Software Foundation, Inc.
+/* Copyright (C) 1999-2003, 2005-2006, 2008-2011 Free Software Foundation, Inc.
    This file is part of the GNU LIBICONV Library.
 
    The GNU LIBICONV Library is free software; you can redistribute it
@@ -23,6 +23,14 @@
 
 #define _LIBICONV_VERSION 0x010E    /* version number: (major<<8) + minor */
 
+///////////////////////// 삭제 / DELETE / УДАЛИТЬ ///////////////////////
+//#if @HAVE_VISIBILITY@ && BUILDING_LIBICONV
+//#define LIBICONV_DLL_EXPORTED __attribute__((__visibility__("default")))
+//#else
+//#define LIBICONV_DLL_EXPORTED
+//#endif
+//extern LIBICONV_DLL_EXPORTED @DLL_VARIABLE@ int _libiconv_version; /* Likewise */
+///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
 #if BUILDING_LIBICONV
 #define LIBICONV_DLL_EXPORTED __declspec(dllexport)
 #elif defined (USING_STATIC_LIBICONV)
@@ -90,9 +98,11 @@ extern LIBICONV_DLL_EXPORTED iconv_t iconv_open (const char* tocode, const char*
 #define iconv libiconv
 #endif
 
-
+///////////////////////// 삭제 / DELETE / УДАЛИТЬ ///////////////////////
+//extern LIBICONV_DLL_EXPORTED size_t iconv (iconv_t cd, @ICONV_CONST@ char* * inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft);
+///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
 extern LIBICONV_DLL_EXPORTED size_t iconv (iconv_t cd, const char* * inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft);
-
+////////////////////////////////////////////////////////////////////////////////
 
 /* Frees resources allocated for conversion descriptor ‘cd’. */
 #ifndef LIBICONV_PLUG
@@ -110,9 +120,13 @@ extern LIBICONV_DLL_EXPORTED int iconv_close (iconv_t cd);
 
 /* Nonstandard extensions. */
 
-
+///////////////////////// 삭제 / DELETE / УДАЛИТЬ ///////////////////////
+//#if @USE_MBSTATE_T@
+//#if @BROKEN_WCHAR_H@
+///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
 #if USE_MBSTATE_T
 #if BROKEN_WCHAR_H
+////////////////////////////////////////////////////////////////////////////////
 
 /* Tru64 with Desktop Toolkit C has a bug: <stdio.h> must be included before
    <wchar.h>.
@@ -134,9 +148,11 @@ extern "C" {
 typedef struct {
   void* dummy1[28];
 
-
+///////////////////////// 삭제 / DELETE / УДАЛИТЬ ///////////////////////
+//#if @USE_MBSTATE_T@
+///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
 #if USE_MBSTATE_T
-
+////////////////////////////////////////////////////////////////////////////////
 
   mbstate_t dummy2;
 #endif
@@ -185,8 +201,11 @@ typedef void (*iconv_unicode_uc_to_mb_fallback)
               void* callback_arg,
               void* data);
 
-
+///////////////////////// 삭제 / DELETE / УДАЛИТЬ ///////////////////////
+//#if @HAVE_WCHAR_T@
+///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
 #if HAVE_WCHAR_T
+////////////////////////////////////////////////////////////////////////////////
 
 /* Fallback function.  Invoked when a number of bytes could not be converted to
    a wide character.  This function should process all bytes from inbuf and may
