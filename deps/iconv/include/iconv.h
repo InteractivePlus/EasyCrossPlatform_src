@@ -17,6 +17,7 @@
    Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 /* When installed, this file is called "iconv.h". */
+#include <CrossPlatform_OSDetection.h>
 
 #ifndef _LIBICONV_H
 #define _LIBICONV_H
@@ -31,12 +32,20 @@
 //#endif
 //extern LIBICONV_DLL_EXPORTED @DLL_VARIABLE@ int _libiconv_version; /* Likewise */
 ///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
-#if BUILDING_LIBICONV
-#define LIBICONV_DLL_EXPORTED __declspec(dllexport)
-#elif defined (USING_STATIC_LIBICONV)
-#define LIBICONV_DLL_EXPORTED
-#else
-#define LIBICONV_DLL_EXPORTED __declspec(dllimport)
+#ifdef EASYCROSSPLATFORM_PLATFORM_WINDOWS
+	#if BUILDING_LIBICONV
+		#define LIBICONV_DLL_EXPORTED __declspec(dllexport)
+	#elif defined (USING_STATIC_LIBICONV)
+		#define LIBICONV_DLL_EXPORTED
+	#else
+		#define LIBICONV_DLL_EXPORTED __declspec(dllimport)
+	#endif
+#else //if defined(EASYCROSSPLATFORM_PLATFORM_UNIX)
+	#if BUILDING_LIBICONV
+		#define LIBICONV_DLL_EXPORTED __attribute__((__visibility__("default")))
+	#else
+		#define LIBICONV_DLL_EXPORTED
+	#endif
 #endif
 extern LIBICONV_DLL_EXPORTED int _libiconv_version; /* Likewise */
 ////////////////////////////////////////////////////////////////////////////////
