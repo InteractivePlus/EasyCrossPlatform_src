@@ -82,7 +82,7 @@ typedef void* iconv_t;
    have EILSEQ in a different header.  On these systems, define EILSEQ
    ourselves. */
 #ifndef EILSEQ
-#define EILSEQ @EILSEQ@
+	#define EILSEQ @EILSEQ@
 #endif
 
 

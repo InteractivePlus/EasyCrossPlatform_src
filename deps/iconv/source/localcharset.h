@@ -16,6 +16,7 @@
    License along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
+#include <CrossPlatform_OSDetection.h>
 
 #ifndef _LOCALCHARSET_H
 #define _LOCALCHARSET_H
@@ -27,12 +28,20 @@
 //#define LIBCHARSET_DLL_EXPORTED
 //#endif
 ///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
-#ifdef BUILDING_LIBCHARSET
-#define LIBCHARSET_DLL_EXPORTED __declspec(dllexport)
-#elif USING_STATIC_LIBICONV
-#define LIBCHARSET_DLL_EXPORTED
-#else
-#define LIBCHARSET_DLL_EXPORTED __declspec(dllimport)
+#ifdef EASYCROSSPLATFORM_PLATFORM_WINDOWS
+	#if BUILDING_LIBCHARSET
+		#define LIBICONV_DLL_EXPORTED __declspec(dllexport)
+	#elif defined (USING_STATIC_LIBICONV)
+		#define LIBICONV_DLL_EXPORTED
+	#else
+		#define LIBICONV_DLL_EXPORTED __declspec(dllimport)
+	#endif
+#else //if defined(EASYCROSSPLATFORM_PLATFORM_UNIX)
+	#if BUILDING_LIBCHARSET
+		#define LIBICONV_DLL_EXPORTED __attribute__((__visibility__("default")))
+	#else
+		#define LIBICONV_DLL_EXPORTED
+	#endif
 #endif
 ////////////////////////////////////////////////////////////////////////////////
 
