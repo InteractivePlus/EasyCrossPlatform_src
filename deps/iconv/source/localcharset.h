@@ -30,17 +30,17 @@
 ///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
 #ifdef EASYCROSSPLATFORM_PLATFORM_WINDOWS
 	#if BUILDING_LIBCHARSET
-		#define LIBICONV_DLL_EXPORTED __declspec(dllexport)
+		#define LIBCHARSET_DLL_EXPORTED __declspec(dllexport)
 	#elif defined (USING_STATIC_LIBICONV)
-		#define LIBICONV_DLL_EXPORTED
+		#define LIBCHARSET_DLL_EXPORTED
 	#else
-		#define LIBICONV_DLL_EXPORTED __declspec(dllimport)
+		#define LIBCHARSET_DLL_EXPORTED __declspec(dllimport)
 	#endif
 #else //if defined(EASYCROSSPLATFORM_PLATFORM_UNIX)
 	#if BUILDING_LIBCHARSET
-		#define LIBICONV_DLL_EXPORTED __attribute__((__visibility__("default")))
+		#define LIBCHARSET_DLL_EXPORTED __attribute__((__visibility__("default")))
 	#else
-		#define LIBICONV_DLL_EXPORTED
+		#define LIBCHARSET_DLL_EXPORTED
 	#endif
 #endif
 ////////////////////////////////////////////////////////////////////////////////
