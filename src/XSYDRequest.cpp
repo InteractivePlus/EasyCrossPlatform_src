@@ -75,6 +75,28 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TLSErr_CB(int ErrNo,
 	myRequestCls->m_operationSucceed = false;
 }
 
+EasyCrossPlatform::Network::Request::WebsiteRequest::WebsiteRequest()
+{
+	this->cleanUp();
+	this->cleanRequest();
+}
+
+EasyCrossPlatform::Network::Request::WebsiteRequest::WebsiteRequest(WebsiteRequest & OldRequest)
+{
+	this->Method = OldRequest.Method;
+	this->m_IsHTTPS = OldRequest.m_IsHTTPS;
+	this->m_IsProcessing = false;
+	this->m_MsgWaitingForRead.clear();
+	this->m_operationSucceed = OldRequest.m_operationSucceed;
+	this->m_ResquestContent = OldRequest.m_ResquestContent;
+	this->RequestData = OldRequest.RequestData;
+	this->RequestURL = OldRequest.RequestURL;
+	this->ResponseContent = OldRequest.ResponseContent;
+	this->ResponseOriginalData = OldRequest.ResponseOriginalData;
+	this->SucceedRequest = OldRequest.SucceedRequest;
+	this->VerifyHTTPSCert = OldRequest.VerifyHTTPSCert;
+}
+
 void EasyCrossPlatform::Network::Request::WebsiteRequest::cleanUp()
 {
 	//Clean the whole class up!

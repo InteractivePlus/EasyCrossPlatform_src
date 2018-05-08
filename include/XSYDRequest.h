@@ -42,6 +42,8 @@
 					static void m_TLSErr_CB(int ErrNo, const std::string& ErrDescription, void* ClassPtr);
 					std::string m_MsgWaitingForRead = "";
 				public:
+					WebsiteRequest();
+					WebsiteRequest(WebsiteRequest& OldRequest);
 					void cleanUp();
 					void cleanRequest();
 					std::string RequestURL = "";

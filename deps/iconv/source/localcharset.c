@@ -127,17 +127,19 @@ get_charset_aliases (void)
   if (cp == NULL)
     {
 #if !(defined DARWIN7 || defined VMS || defined WIN32_NATIVE || defined __CYGWIN__)
-      const char *dir;
+      cp = "";
+	  /* 
+	  Cannot fix this problem right now, lets clean cp for this moment
+	  const char *dir;
       const char *base = "charset.alias";
       char *file_name;
 
-      /* Make it possible to override the charset.alias location.  This is
-         necessary for running the testsuite before "make install".  */
+      //Make it possible to override the charset.alias location.  This is necessary for running the testsuite before "make install".
       dir = getenv ("CHARSETALIASDIR");
       if (dir == NULL || dir[0] == '\0')
         dir = relocate (LIBDIR);
 
-      /* Concatenate dir and base into freshly allocated file_name.  */
+      //Concatenate dir and base into freshly allocated file_name.
       {
         size_t dir_len = strlen (dir);
         size_t base_len = strlen (base);
@@ -153,7 +155,7 @@ get_charset_aliases (void)
       }
 
       if (file_name == NULL)
-        /* Out of memory.  Treat the file as empty.  */
+        //Out of memory.  Treat the file as empty.
         cp = "";
       else
         {
@@ -165,11 +167,11 @@ get_charset_aliases (void)
              first line that starts with "* ") of an arbitrary file by placing
              a symbolic link to that file under the name "charset.alias" in
              some writable directory and defining the environment variable
-             CHARSETALIASDIR to point to that directory.  */
+             CHARSETALIASDIR to point to that directory.  *\/
           fd = open (file_name,
                      O_RDONLY | (HAVE_WORKING_O_NOFOLLOW ? O_NOFOLLOW : 0));
           if (fd < 0)
-            /* File not found.  Treat it as empty.  */
+            /* File not found.  Treat it as empty.  *\/
             cp = "";
           else
             {
@@ -178,13 +180,13 @@ get_charset_aliases (void)
               fp = fdopen (fd, "r");
               if (fp == NULL)
                 {
-                  /* Out of memory.  Treat the file as empty.  */
+                  /* Out of memory.  Treat the file as empty.  *\/
                   close (fd);
                   cp = "";
                 }
               else
                 {
-                  /* Parse the file's contents.  */
+                  /* Parse the file's contents.  *\/
                   char *res_ptr = NULL;
                   size_t res_size = 0;
 
@@ -203,7 +205,7 @@ get_charset_aliases (void)
                         continue;
                       if (c == '#')
                         {
-                          /* Skip comment, to end of line.  */
+                          /* Skip comment, to end of line.  *\/
                           do
                             c = getc (fp);
                           while (!(c == EOF || c == '\n'));
@@ -229,7 +231,7 @@ get_charset_aliases (void)
                         }
                       if (res_ptr == NULL)
                         {
-                          /* Out of memory. */
+                          /* Out of memory. *\/
                           res_size = 0;
                           free (old_res_ptr);
                           break;
@@ -250,7 +252,7 @@ get_charset_aliases (void)
 
           free (file_name);
         }
-
+		*/
 #else
 
 # if defined DARWIN7
