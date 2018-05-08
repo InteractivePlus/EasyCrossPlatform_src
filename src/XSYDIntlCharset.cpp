@@ -77,7 +77,7 @@ std::wstring EasyCrossPlatform::Parser::StringUtil::Charset::ConvertToWString(co
 	case 2U:
 		encodeTo = "UTF-16//IGNORE";
 		break;
-	case 3U:
+	case 4U:
 		encodeTo = "UTF-32//IGNORE";
 		break;
 	default:

@@ -2,7 +2,7 @@
 
 void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const RequestMethod mRequestMethod, const std::string& URL, const std::string& PostData, const unsigned int RecursionTime)
 {
-	WebsiteRequest mRequestCls = WebsiteRequest();
+	WebsiteRequest mRequestCls;
 	if (RecursionTime >= Request::MaxRedirectTime) {
 		this->DownloadSucceed = false;
 		return;
