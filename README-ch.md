@@ -45,6 +45,7 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 	- 复制 extlibs/mariadb/Win_x86/mariadb.dll 到 extlibs/mariadb.dll
 3. 如果您是 
 	1) 以下其中一种 Linux 系统的用户, 你需要从下方命令行代码中运行一个(运行您系统的对应命令)  
+
 ```
 xmake f --build-on-solaris=y
 xmake f --build-on-zos=y
@@ -53,10 +54,13 @@ xmake f --build-on-dragonflybsd=y
 xmake f --build-on-openbsd=y
 xmake f --build-on-netbsd=y
 ```
-	2) 其他Linux用户(不包括Mac)  
+
+	2) 其他Linux用户(不包括Mac)
+
 ```
 xmake f --build-on-linux=y
 ```
+
 4. 目录下运行xmake即可生成静态/动态链接库.  
 (注意Windows和Linux的库互不通用, 不同版本的Linux静态库也不通用).  
 ## 贡献

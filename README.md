@@ -46,6 +46,7 @@ If you cannot wait to see it,
 	- Copy extlibs/mariadb/Win_x86/mariadb.dll to extlibs/mariadb.dll
 3. If you are 
 	1) Either of the following Linux system's user, you need to run either of following command(depends on your system)  
+
 ```
 xmake f --build-on-solaris=y
 xmake f --build-on-zos=y
@@ -54,10 +55,13 @@ xmake f --build-on-dragonflybsd=y
 xmake f --build-on-openbsd=y
 xmake f --build-on-netbsd=y
 ```
+
 	2) Any Other Linux User(not including Mac)
+
 ```
 xmake f --build-on-linux=y
 ```
+
 4. simply run xmake in the directory to generate a static/shared library that you can use.  
 Remeber that the lib file generated is not cross-platform betweeen Win and Linux, and between different versions of Linux.  
 You need to generate lib file each time when you are switching platforms.  
