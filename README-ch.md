@@ -1,7 +1,7 @@
 # EasyCrossPlatform
 用简单的代码, 写出毫无妥协性能的程序  
-[形随意动](https://github.com/BlueAirTechGroup/)旗下项目, 2017年10月15日开始动工  
-版本: 1.1Beta-Dev  
+[形随意动](https://github.com/BlueAirTechGroup/)旗下项目, 项目起始日期为2017年10月15日  
+版本: 1.1Beta-DevF(F-趋向于稳定版本)  
 Language: [English](README.md)  
 **稳定版本可在Release页面中找到**  
 ## 介绍
@@ -43,9 +43,22 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 	- 复制 extlibs/mariadb/Win_x86/mariadbclient.lib 到 extlibs/mariadbclient.lib
 	- 复制 extlibs/mariadb/Win_x86/mariadb.lib 到 extlibs/mariadb.lib
 	- 复制 extlibs/mariadb/Win_x86/mariadb.dll 到 extlibs/mariadb.dll
-3. 目录下运行xmake即可生成静态/动态链接库.  
+3. 如果您是 
+	1) 以下其中一种 Linux 系统的用户, 你需要从下方命令行代码中运行一个(运行您系统的对应命令)  
+```
+xmake f --build-on-solaris=y
+xmake f --build-on-zos=y
+xmake f --build-on-freebsd=y
+xmake f --build-on-dragonflybsd=y
+xmake f --build-on-openbsd=y
+xmake f --build-on-netbsd=y
+```
+	2) 其他Linux用户(不包括Mac)  
+```
+xmake f --build-on-linux=y
+```
+4. 目录下运行xmake即可生成静态/动态链接库.  
 (注意Windows和Linux的库互不通用, 不同版本的Linux静态库也不通用).  
-*如果您运行的是Unix / Linux系统, 您需要指定您的Linux系统类型, 请查看Linux_BuildOptions.txt  
 ## 贡献
 欢迎提交Pull Request.   
 您也可以通过测试来提交   

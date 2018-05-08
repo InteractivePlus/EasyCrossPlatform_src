@@ -1,7 +1,7 @@
 ﻿# EasyCrossPlatform
 Write Easy Code with uncompromising performances.  
 A project under [BlueAirTechGroup](https://github.com/BlueAirTechGroup), started from 15 Oct 2017  
-Version: 1.1Gama-Dev  
+Version: 1.1Gama-DevF(F-Nearly Final Version)  
 Language: [中文](README-ch.md)  
 **You can find stable release under release page**  
 ## Introduction
@@ -44,9 +44,22 @@ If you cannot wait to see it,
 	- Copy extlibs/mariadb/Win_x86/mariadbclient.lib to extlibs/mariadbclient.lib
 	- Copy extlibs/mariadb/Win_x86/mariadb.lib to extlibs/mariadb.lib
 	- Copy extlibs/mariadb/Win_x86/mariadb.dll to extlibs/mariadb.dll
-3. simply run xmake in the directory to generate a static/shared library that you can use.  
+3. If you are 
+	1) Either of the following Linux system's user, you need to run either of following command(depends on your system)  
+```
+xmake f --build-on-solaris=y
+xmake f --build-on-zos=y
+xmake f --build-on-freebsd=y
+xmake f --build-on-dragonflybsd=y
+xmake f --build-on-openbsd=y
+xmake f --build-on-netbsd=y
+```
+	2) Any Other Linux User(not including Mac)
+```
+xmake f --build-on-linux=y
+```
+4. simply run xmake in the directory to generate a static/shared library that you can use.  
 Remeber that the lib file generated is not cross-platform betweeen Win and Linux, and between different versions of Linux.  
-*If you are running Linux, please read Linux_BuildOptions.txt  
 You need to generate lib file each time when you are switching platforms.  
 ## Contribute
 You can fork this project and request a Pull Request.   
