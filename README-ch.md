@@ -27,6 +27,8 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 [mbedtls](https://github.com/ARMmbed/mbedtls) - 一个SSL/TLS和其他加密方法的库, 用于编写TLS加密的套接字  
 [whereami](https://github.com/gpakosz/whereami) - 两个文件的小型库, 告诉程序它自己在哪  
 [Brotli](https://github.com/google/brotli) - 谷歌Brotli压缩算法库  
+[iconv](https://www.gnu.org/software/libiconv/) - Iconv国际编码库  
+[iconv-win](https://github.com/ThePhD/libiconv) - Iconv 和 VC++ 一起编译的工程. 本人在此基础上增加了一部分文件让他支持跨平台编译  
 *以上项目的协议完全保持原样, 请务必参照他们的项目工程页面*  
 ## 为什么没有用户界面库?
 我们曾考虑过使用"MyGUI"库, 但是它包含了太多的依赖且在每个桌面环境中, OPENGL的配置都可以是不一样的. 如果您需要用户界面, 我们推荐使用MyGUI和它的OPENGL2.0实现.  
