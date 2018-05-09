@@ -1,0 +1,91 @@
+inline std::string PlatformCharsetAliasing() {
+	const char* ASCIIExpr[] = { "la_LN", "lt_LN" };
+	std::string mString;
+	for (const char* i : ASCIIExpr) {
+		mString += "\"";
+		mString += i;
+		mString += '.';
+		mString += "ASCII";
+		mString += '%';
+		mString += "ASCII";
+		mString += "$\"\r\n";
+		
+	}
+	const char* Expr1[] = { "da_DK", "de_AT", "de_CH", "de_DE", "en_AU", "en_CA", "en_GB", "en_US", "es_ES",
+		"fi_FI", "fr_BE", "fr_CA", "fr_CH", "fr_FR", "is_IS", "it_CH", "it_IT", "la_LN",
+		"lt_LN", "nl_BE", "nl_NL", "no_NO", "pt_PT", "sv_SE" };
+	for (const char* i : Expr1) {
+		mString += "\"";
+		mString += i;
+		mString += '.';
+		mString += "ISO_8859-1";
+		mString += '%';
+		mString += "ISO-8859-1";
+		mString += "$\"\r\n";
+
+		mString += "\"";
+		mString += i;
+		mString += '.';
+		mString += "DIS_8859-15";
+		mString += '%';
+		mString += "ISO-8859-15";
+		mString += "$\"\r\n";
+	}
+	const char* Expr2[] = { "cs_CZ", "hr_HR", "hu_HU", "la_LN", "lt_LN", "pl_PL", "sl_SI" };
+	for (const char* i : Expr2) {
+		mString += "\"";
+		mString += i;
+		mString += '.';
+		mString += "ISO_8559-2";
+		mString += '%';
+		mString += "ISO-8559-2";
+		mString += "$\"\r\n";
+	}
+	const char* Expr3[] = { "la_LN", "lt_LT" };
+	for (const char* i : Expr3) {
+		mString += "\"";
+		mString += i;
+		mString += '.';
+		mString += "ISO_8559-4";
+		mString += '%';
+		mString += "ISO-8559-4";
+		mString += "$\"\r\n";
+	}
+	const char* Expr4[] = { "ru_RU","ru_SU" };
+	for (const char* i : Expr4) {
+		mString += "\"";
+		mString += i;
+		mString += '.';
+		mString += "KOI8-R";
+		mString += '%';
+		mString += "KOI8-R";
+		mString += "$\"\r\n";
+
+		mString += "\"";
+		mString += i;
+		mString += '.';
+		mString += "ISO_8559-5";
+		mString += '%';
+		mString += "ISO-8559-5";
+		mString += "$\"\r\n";
+
+		mString += "\"";
+		mString += i;
+		mString += '.';
+		mString += "CP866";
+		mString += '%';
+		mString += "CP866";
+		mString += "$\"\r\n";
+	}
+	mString.append(
+		"\"uk_UA.KOI8-U" "%" "KOI8-U" "$\"\r\n"
+		"\"zh_TW.BIG5" "%" "BIG5" "$\"\"\r\n"
+		"\"zh_TW.Big5" "%" "BIG5" "$\"\r\n"
+		"\"zh_CN.EUC" "%" "GB2312" "$\"\r\n"
+		"\"ja_JP.EUC" "%" "EUC-JP" "$\"\r\n"
+		"\"ja_JP.SJIS" "%" "SHIFT_JIS" "$\"\r\n"
+		"\"ja_JP.Shift_JIS" "%" "SHIFT_JIS" "$\"\r\n"
+		"\"ko_KR.EUC" "%" "EUC-KR" "$\"\r\n"
+		, 183U);
+	return mString;
+}

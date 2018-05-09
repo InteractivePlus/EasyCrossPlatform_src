@@ -17,9 +17,11 @@
 		#define CROSSPLATFORM_OS_STRING "windows"
 	#elif defined(linux) || defined(__LINUX__) || defined(__linux) || defined(__linux) || defined(_UNIX) || defined(__unix__) || defined(__GNU__) || defined(__GLIBC__) || defined(_POSIX_VERSION) || defined(__GNUC__)
 		#define CROSSPLATFORM_OS_TYPE CROSSPLATFORM_OS_UNIX
-		#define CROSSPLATFORM_OS_IS_UNIX 1
 		#define EASYCROSSPLATFORM_PLATFORM_UNIX 1
-		#define CROSSPLATFORM_OS_STRING "linux"
+		#ifndef CROSSPLATFORM_OS_STRING
+			#define CROSSPLATFORM_OS_IS_UNIX 1
+			#define CROSSPLATFORM_OS_STRING "linux"
+		#endif
 	#elif defined(__APPLE__) || defined(APPLE)
 		#define CROSSPLATFORM_OS_TYPE CROSSPLATFORM_OS_MAC
 		#define CROSSPLATFORM_OS_IS_MAC 1
