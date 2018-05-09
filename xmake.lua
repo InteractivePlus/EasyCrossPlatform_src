@@ -1,3 +1,53 @@
+option("build-on-solaris")
+	--执行操作
+	add_defines("CROSSPLATFORM_OS_STRING=\"solaris\"")
+	add_defines("CROSSPLATFORM_OS_IS_SOLARIS")
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-zos")
+	--执行操作
+	add_defines("CROSSPLATFORM_OS_STRING=\"zos\"")
+	add_defines("CROSSPLATFORM_OS_IS_ZOS")
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-freebsd")
+	--执行操作
+	add_defines("CROSSPLATFORM_OS_STRING=\"freebsd\"")
+	add_defines("CROSSPLATFORM_OS_IS_FREEBSD")
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-dragonflybsd")
+	--执行操作
+	add_defines("CROSSPLATFORM_OS_STRING=\"dragonflybsd\"")
+	add_defines("CROSSPLATFORM_OS_IS_DRAGONFLYBSD")
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-openbsd")
+	--执行操作
+	add_defines("CROSSPLATFORM_OS_STRING=\"openbsd\"")
+	add_defines("CROSSPLATFORM_OS_IS_OPENBSD")
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-netbsd")
+	--执行操作
+	add_defines("CROSSPLATFORM_OS_STRING=\"netbsd\"")
+	add_defines("CROSSPLATFORM_OS_IS_NETBSD")
+	set_default(false)
+	set_showmenu(true)
+option_end()
+option("build-on-linux")
+	--执行操作
+	--add_defines("CROSSPLATFORM_OS_STRING=\"linux\"")
+	--add_defines("CROSSPLATFORM_OS_IS_UNIX")
+	set_default(false)
+	set_showmenu(true)
+option_end()
+
 target("easycrossplatform_s")
 	add_options("build-on-linux",
 				"build-on-solaris",
@@ -24,17 +74,9 @@ target("easycrossplatform_s")
 	elseif is_arch("armv8*") then
 		add_defines("EASYCROSSPLATFORM_ARCHITECTURE_ARMv8")
 	end
-	--OSType Declaration
-	if is_os("windows") then
-		add_defines("CROSSPLATFORM_OS_STRING=\"windows\"");
-	elseif is_os("linux") then
-		add_defines("CROSSPLATFORM_OS_STRING=\"linux\"");
-	elseif is_os("macosx") then
-		add_defines("CROSSPLATFORM_OS_STRING=\"macosx\"");
-	end
 	--STD Declaration
 	if (not is_os("windows")) then
-		add_cxflags("-std=c++11")
+		add_cxxflags("-std=c++11")
 	end
 	--Source Files
 	add_includedirs("include")
@@ -78,17 +120,9 @@ target("easycrossplatform")
 	elseif is_arch("armv8*") then
 		add_defines("EASYCROSSPLATFORM_ARCHITECTURE_ARMv8")
 	end
-	--OSType Declaration
-	if is_os("windows") then
-		add_defines("CROSSPLATFORM_OS_STRING=\"windows\"");
-	elseif is_os("linux") then
-		add_defines("CROSSPLATFORM_OS_STRING=\"linux\"");
-	elseif is_os("macosx") then
-		add_defines("CROSSPLATFORM_OS_STRING=\"macosx\"");
-	end
 	--STD Declaration
 	if (not is_os("windows")) then
-		add_cxflags("-std=c++11")
+		add_cxxflags("-std=c++11")
 	end
 	--Source Files
 	add_includedirs("include")

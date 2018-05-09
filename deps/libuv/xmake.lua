@@ -3,11 +3,6 @@ option("build-on-solaris")
 	set_default(false)
 	set_showmenu(true)
 option_end()
-option("build-on-linux")
-	--执行操作
-	set_default(false)
-	set_showmenu(true)
-option_end()
 option("build-on-zos")
 	--执行操作
 	set_default(false)
@@ -33,7 +28,11 @@ option("build-on-netbsd")
 	set_default(false)
 	set_showmenu(true)
 option_end()
-
+option("build-on-linux")
+	--执行操作
+	set_default(false)
+	set_showmenu(true)
+option_end()
 target("libuv_s")
 	add_options("build-on-linux",
 				"build-on-solaris",
