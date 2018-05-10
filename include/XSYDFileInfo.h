@@ -6,11 +6,14 @@
 	//#include <filewatcher/FileWatch.hpp> //Add FileWatcher Functionality
 	#ifdef EASYCROSSPLATFORM_PLATFORM_WINDOWS
 		#include <Windows.h>
+		#include <direct.h>
+		#include <io.h>
 	#else //if defined(EASYCROSSPLATFORM_PLATFORM_UNIX)
 		#include <sys/stat.h>  
 		#include <fcntl.h>  
 		#include <stdio.h> 
 		#include <time.h> 
+		#include <dirent.h>
 		#include <unistd.h>
 	#endif
 	namespace EasyCrossPlatform {
@@ -47,6 +50,7 @@
 					#endif
 				public:
 					static FileInfos readFileInfo(const std::string& Path);
+					static std::vector<std::string> getDirectoryFileList(const std::string& DirectoryPath);
 				};
 			}
 		}

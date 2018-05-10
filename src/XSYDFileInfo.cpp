@@ -101,6 +101,68 @@ EasyCrossPlatform::File::FileInfo::FileInfos EasyCrossPlatform::File::FileInfo::
 	return mResult;
 }
 
+std::vector<std::string> EasyCrossPlatform::File::FileInfo::FileInfoCls::getDirectoryFileList(const std::string& DirectoryPath)
+{
+	std::vector<std::string> files;//存放文件名  
+	std::string NSDirPath = DirectoryPath;
+	if (NSDirPath[NSDirPath.length() - 1U] != '/' && NSDirPath[NSDirPath.length() - 1U] != '\\') {
+		NSDirPath += File::FolderSeparator;
+	}
+
+#ifdef WIN32  
+	NSDirPath += "*";
+	_finddata_t file;
+	long lf;
+	//输入文件夹路径  
+	if ((lf = _findfirst(NSDirPath.c_str(), &file)) == -1) {
+		throw std::runtime_error("Directory not found");
+	}
+	else {
+		while (_findnext(lf, &file) == 0) {
+			//输出文件名  
+			//cout<<file.name<<endl;  
+			if (strcmp(file.name, ".") == 0 || strcmp(file.name, "..") == 0)
+				continue;
+			files.push_back(file.name);
+		}
+	}
+	_findclose(lf);
+#endif  
+
+#ifdef linux  
+	DIR *dir;
+	struct dirent *ptr;
+	//char base[1000];
+
+	if ((dir = opendir(NSDirPath.c_str())) == NULL)
+	{
+		throw std::runtime_error("Directory not found");
+	}
+
+	while ((ptr = readdir(dir)) != NULL)
+	{
+		if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0)    ///current dir OR parrent dir  
+			continue;
+		else if(ptr->d_type == DT_REG || ptr->d_type == DT_DIR || ptr->d_type == DT_SOCK || ptr->d_type == DT_LNK || ptr->d_type == DT_UNKNOWN)
+		{
+			files.push_back(ptr->d_name);
+			/*
+			memset(base,'\0',sizeof(base));
+			strcpy(base,basePath);
+			strcat(base,"/");
+			strcat(base,ptr->d_nSame);
+			readFileList(base);
+			*/
+		}
+	}
+	closedir(dir);
+#endif  
+
+	//排序，按从小到大排序  
+	std::sort(files.begin(), files.end());
+	return files;
+}
+
 void EasyCrossPlatform::File::FileInfo::CleanFileTypesVar(FileTypes & VarToDeal)
 {
 	VarToDeal.disabled = false;
