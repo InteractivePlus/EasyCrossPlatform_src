@@ -1,7 +1,6 @@
 #ifndef __XSYDHTTPParserFile__
 	#define __XSYDHTTPParserFile__
 	#include <EasyCP_Common.h>
-	#include <httpParser/http_parser.h>
 	#include <XSYDStringUtil.h>
 	#include <XSYDCompression.h>
 	#include <math.h>

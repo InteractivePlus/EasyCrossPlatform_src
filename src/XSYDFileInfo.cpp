@@ -1,5 +1,5 @@
 #include <XSYDFileInfo.h>
-
+#ifdef EASYCROSSPLATFORM_PLATFORM_WINDOWS
 double EasyCrossPlatform::File::FileInfo::FileInfoCls::ConvFileTimeToUTCTime(PFILETIME lptime)
 {
 	FILETIME ft = (*lptime);
@@ -20,6 +20,7 @@ double EasyCrossPlatform::File::FileInfo::FileInfoCls::ConvFileTimeToUTCTime(PFI
 	double actualTime = static_cast<double>(pt);
 	return actualTime;
 }
+#endif
 
 EasyCrossPlatform::File::FileInfo::FileInfos EasyCrossPlatform::File::FileInfo::FileInfoCls::readFileInfo(const std::string & Path)
 {
@@ -81,7 +82,7 @@ EasyCrossPlatform::File::FileInfo::FileInfos EasyCrossPlatform::File::FileInfo::
 	}
 	mResult.FileLastAccessedTime = static_cast<double>(st.st_atime);
 	mResult.FileLastModifiedTime = static_cast<double>(st.st_ctime);
-	mode_t stMode = st.st_mode;
+	mode_t sMode = st.st_mode;
 	//https://blog.csdn.net/yasi_xi/article/details/9226267
 	if (S_ISLNK(sMode)) {
 		mTypes.isLink = true;
