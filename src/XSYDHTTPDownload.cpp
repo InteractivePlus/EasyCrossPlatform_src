@@ -1,6 +1,6 @@
 #include <XSYDHTTPDownload.h>
 
-void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const RequestMethod mRequestMethod, const std::string& URL, const std::string& PostData, const unsigned int RecursionTime)
+void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const RequestMethod mRequestMethod, const std::string& URL, const std::string& PostData, const std::pair<std::string, std::string>& AuthData, const unsigned int RecursionTime)
 {
 	WebsiteRequest mRequestCls;
 	if (RecursionTime >= Request::MaxRedirectTime) {
@@ -12,12 +12,17 @@ void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const 
 	this->cleanUp();
 	switch (mRequestMethod) {
 	case RequestMethod::GET:
-		mRequestCls.Method = RequestMethod::GET;
+	case RequestMethod::DEL:
+		mRequestCls.Method = mRequestMethod;
 		break;
 	case RequestMethod::POST:
-		mRequestCls.Method = RequestMethod::POST;
+	case RequestMethod::PUT:
+	case RequestMethod::TRACE:
+	case RequestMethod::HEAD:
+		mRequestCls.Method = mRequestMethod;
 		mRequestCls.RequestData = PostData;
 		break;
+	
 	default:
 		this->DownloadSucceed = false;
 		return;
@@ -25,6 +30,11 @@ void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const 
 	}
 	mRequestCls.RequestURL = URL;
 	mRequestCls.m_ResquestContent.FieldsValues["Accept-Language"] = this->AcceptLanguageString;
+	if ((!AuthData.first.empty()) || (!AuthData.second.empty())) {
+		std::string EncodingAuthText = AuthData.first + ":" + AuthData.second;
+		std::string EncodedAuthText = EasyCrossPlatform::Encryption::Base64::base64Encode(EncodingAuthText);
+		mRequestCls.m_ResquestContent.FieldsValues["Authorization"] = std::string("Basic ") + EncodedAuthText;
+	}
 	this->mResponseContent = mRequestCls.ResponseContent;
 	mRequestCls.performRequest();
 	if (!mRequestCls.SucceedRequest) {
@@ -46,14 +56,14 @@ void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const 
 			this->DownloadSucceed = false;
 			return;
 		}
-		return this->PerformRequest(mRequestMethod, mRequestCls.ResponseContent.FieldsValues["Location"], PostData, RecursionTime + 1);
+		return this->PerformRequest(mRequestMethod, mRequestCls.ResponseContent.FieldsValues["Location"], PostData, AuthData, RecursionTime + 1);
 		break;
 	case 303U:
 		if (mRequestCls.ResponseContent.FieldsValues.find("Location") == mRequestCls.ResponseContent.FieldsValues.end()) {
 			this->DownloadSucceed = false;
 			return;
 		}
-		return this->PerformRequest(RequestMethod::GET, mRequestCls.ResponseContent.FieldsValues["Location"], PostData, RecursionTime + 1);
+		return this->PerformRequest(RequestMethod::GET, mRequestCls.ResponseContent.FieldsValues["Location"], PostData, AuthData, RecursionTime + 1);
 		break;
 	case 204U:
 	case 205U:
@@ -81,10 +91,25 @@ void EasyCrossPlatform::Network::Request::WebPageDownload::cleanUp()
 
 void EasyCrossPlatform::Network::Request::WebPageDownload::PerformGetRequest(const std::string& URL)
 {
-	this->PerformRequest(RequestMethod::GET, URL, "", 0U);
+	this->PerformRequest(RequestMethod::GET, URL, "", std::pair<std::string,std::string>(), 0U);
 }
 
 void EasyCrossPlatform::Network::Request::WebPageDownload::PerformPostRequest(const std::string & URL, const std::string & PostData)
 {
-	this->PerformRequest(RequestMethod::POST, URL, PostData, 0U);
+	this->PerformRequest(RequestMethod::POST, URL, PostData, std::pair<std::string,std::string>() ,0U);
+}
+
+void EasyCrossPlatform::Network::Request::WebPageDownload::PerformPutRequest(const std::string & URL, const std::string & FileContent)
+{
+	this->PerformRequest(RequestMethod::PUT, URL, FileContent, std::pair<std::string, std::string>(), 0U);
+}
+
+void EasyCrossPlatform::Network::Request::WebPageDownload::PerformDeleteRequest(const std::string & URL)
+{
+	this->PerformRequest(RequestMethod::DEL, URL, "", std::pair<std::string, std::string>(), 0U);
+}
+
+void EasyCrossPlatform::Network::Request::WebPageDownload::PerformTraceRequest(const std::string & URL, const std::string & PostData)
+{
+	this->PerformRequest(RequestMethod::TRACE, URL, PostData, std::pair<std::string, std::string>(), 0U);
 }

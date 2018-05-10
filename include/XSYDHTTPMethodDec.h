@@ -8,6 +8,12 @@
 				enum RequestMethod {
 					GET,
 					POST,
+					HEAD,
+					PUT,
+					DEL,
+					CONNECT,
+					OPTIONS,
+					TRACE,
 					UNSPEC,
 				};
 			}

@@ -1,7 +1,7 @@
 # EasyCrossPlatform
 用简单的代码, 写出毫无妥协性能的程序  
 [形随意动](https://github.com/BlueAirTechGroup/)旗下项目, 项目起始日期为2017年10月15日  
-版本: 1.1 Stable Release  
+版本: 1.2 Dev Alpha  
 Language: [English](README.md)  
 **稳定版本可在Release页面中找到**  
 ## 介绍
