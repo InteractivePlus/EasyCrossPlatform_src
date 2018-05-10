@@ -109,7 +109,7 @@ std::vector<std::string> EasyCrossPlatform::File::FileInfo::FileInfoCls::getDire
 		NSDirPath += File::FolderSeparator;
 	}
 
-#ifdef WIN32  
+#ifdef EASYCROSSPLATFORM_PLATFORM_WINDOWS  
 	NSDirPath += "*";
 	_finddata_t file;
 	long lf;
@@ -127,9 +127,7 @@ std::vector<std::string> EasyCrossPlatform::File::FileInfo::FileInfoCls::getDire
 		}
 	}
 	_findclose(lf);
-#endif  
-
-#ifdef linux  
+#else //EASYCROSSPLATFORM_PLATFORM_UNIX 
 	DIR *dir;
 	struct dirent *ptr;
 	//char base[1000];
