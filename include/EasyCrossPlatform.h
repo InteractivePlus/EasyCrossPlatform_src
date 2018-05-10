@@ -20,4 +20,5 @@
 	#include <XSYDHTTPDownload.h>
 	#include <XSYDRegex.h>
 	#include <XSYDIntlCharset.h>
+	#include <XSYDFileInfo.h>
 #endif //__EasyCrossPlatformFile__
