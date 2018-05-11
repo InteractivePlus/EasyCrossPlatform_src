@@ -390,7 +390,7 @@ void EasyCrossPlatform::Parser::HTTP::HTTPRequestHeader::AnalyzeField(const std:
 		newFieldName += EasyCrossPlatform::Parser::StringUtil::toSentence(mSeparatedFieldName[i].second) + "-";
 	}
 	newFieldName = newFieldName.substr(0U, newFieldName.size() - 1U);
-	this->FieldsValues[newFieldName] = FieldValue;
+	this->AppendFieldWithSingleValue(newFieldName, FieldValue);
 	if (newFieldName == "Host") {
 		this->RequestedURL.Host = FieldValue;
 	}
@@ -406,7 +406,11 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPRequestHeader::WriteField(const
 		newFieldName += EasyCrossPlatform::Parser::StringUtil::toSentence(mSeparatedFieldName[i].second) + "-";
 	}
 	newFieldName = newFieldName.substr(0U, newFieldName.size() - 1U);
-	std::string mResult = newFieldName + ": " + this->FieldsValues[FieldName];
+	std::string mResult;
+	for (std::string i : this->FieldsValues[FieldName]) {
+		mResult += newFieldName + ": " + i + HTTP::HTTPNewLineStr;
+	}
+	mResult = mResult.substr(0U, mResult.length() - strlen(HTTP::HTTPNewLineStr));
 	return mResult;
 }
 
@@ -417,6 +421,25 @@ void EasyCrossPlatform::Parser::HTTP::HTTPRequestHeader::cleanUp()
 	this->Method = "";
 	this->RequestedURL.cleanUp();
 	this->FieldsValues.clear();
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPRequestHeader::SetFieldWithSingleValue(const std::string & FieldName, const std::string & FieldValue)
+{
+	std::vector<std::string> mTempVector = std::vector<std::string>();
+	mTempVector.push_back(FieldValue);
+	this->FieldsValues[FieldName] = mTempVector;
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPRequestHeader::AppendFieldWithSingleValue(const std::string & FieldName, const std::string & AppendFieldValue)
+{
+	auto Iter = this->FieldsValues.find(FieldName);
+	std::vector<std::string> TempVector = std::vector<std::string>();
+	if (Iter == this->FieldsValues.end()) {
+		TempVector = (*Iter).second;
+	}
+	TempVector.push_back(AppendFieldValue);
+	this->FieldsValues[FieldName] = TempVector;
+	return;
 }
 
 EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::HTTP::HTTPRequestHeader::fromReqString(const std::string & ReqString)
@@ -490,10 +513,12 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPRequestHeader::toReqString()
 	mResult += this->WriteFirstLine() + newLineStr;
 	if (!this->RequestedURL.Host.empty()) {
 		if (this->RequestedURL.Port != 0U) {
-			this->FieldsValues["Host"] = this->RequestedURL.Host + ":" + std::to_string(this->RequestedURL.Port);
+			this->FieldsValues["Host"] = std::vector<std::string>();
+			this->FieldsValues["Host"].push_back(this->RequestedURL.Host + ":" + std::to_string(this->RequestedURL.Port));
 		}
 		else {
-			this->FieldsValues["Host"] = this->RequestedURL.Host;
+			this->FieldsValues["Host"] = std::vector<std::string>();
+			this->FieldsValues["Host"].push_back(this->RequestedURL.Host);
 		}
 	}
 	for (auto i = this->FieldsValues.begin(); i != this->FieldsValues.end(); i++) {
@@ -517,20 +542,27 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 	this->MinorVersion = mHeaderCls.MinorVersion;
 	this->RequestedURL = mHeaderCls.RequestedURL;
 	this->Method = mHeaderCls.Method;
-	if (this->FieldsValues.find("Accept-Encoding") != this->FieldsValues.end()) {
-		std::string AcceptEncodingOriginStr = this->FieldsValues["Accept-Encoding"];
+
+	auto AcceptEncodingIt = this->FieldsValues.find("Accept-Encoding");
+	if (AcceptEncodingIt != this->FieldsValues.end()) {
+		std::string AcceptEncodingOriginStr = (*AcceptEncodingIt).second[0];
 		this->AnalyzeAcceptEncodingValue(AcceptEncodingOriginStr);
 	}
-	if (this->FieldsValues.find("Content-Encoding") != this->FieldsValues.end()) {
-		std::string ContentEncodingOriginStr = this->FieldsValues["Content-Encoding"];
+	auto ContentEncodingIt = this->FieldsValues.find("Content-Encoding");
+	if (ContentEncodingIt != this->FieldsValues.end()) {
+		std::string ContentEncodingOriginStr = (*ContentEncodingIt).second[0];
 		this->AnalyzeContentEncodingValue(ContentEncodingOriginStr);
 	}
-	if (this->FieldsValues.find("Transfer-Encoding") != this->FieldsValues.end()) {
-		std::string TransferEncodingOriginStr = this->FieldsValues["Transfer-Encoding"];
+
+	auto TransferEncodingIt = this->FieldsValues.find("Transfer-Encoding");
+	if (TransferEncodingIt != this->FieldsValues.end()) {
+		std::string TransferEncodingOriginStr = (*TransferEncodingIt).second[0];
 		this->AnalyzeTransferEncodingValue(TransferEncodingOriginStr);
 	}
-	if (this->FieldsValues.find("Connection") != this->FieldsValues.end()) {
-		this->Connection = this->FieldsValues["Connection"];
+
+	auto ConnectionIt = this->FieldsValues.find("Connection");
+	if (ConnectionIt != this->FieldsValues.end()) {
+		this->Connection = (*ConnectionIt).second[0];
 	}
 	mResult.canDecode = true;
 	mResult.msgIsEnough = true;
@@ -620,9 +652,11 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 	std::string::size_type MsgLength = 0U;
 	std::string ActualMsgNeedToDecode = "";
 	std::string ActualRemainingMsg = "";
-	if (this->FieldsValues.find("Content-Length") != this->FieldsValues.end()) {
+
+	auto ContentLengthIt = this->FieldsValues.find("Content-Length");
+	if (ContentLengthIt != this->FieldsValues.end()) {
 		try {
-			MsgLength = static_cast<std::string::size_type>(std::stoul(this->FieldsValues["Content-Length"]));
+			MsgLength = static_cast<std::string::size_type>(std::stoul((*ContentLengthIt).second[0]));
 		}
 		catch (std::invalid_argument e) {
 			MsgLength = std::string::npos;
@@ -724,16 +758,16 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPRequest::WriteHeader()
 {
 	HTTPRequestHeader mReqHeaderCls;
 	if (!this->AcceptEncoding.empty()) {
-		this->FieldsValues["Accept-Encoding"] = this->WriteAcceptEncodingValue();
+		this->SetFieldWithSingleValue("Accept-Encoding", this->WriteAcceptEncodingValue());
 	}
 	if (!this->ContentEncoding.empty()) {
-		this->FieldsValues["Content-Encoding"] = this->WriteContentEncodingValue();
+		this->SetFieldWithSingleValue("Content-Encoding",this->WriteContentEncodingValue());
 	}
 	if (!this->TransferEncoding.empty()) {
-		this->FieldsValues["Tranfer-Encoding"] = this->WriteTransferEncodingValue();
+		this->SetFieldWithSingleValue("Transfer-Encoding",this->WriteTransferEncodingValue());
 	}
 	if (!this->Connection.empty()) {
-		this->FieldsValues["Connection"] = this->Connection;
+		this->SetFieldWithSingleValue("Connection",this->Connection);
 	}
 	if (this->TransferEncoding.empty() && this->ContentEncoding.empty()) {
 		this->EncodedData = this->OriginalData;
@@ -742,7 +776,7 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPRequest::WriteHeader()
 		if (!this->OriginalData.empty()) {
 			this->EncodeData();
 		}
-		this->FieldsValues["Content-Length"] = std::to_string(this->EncodedData.size());
+		this->SetFieldWithSingleValue("Content-Length",std::to_string(this->EncodedData.length()));
 	}
 	mReqHeaderCls.FieldsValues = this->FieldsValues;
 	mReqHeaderCls.MajorVersion = this->MajorVersion;
@@ -841,6 +875,25 @@ void EasyCrossPlatform::Parser::HTTP::HTTPRequest::EncodeData()
 		}
 	}
 	this->EncodedData = TmpEncodedString;
+	return;
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPRequest::SetFieldWithSingleValue(const std::string & FieldName, const std::string & FieldValue)
+{
+	std::vector<std::string> mTempVector = std::vector<std::string>();
+	mTempVector.push_back(FieldValue);
+	this->FieldsValues[FieldName] = mTempVector;
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPRequest::AppendFieldWithSingleValue(const std::string & FieldName, const std::string & AppendFieldValue)
+{
+	auto Iter = this->FieldsValues.find(FieldName);
+	std::vector<std::string> TempVector = std::vector<std::string>();
+	if (Iter == this->FieldsValues.end()) {
+		TempVector = (*Iter).second;
+	}
+	TempVector.push_back(AppendFieldValue);
+	this->FieldsValues[FieldName] = TempVector;
 	return;
 }
 
@@ -1169,7 +1222,7 @@ void EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::AnalyzeField(const std
 		newFieldName += EasyCrossPlatform::Parser::StringUtil::toSentence(mSeparatedFieldName[i].second) + "-";
 	}
 	newFieldName = newFieldName.substr(0U, newFieldName.size() - 1U);
-	this->FieldsValues[newFieldName] = FieldValue;
+	this->AppendFieldWithSingleValue(newFieldName, FieldValue);
 	return;
 }
 
@@ -1182,7 +1235,11 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::WriteField(cons
 		newFieldName += EasyCrossPlatform::Parser::StringUtil::toSentence(mSeparatedFieldName[i].second) + "-";
 	}
 	newFieldName = newFieldName.substr(0U, newFieldName.size() - 1U);
-	std::string mResult = newFieldName + ": " + this->FieldsValues[FieldName];
+	std::string mResult;
+	for (std::string i : this->FieldsValues[FieldName]) {
+		mResult += newFieldName + ": " + i + HTTP::HTTPNewLineStr;
+	}
+	mResult = mResult.substr(0U, mResult.length() - strlen(HTTP::HTTPNewLineStr));
 	return mResult;
 }
 
@@ -1193,6 +1250,25 @@ void EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::cleanUp()
 	this->MajorVersion = 0U;
 	this->MinorVersion = 0U;
 	this->FieldsValues.clear();
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::SetFieldWithSingleValue(const std::string & FieldName, const std::string & FieldValue)
+{
+	std::vector<std::string> mTempVector = std::vector<std::string>();
+	mTempVector.push_back(FieldValue);
+	this->FieldsValues[FieldName] = mTempVector;
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::AppendFieldWithSingleValue(const std::string & FieldName, const std::string & AppendFieldValue)
+{
+	auto Iter = this->FieldsValues.find(FieldName);
+	std::vector<std::string> TempVector = std::vector<std::string>();
+	if (Iter == this->FieldsValues.end()) {
+		TempVector = (*Iter).second;
+	}
+	TempVector.push_back(AppendFieldValue);
+	this->FieldsValues[FieldName] = TempVector;
+	return;
 }
 
 EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::fromResponseString(const std::string & ResponseString)
@@ -1284,16 +1360,21 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 	this->ResponseCode = mHeaderCls.ResponseCode;
 	this->ResponseDescription = mHeaderCls.ResponseDescription;
 	
-	if (this->FieldsValues.find("Content-Encoding") != this->FieldsValues.end()) {
-		std::string ContentEncodingOriginStr = this->FieldsValues["Content-Encoding"];
+	auto ContentEncodingIt = this->FieldsValues.find("Content-Encoding");
+	if (ContentEncodingIt != this->FieldsValues.end()) {
+		std::string ContentEncodingOriginStr = (*ContentEncodingIt).second[0];
 		this->AnalyzeContentEncodingValue(ContentEncodingOriginStr);
 	}
-	if (this->FieldsValues.find("Transfer-Encoding") != this->FieldsValues.end()) {
-		std::string TransferEncodingOriginStr = this->FieldsValues["Transfer-Encoding"];
+
+	auto TransferEncodingIt = this->FieldsValues.find("Transfer-Encoding");
+	if (TransferEncodingIt != this->FieldsValues.end()) {
+		std::string TransferEncodingOriginStr = (*TransferEncodingIt).second[0];
 		this->AnalyzeTransferEncodingValue(TransferEncodingOriginStr);
 	}
-	if (this->FieldsValues.find("Connection") != this->FieldsValues.end()) {
-		this->Connection = this->FieldsValues["Connection"];
+
+	auto ConnectionIt = this->FieldsValues.find("Connection");
+	if (ConnectionIt != this->FieldsValues.end()) {
+		this->Connection = (*ConnectionIt).second[0];
 	}
 	mResult.canDecode = true;
 	mResult.msgIsEnough = true;
@@ -1348,9 +1429,10 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 	std::string::size_type MsgLength = 0U;
 	std::string ActualMsgNeedToDecode = "";
 	std::string ActualRemainingMsg = "";
-	if (this->FieldsValues.find("Content-Length") != this->FieldsValues.end()) {
+	auto ContentLengthIt = this->FieldsValues.find("Content-Length");
+	if (ContentLengthIt != this->FieldsValues.end()) {
 		try {
-			MsgLength = static_cast<std::string::size_type>(std::stoul(this->FieldsValues["Content-Length"]));
+			MsgLength = static_cast<std::string::size_type>(std::stoul((*ContentLengthIt).second[0]));
 		}
 		catch (std::invalid_argument e) {
 			MsgLength = std::string::npos;
@@ -1363,7 +1445,7 @@ EasyCrossPlatform::Parser::HTTP::HTTPParseReturnVal EasyCrossPlatform::Parser::H
 		if (!this->TransferEncoding.empty() && this->TransferEncoding[this->TransferEncoding.size() - 1U] == "chunked") {
 			ActualMsgNeedToDecode = this->EncodedData;
 		}
-		else if (this->FieldsValues.find("Connection") != this->FieldsValues.end() && EasyCrossPlatform::Parser::StringUtil::toLower(this->FieldsValues["Connection"]) == "close") {
+		else if (this->FieldsValues.find("Connection") != this->FieldsValues.end() && EasyCrossPlatform::Parser::StringUtil::toLower(this->Connection) == "close") {
 			ActualMsgNeedToDecode = this->EncodedData;
 		}
 		else {
@@ -1449,13 +1531,13 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPResponse::WriteHeader()
 {
 	HTTPResponseHeader mReqHeaderCls;
 	if (!this->ContentEncoding.empty()) {
-		this->FieldsValues["Content-Encoding"] = this->WriteContentEncodingValue();
+		this->SetFieldWithSingleValue("Content-Encoding", this->WriteContentEncodingValue());
 	}
 	if (!this->TransferEncoding.empty()) {
-		this->FieldsValues["Tranfer-Encoding"] = this->WriteTransferEncodingValue();
+		this->SetFieldWithSingleValue("Transfer-Encoding", this->WriteTransferEncodingValue());
 	}
 	if (!this->Connection.empty()) {
-		this->FieldsValues["Connection"] = this->Connection;
+		this->SetFieldWithSingleValue("Connection", this->Connection);
 	}
 	if (this->TransferEncoding.empty() && this->ContentEncoding.empty()) {
 		this->EncodedData = this->OriginalData;
@@ -1463,7 +1545,7 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPResponse::WriteHeader()
 		if (!this->OriginalData.empty()) {
 			this->EncodeData();
 		}
-		this->FieldsValues["Content-Length"] = std::to_string(this->EncodedData.size());
+		this->SetFieldWithSingleValue("Content-Length",std::to_string(this->EncodedData.length()));
 	}
 	mReqHeaderCls.FieldsValues = this->FieldsValues;
 	mReqHeaderCls.MajorVersion = this->MajorVersion;
@@ -1543,6 +1625,25 @@ void EasyCrossPlatform::Parser::HTTP::HTTPResponse::EncodeData()
 		}
 	}
 	this->EncodedData = TmpEncodedString;
+	return;
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPResponse::SetFieldWithSingleValue(const std::string & FieldName, const std::string & FieldValue)
+{
+	std::vector<std::string> mTempVector = std::vector<std::string>();
+	mTempVector.push_back(FieldValue);
+	this->FieldsValues[FieldName] = mTempVector;
+}
+
+void EasyCrossPlatform::Parser::HTTP::HTTPResponse::AppendFieldWithSingleValue(const std::string & FieldName, const std::string & AppendFieldValue)
+{
+	auto Iter = this->FieldsValues.find(FieldName);
+	std::vector<std::string> TempVector = std::vector<std::string>();
+	if (Iter == this->FieldsValues.end()) {
+		TempVector = (*Iter).second;
+	}
+	TempVector.push_back(AppendFieldValue);
+	this->FieldsValues[FieldName] = TempVector;
 	return;
 }
 

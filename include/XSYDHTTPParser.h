@@ -9,6 +9,7 @@
 	namespace EasyCrossPlatform {
 		namespace Parser {
 			namespace HTTP {
+				const constexpr char* HTTPNewLineStr = "\r\n";
 				const constexpr unsigned int MaxReqAnalyzeSize = 256U;
 				const constexpr unsigned int ChunckedSplitSize = 512U;
 				struct HTTPParseReturnVal {
@@ -61,7 +62,9 @@
 						unsigned int MinorVersion = 1U;
 						std::string Method = "GET";
 						URL RequestedURL;
-						std::map<std::string, std::string> FieldsValues;
+						std::map<std::string, std::vector<std::string>> FieldsValues;
+						void SetFieldWithSingleValue(const std::string& FieldName, const std::string& FieldValue);
+						void AppendFieldWithSingleValue(const std::string& FieldName, const std::string& AppendFieldValue);
 						HTTPParseReturnVal fromReqString(const std::string& ReqString); //Returns part of the string that is not parsed.
 						std::string toReqString();
 				};
@@ -85,10 +88,12 @@
 						unsigned int CompressionLevel = 9U;
 						std::string Method = "GET";
 						URL RequestedURL;
-						std::map<std::string, std::string> FieldsValues;
+						std::map<std::string, std::vector<std::string>> FieldsValues;
 						std::vector<std::string> ContentEncoding;
 						std::vector<std::string> TransferEncoding;
 						std::vector<std::pair<std::string,float>> AcceptEncoding;
+						void SetFieldWithSingleValue(const std::string& FieldName, const std::string& FieldValue);
+						void AppendFieldWithSingleValue(const std::string& FieldName, const std::string& AppendFieldValue);
 						std::string OriginalData = "";
 						std::string EncodedData = "";
 						std::string Connection = "";
@@ -113,7 +118,9 @@
 					std::string ResponseDescription = "OK";
 					unsigned int MajorVersion = 1U;
 					unsigned int MinorVersion = 1U;
-					std::map<std::string, std::string> FieldsValues;
+					void SetFieldWithSingleValue(const std::string& FieldName, const std::string& FieldValue);
+					void AppendFieldWithSingleValue(const std::string& FieldName, const std::string& AppendFieldValue);
+					std::map<std::string, std::vector<std::string>> FieldsValues;
 					HTTPParseReturnVal fromResponseString(const std::string& ResponseString); //Returns part of the string that is not parsed.
 					std::string toResponseString();
 				};
@@ -136,13 +143,14 @@
 					unsigned int CompressionLevel = 9U;
 					unsigned int ResponseCode = 200U;
 					std::string ResponseDescription = "";
-					std::map<std::string, std::string> FieldsValues;
+					std::map<std::string, std::vector<std::string>> FieldsValues;
 					std::vector<std::string> ContentEncoding;
 					std::vector<std::string> TransferEncoding;
 					std::string OriginalData = "";
 					std::string EncodedData = "";
 					std::string Connection = "";
-
+					void SetFieldWithSingleValue(const std::string& FieldName, const std::string& FieldValue);
+					void AppendFieldWithSingleValue(const std::string& FieldName, const std::string& AppendFieldValue);
 					HTTPParseReturnVal fromResponseString(const std::string& ResponseString);
 					std::string WriteHeader();
 					std::string toResponseString();

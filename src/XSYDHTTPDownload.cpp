@@ -29,11 +29,11 @@ void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const 
 		break;
 	}
 	mRequestCls.RequestURL = URL;
-	mRequestCls.m_ResquestContent.FieldsValues["Accept-Language"] = this->AcceptLanguageString;
+	mRequestCls.m_ResquestContent.SetFieldWithSingleValue("Accept-Language", this->AcceptLanguageString);
 	if ((!AuthData.first.empty()) || (!AuthData.second.empty())) {
 		std::string EncodingAuthText = AuthData.first + ":" + AuthData.second;
 		std::string EncodedAuthText = EasyCrossPlatform::Encryption::Base64::base64Encode(EncodingAuthText);
-		mRequestCls.m_ResquestContent.FieldsValues["Authorization"] = std::string("Basic ") + EncodedAuthText;
+		mRequestCls.m_ResquestContent.SetFieldWithSingleValue("Authorization", std::string("Basic ") + EncodedAuthText);
 	}
 	this->mResponseContent = mRequestCls.ResponseContent;
 	mRequestCls.performRequest();
@@ -52,18 +52,20 @@ void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const 
 	case 302U:
 	case 307U:
 	case 201U:
-		if (mRequestCls.ResponseContent.FieldsValues.find("Location") == mRequestCls.ResponseContent.FieldsValues.end()) {
+		auto LocationIt = mRequestCls.ResponseContent.FieldsValues.find("Location");
+		if (LocationIt == mRequestCls.ResponseContent.FieldsValues.end()) {
 			this->DownloadSucceed = false;
 			return;
 		}
-		return this->PerformRequest(mRequestMethod, mRequestCls.ResponseContent.FieldsValues["Location"], PostData, AuthData, RecursionTime + 1);
+		return this->PerformRequest(mRequestMethod, (*LocationIt).second[0], PostData, AuthData, RecursionTime + 1);
 		break;
 	case 303U:
-		if (mRequestCls.ResponseContent.FieldsValues.find("Location") == mRequestCls.ResponseContent.FieldsValues.end()) {
+		auto Location303It = mRequestCls.ResponseContent.FieldsValues.find("Location");
+		if (Location303It == mRequestCls.ResponseContent.FieldsValues.end()) {
 			this->DownloadSucceed = false;
 			return;
 		}
-		return this->PerformRequest(RequestMethod::GET, mRequestCls.ResponseContent.FieldsValues["Location"], PostData, AuthData, RecursionTime + 1);
+		return this->PerformRequest(RequestMethod::GET, (*Location303It).second[0], PostData, AuthData, RecursionTime + 1);
 		break;
 	case 204U:
 	case 205U:

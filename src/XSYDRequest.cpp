@@ -142,7 +142,7 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::performRequest()
 		throw std::invalid_argument("Protocol not recognized");
 	}
 	this->m_ResquestContent.AcceptEncoding = Request::generateAcceptEncodingList();
-	this->m_ResquestContent.FieldsValues["Connection"] = "close";
+	this->m_ResquestContent.SetFieldWithSingleValue("Connection", "close");
 	this->m_ResquestContent.OriginalData = this->RequestData;
 	this->m_ResquestContent.Method = std::to_string(this->Method);
 	std::string mRequestContent = this->m_ResquestContent.toReqString();
