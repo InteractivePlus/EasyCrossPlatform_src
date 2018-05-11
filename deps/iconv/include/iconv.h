@@ -1,4 +1,4 @@
-/* Copyright (C) 1999-2003, 2005-2006, 2008-2011 Free Software Foundation, Inc.
+﻿/* Copyright (C) 1999-2003, 2005-2006, 2008-2011 Free Software Foundation, Inc.
    This file is part of the GNU LIBICONV Library.
 
    The GNU LIBICONV Library is free software; you can redistribute it
@@ -24,14 +24,14 @@
 
 #define _LIBICONV_VERSION 0x010E    /* version number: (major<<8) + minor */
 
-///////////////////////// 삭제 / DELETE / УДАЛИТЬ ///////////////////////
+///////////////////////// DELETE ///////////////////////
 //#if @HAVE_VISIBILITY@ && BUILDING_LIBICONV
 //#define LIBICONV_DLL_EXPORTED __attribute__((__visibility__("default")))
 //#else
 //#define LIBICONV_DLL_EXPORTED
 //#endif
 //extern LIBICONV_DLL_EXPORTED @DLL_VARIABLE@ int _libiconv_version; /* Likewise */
-///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
+///////////////////////// ADD //////////////////////
 #ifdef EASYCROSSPLATFORM_PLATFORM_WINDOWS
 	#if BUILDING_LIBICONV
 		#define LIBICONV_DLL_EXPORTED __declspec(dllexport)
@@ -107,9 +107,9 @@ extern LIBICONV_DLL_EXPORTED iconv_t iconv_open (const char* tocode, const char*
 #define iconv libiconv
 #endif
 
-///////////////////////// 삭제 / DELETE / УДАЛИТЬ ///////////////////////
+///////////////////////// DELETE ///////////////////////
 //extern LIBICONV_DLL_EXPORTED size_t iconv (iconv_t cd, @ICONV_CONST@ char* * inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft);
-///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
+///////////////////////// ADD //////////////////////
 extern LIBICONV_DLL_EXPORTED size_t iconv (iconv_t cd, const char* * inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft);
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -129,10 +129,10 @@ extern LIBICONV_DLL_EXPORTED int iconv_close (iconv_t cd);
 
 /* Nonstandard extensions. */
 
-///////////////////////// 삭제 / DELETE / УДАЛИТЬ ///////////////////////
+///////////////////////// DELETE ///////////////////////
 //#if @USE_MBSTATE_T@
 //#if @BROKEN_WCHAR_H@
-///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
+///////////////////////// ADD //////////////////////
 #if USE_MBSTATE_T
 #if BROKEN_WCHAR_H
 ////////////////////////////////////////////////////////////////////////////////
@@ -157,9 +157,9 @@ extern "C" {
 typedef struct {
   void* dummy1[28];
 
-///////////////////////// 삭제 / DELETE / УДАЛИТЬ ///////////////////////
+///////////////////////// DELETE ///////////////////////
 //#if @USE_MBSTATE_T@
-///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
+///////////////////////// ADD //////////////////////
 #if USE_MBSTATE_T
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -210,9 +210,9 @@ typedef void (*iconv_unicode_uc_to_mb_fallback)
               void* callback_arg,
               void* data);
 
-///////////////////////// 삭제 / DELETE / УДАЛИТЬ ///////////////////////
+///////////////////////// DELETE ///////////////////////
 //#if @HAVE_WCHAR_T@
-///////////////////////// 추가 / ADD / ДОВАВЛЯТЬ //////////////////////
+///////////////////////// ADD //////////////////////
 #if HAVE_WCHAR_T
 ////////////////////////////////////////////////////////////////////////////////
 

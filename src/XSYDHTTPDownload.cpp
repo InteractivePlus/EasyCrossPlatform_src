@@ -42,6 +42,8 @@ void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const 
 		return;
 	}
 	this->DownloadedData = EasyCrossPlatform::Parser::StringUtil::toBytes(mRequestCls.ResponseContent.OriginalData);
+	
+	auto LocationIt = mRequestCls.ResponseContent.FieldsValues.find("Location");
 	switch (mRequestCls.ResponseContent.ResponseCode) {
 	case 200U:
 		this->DownloadSucceed = true;
@@ -52,7 +54,6 @@ void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const 
 	case 302U:
 	case 307U:
 	case 201U:
-		auto LocationIt = mRequestCls.ResponseContent.FieldsValues.find("Location");
 		if (LocationIt == mRequestCls.ResponseContent.FieldsValues.end()) {
 			this->DownloadSucceed = false;
 			return;
@@ -60,12 +61,11 @@ void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const 
 		return this->PerformRequest(mRequestMethod, (*LocationIt).second[0], PostData, AuthData, RecursionTime + 1);
 		break;
 	case 303U:
-		auto Location303It = mRequestCls.ResponseContent.FieldsValues.find("Location");
-		if (Location303It == mRequestCls.ResponseContent.FieldsValues.end()) {
+		if (LocationIt == mRequestCls.ResponseContent.FieldsValues.end()) {
 			this->DownloadSucceed = false;
 			return;
 		}
-		return this->PerformRequest(RequestMethod::GET, (*Location303It).second[0], PostData, AuthData, RecursionTime + 1);
+		return this->PerformRequest(RequestMethod::GET, (*LocationIt).second[0], PostData, AuthData, RecursionTime + 1);
 		break;
 	case 204U:
 	case 205U:
@@ -80,8 +80,6 @@ void EasyCrossPlatform::Network::Request::WebPageDownload::PerformRequest(const 
 		this->DownloadSucceed = false;
 		break;
 	}
-	
-
 }
 
 void EasyCrossPlatform::Network::Request::WebPageDownload::cleanUp()
