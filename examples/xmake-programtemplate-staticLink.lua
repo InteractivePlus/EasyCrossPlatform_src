@@ -94,7 +94,7 @@ target("program")
 	--Always put the libs that need dependencies in front of their dependencies.
 	add_links("easycrossplatform_s")
 	add_defines("USING_STATIC_LIBICONV")
-	add_links("cryptopp_s","libuv_s","jsoncpp_s","mbedtls_s","whereami_s","brotli_s","iconv_s")
+	add_links("cryptopp_s","libuv_s","jsoncpp_s","mbedtls_s","whereami_s","brotli_s","iconv_s","websocketpp_s")
 	add_links("mariadbclient")
 	if(is_plat("windows")) then
 		add_links('iphlpapi','psapi','shell32','user32','userenv',"winmm","ws2_32","wldap32","advapi32","Normaliz","Crypt32")
