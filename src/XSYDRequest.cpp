@@ -2,7 +2,7 @@
 
 void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TCPMsg_CB(const std::vector<byte>& Msg, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClassPtr)
 {
-	EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket*) ClassPtr;
+	EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket*) ClassPtr;
 	WebsiteRequest* myRequestCls = (WebsiteRequest*)myClientSocket->CustomData;
 	std::string newMsg = EasyCrossPlatform::Parser::StringUtil::fromBytes(Msg);
 	myRequestCls->m_MsgWaitingForRead += newMsg;
@@ -12,7 +12,7 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TCPMsg_CB(const std:
 
 void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TCPConn_CB(bool Succeed, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClassPtr)
 {
-	EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket*) ClassPtr;
+	EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket*) ClassPtr;
 	WebsiteRequest* myRequestCls = (WebsiteRequest*)myClientSocket->CustomData;
 	if (!Succeed) {
 		myRequestCls->m_operationSucceed = false;
@@ -25,14 +25,14 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TCPConn_CB(bool Succ
 
 void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TCPDisConn_CB(EasyCrossPlatform::Network::Socket::StandardClientSocket * ClassPtr)
 {
-	EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket*) ClassPtr;
+	EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket*) ClassPtr;
 	WebsiteRequest* myRequestCls = (WebsiteRequest*)myClientSocket->CustomData;
 	myRequestCls->m_operationSucceed = false;
 }
 
 void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TCPErr_CB(int ErrNo, const std::string & ErrDescription, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClassPtr)
 {
-	EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket*) ClassPtr;
+	EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket*) ClassPtr;
 	WebsiteRequest* myRequestCls = (WebsiteRequest*)myClientSocket->CustomData;
 	myRequestCls->m_operationSucceed = false;
 	
@@ -40,7 +40,7 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TCPErr_CB(int ErrNo,
 
 void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TLSMsg_CB(const std::vector<byte>& Msg, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClassPtr)
 {
-	EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* myClientSocket =  (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
+	EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket* myClientSocket =  (EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket*) ClassPtr;
 	WebsiteRequest* myRequestCls = (WebsiteRequest*)myClientSocket->CustomData;
 	std::string newMsg = EasyCrossPlatform::Parser::StringUtil::fromBytes(Msg);
 	myRequestCls->m_MsgWaitingForRead += newMsg;
@@ -50,7 +50,7 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TLSMsg_CB(const std:
 
 void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TLSConn_CB(bool Succeed, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClassPtr)
 {
-	EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
+	EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket*) ClassPtr;
 	WebsiteRequest* myRequestCls = (WebsiteRequest*)myClientSocket->CustomData;
 	if (!Succeed) {
 		myRequestCls->m_operationSucceed = false;
@@ -63,14 +63,14 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TLSConn_CB(bool Succ
 
 void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TLSDisConn_CB(EasyCrossPlatform::Network::Socket::StandardClientSocket * ClassPtr)
 {
-	EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
+	EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket*) ClassPtr;
 	WebsiteRequest* myRequestCls = (WebsiteRequest*)myClientSocket->CustomData;
 	myRequestCls->m_operationSucceed = false;
 }
 
 void EasyCrossPlatform::Network::Request::WebsiteRequest::m_TLSErr_CB(int ErrNo, const std::string & ErrDescription, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClassPtr)
 {
-	EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket*) ClassPtr;
+	EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket* myClientSocket = (EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket*) ClassPtr;
 	WebsiteRequest* myRequestCls = (WebsiteRequest*)myClientSocket->CustomData;
 	myRequestCls->m_operationSucceed = false;
 }
@@ -161,7 +161,7 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::performRequest()
 		return;
 	}
 	if (this->m_IsHTTPS) {
-		EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket* m_TLSClientSocket = new EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket(&this->m_SharedSocketWorker, DecodedIP[0], this->VerifyHTTPSCert, mRequestDomain);
+		EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket* m_TLSClientSocket = new EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket(&this->m_SharedSocketWorker, DecodedIP[0], this->VerifyHTTPSCert, mRequestDomain);
 		this->m_ClientSocket = m_TLSClientSocket;
 		
 		this->m_ClientSocket->SetConnectCallBack(this->m_TLSConn_CB);
@@ -233,7 +233,7 @@ void EasyCrossPlatform::Network::Request::WebsiteRequest::performRequest()
 		this->ResponseOriginalData = this->m_MsgWaitingForRead;
 	}
 	else {
-		EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket* m_TCPSocket = new EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket(DecodedIP[0], &this->m_SharedSocketWorker, 0U);
+		EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket* m_TCPSocket = new EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket(DecodedIP[0], &this->m_SharedSocketWorker, 0U);
 		this->m_ClientSocket = m_TCPSocket;
 		this->m_ClientSocket->SetConnectCallBack(this->m_TCPConn_CB);
 		this->m_ClientSocket->SetDisconnectCallBack(this->m_TCPDisConn_CB);

@@ -9,9 +9,6 @@
 				//IpV4绑定全部网卡填0.0.0.0
 				//IpV6绑定全部网卡填::
 				class IpAddr {
-					friend class UDPAsyncClientAndServerSocket;
-					friend class TCPAsyncClientSocket;
-					friend class TCPAsyncServerSocket;
 					friend class DNSRequest;
 					protected:
 						sockaddr m_Addr;

@@ -8,11 +8,12 @@
 	namespace EasyCrossPlatform{
 		namespace Network{
 			namespace Socket{
-				class TCPAsyncClientSocket;
-				class TCPAsyncServerSocket;
+				namespace TCP {
+					class TCPAsyncClientSocket;
+					class TCPAsyncServerSocket;
 
-				class TCPAsyncClientSocket : public StandardClientSocket {
-					friend class TCPAsyncServerSocket;
+					class TCPAsyncClientSocket : public StandardClientSocket {
+						friend class TCPAsyncServerSocket;
 					private:
 						StandardClientConnCallBack m_ConnectCallBack = NULL;
 						StandardClientMsgCallBack m_MsgCallBack = NULL;
@@ -47,7 +48,7 @@
 						void SetMsgCallBack(StandardClientMsgCallBack mCallBack);
 						void SetDisconnectCallBack(StandardClientDisconnectCallBack mCallBack);
 						void SetErrorCallBack(StandardClientErrorCallBack mCallBack);
-						
+
 						void Connect();
 						IpAddr getMyIpAddr();
 						IpAddr getRemoteAddr();
@@ -55,14 +56,14 @@
 						void SendMsg(const std::string& Msg);
 						void SendMsg(const std::vector<byte>& Msg);
 						void Disconnect();
-						
+
 						void* CustomData = NULL;
-						
+
 
 						~TCPAsyncClientSocket();
-				};
+					};
 
-				class TCPAsyncServerSocket : public StandardServerSocket {
+					class TCPAsyncServerSocket : public StandardServerSocket {
 					private:
 						StandardClientConnCallBack m_ClientConnectCallBack;
 						StandardClientMsgCallBack m_ClientMsgCallBack;
@@ -76,7 +77,7 @@
 
 						void Init();
 						void Destroy();
-						
+
 						static void m_uv_connection_cb(uv_stream_t* server, int status);
 
 						uv_tcp_t m_SocketHandle;
@@ -85,7 +86,7 @@
 						int m_QueueLength;
 						SocketWorker* myListenWorker = NULL;
 					public:
-						TCPAsyncServerSocket(const IpAddr& myIP,SocketWorker* mWorker ,int QueLength = 500);
+						TCPAsyncServerSocket(const IpAddr& myIP, SocketWorker* mWorker, int QueLength = 500);
 						TCPAsyncServerSocket(const TCPAsyncServerSocket& oldServer);
 
 						void SetClientConnectCallBack(StandardClientConnCallBack mCB);
@@ -103,7 +104,8 @@
 						void* CustomData = NULL;
 
 						~TCPAsyncServerSocket();
-				};
+					};
+				}
 			}
 		}
 	}
