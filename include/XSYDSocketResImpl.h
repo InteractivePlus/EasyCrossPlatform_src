@@ -9,7 +9,7 @@
 				//IpV4绑定全部网卡填0.0.0.0
 				//IpV6绑定全部网卡填::
 				class IpAddr {
-					friend class UDPAsyncSocket;
+					friend class UDPAsyncClientAndServerSocket;
 					friend class TCPAsyncClientSocket;
 					friend class TCPAsyncServerSocket;
 					friend class DNSRequest;
@@ -90,6 +90,25 @@
 					virtual void SetClientErrorCallBack(StandardClientErrorCallBack) = 0;
 					virtual void SetServerNewConnCallBack(StandardServerNewConnectionCallBack) = 0;
 					virtual void SetServerErrorCallBack(StandardServerErrorCallBack) = 0;
+					virtual void StartListen() = 0;
+					virtual void StopListen() = 0;
+					virtual bool isListening() = 0;
+				};
+
+				class MailSenderSocket;
+
+				class MailRecieverSocket;
+				typedef void(*MailBoxRecieverMsgCallBack)(const std::vector<byte>&, const IpAddr& IncommingIP, MailRecieverSocket*);
+				typedef void(*MailBoxRecieverErrorCallBack)(int, const std::string&, MailRecieverSocket*);
+				class MailSenderSocket {
+					virtual void SendMsg(const IpAddr&, const std::string&) = 0;
+					virtual void SendMsg(const IpAddr&, const std::vector<byte>&) = 0;
+				};
+
+				
+				class MailRecieverSocket {
+					virtual void SetServerMsgCallBack(MailBoxRecieverMsgCallBack) = 0;
+					virtual void SetServerErrCallBack(MailBoxRecieverErrorCallBack) = 0;
 					virtual void StartListen() = 0;
 					virtual void StopListen() = 0;
 					virtual bool isListening() = 0;

@@ -4,46 +4,45 @@
 	#include <libuv/uv.h>
 	#include <XSYDMultiTask.h>
 	#include <XSYDSocketResImpl.h>
+	#include <XSYDStringUtil.h>
 	namespace EasyCrossPlatform {
 		namespace Network {
 			namespace Socket {
-				class UDPAsyncSocket {
+				class UDPAsyncClientAndServerSocket : public MailSenderSocket, public MailRecieverSocket {
 					private:
-
+						MailBoxRecieverMsgCallBack m_MsgCallBack = NULL;
+						MailBoxRecieverErrorCallBack m_ErrCallBack = NULL;
 					protected:
-						static std::map<uv_udp_t*, std::vector<UDPAsyncSocket*>> m_MyClassPtrs;
+						void Init();
+						void Destroy();
 
 						static void m_uv_read_cb(uv_udp_t* handle, ssize_t nread, const uv_buf_t* buf, const struct sockaddr* remoteaddr, unsigned flags);
 						static void m_uv_send_cb(uv_udp_send_t* req, int status);
 						static void m_uv_alloc_buffer(uv_handle_t* handle, size_t suggested_size, uv_buf_t* buf);
 
-						std::shared_ptr<uv_udp_t> m_SocketHandle;
-						bool m_isListenMode;
-						bool m_isListening;
-						bool m_hasInited;
+						uv_udp_t* m_SocketHandle = NULL;
+						bool m_isListening = false;
 
-						IpAddr m_myRemoteAddr;
 						IpAddr m_myAddr;
-						SocketWorker* mySocketWorker;
+						SocketWorker* mySocketWorker = NULL;
+
+						void onError(int ErrNo, const std::string& ErrDescription);
+						void onMsg(const IpAddr& mIP, const std::string& Data);
 					public:
-						UDPAsyncSocket();
-						UDPAsyncSocket(const IpAddr& ListeningAddr);
-						UDPAsyncSocket(UDPAsyncSocket& oldUDP);
+						UDPAsyncClientAndServerSocket(const IpAddr& ListeningAddr, SocketWorker* mWorker);
+						UDPAsyncClientAndServerSocket(UDPAsyncClientAndServerSocket& oldUDP);
 
-						void sendMsg(const IpAddr& Destination,const std::string& Data);
-						void Listen();
-						void Listen(const IpAddr& myNewAddr);
-						void setSelfAddr(const IpAddr& myNewAddr);
+						void SetServerMsgCallBack(MailBoxRecieverMsgCallBack mCB);
+						void SetServerErrCallBack(MailBoxRecieverErrorCallBack mCB);
+
+						void SendMsg(const IpAddr& Destination,const std::string& Data);
+						void SendMsg(const IpAddr& Destination, const std::vector<byte>& Data);
+						void StartListen();
 						void StopListen();
+						bool isListening();
+						
 
-						void setWorker(SocketWorker& myWorker);
-						void Init();
-						void Destroy();
-
-						virtual void onMsg(const IpAddr& SourceIP,const std::string& data);
-						virtual void onError(int errCode, const std::string& errDescription);
-
-						~UDPAsyncSocket();
+						~UDPAsyncClientAndServerSocket();
 				};
 			}
 		}
