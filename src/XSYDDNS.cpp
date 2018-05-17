@@ -14,7 +14,7 @@ void EasyCrossPlatform::Network::Socket::DNSRequest::m_uv_resolved_cb(uv_getaddr
 	addrinfo* myResAddr = res;
 	
 	while (myResAddr != NULL) {
-		MyClass->valuebackArray.push_back(IpAddr((*(myResAddr->ai_addr))));
+		MyClass->valuebackArray.push_back(IpAddr(((myResAddr->ai_addr))));
 		if (myResAddr != res->ai_next) {
 			myResAddr = res->ai_next;
 		}

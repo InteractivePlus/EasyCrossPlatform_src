@@ -11,21 +11,22 @@
 				class IpAddr {
 					friend class DNSRequest;
 					protected:
-						sockaddr m_Addr;
+						sockaddr_in m_v4Addr;
+						sockaddr_in6 m_v6Addr;
 						bool m_isIpV4 = true;
 					public:
 						IpAddr();
 						IpAddr(const std::string& IpAddress, const unsigned short Port);
 						IpAddr(const char* IpAddress, const unsigned short Port);
-						IpAddr(const sockaddr& newAddr);
+						IpAddr(const sockaddr* newAddr);
 						IpAddr(const IpAddr& oldAddr);
 						bool setIPAddress(const std::string& IpAddress, const unsigned short Port);
 						bool setIPAddress(const char* IpAddress, const unsigned short Port);
-						bool setIPAddress(const sockaddr& newAddr);
+						bool setIPAddress(const sockaddr* newAddr);
 						std::string getIPString();
 						bool addrIsIPV4();
 						unsigned short getPort();
-						sockaddr getIPAddress();
+						const sockaddr* getIPAddress();
 				};
 				class SocketParam {
 					private:

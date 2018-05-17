@@ -203,6 +203,12 @@
 						TLSSNIAsyncServer(const IpAddr& BindIP, SocketWorker* mWorker, const std::map<std::string, std::pair<std::string, std::pair<std::string, std::string>>>& ServerCerts, int QueLength = 500);
 						TLSSNIAsyncServer(TLSSNIAsyncServer& oldServer);
 
+						void SetClientConnectCallBack(StandardClientConnCallBack mCB);
+						void SetClientMsgCallBack(StandardClientMsgCallBack mCB);
+						void SetClientDisconnectCallBack(StandardClientDisconnectCallBack mCB);
+						void SetClientErrorCallBack(StandardClientErrorCallBack mCB);
+						void SetServerNewConnCallBack(StandardServerNewConnectionCallBack mCB);
+						void SetServerErrorCallBack(StandardServerErrorCallBack mCB);
 
 						void* CustomData = NULL;
 						IpAddr getIP();

@@ -9,7 +9,7 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncClientAndServerSocket::m_u
 	std::string data;
 	Socket::IpAddr RemoteAddr;
 	if (remoteaddr != NULL) {
-		RemoteAddr.setIPAddress((*(remoteaddr)));
+		RemoteAddr.setIPAddress(((remoteaddr)));
 	}
 	if (nread > 0) {
 		data.assign(buf->base, nread);
@@ -41,6 +41,7 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncClientAndServerSocket::m_u
 EasyCrossPlatform::Network::Socket::UDP::UDPAsyncClientAndServerSocket::UDPAsyncClientAndServerSocket(const IpAddr & ListeningAddr, SocketWorker * mWorker)
 {
 	this->m_myAddr = ListeningAddr;
+	this->mySocketWorker = mWorker;
 	this->Init();
 }
 
@@ -60,7 +61,8 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncClientAndServerSocket::Sen
 {
 	uv_udp_send_t* mySendReq = (uv_udp_send_t*)malloc(sizeof(uv_udp_send_t));
 	IpAddr MyDestination = Destination;
-	sockaddr myAddr = MyDestination.getIPAddress();
+	const sockaddr* myAddr = MyDestination.getIPAddress();
+
 	char* tmpData = new char[Data.length() + 1];
 	for (unsigned int i = 0; i < Data.length(); i++) {
 		tmpData[i] = Data[i];
@@ -68,7 +70,7 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncClientAndServerSocket::Sen
 	tmpData[Data.length()] = '\0';
 	uv_buf_t myBuffer = uv_buf_init(tmpData, Data.length());
 	
-	int Result = uv_udp_send(mySendReq, this->m_SocketHandle, &myBuffer, 1, &myAddr, UDPAsyncClientAndServerSocket::m_uv_send_cb);
+	int Result = uv_udp_send(mySendReq, this->m_SocketHandle, &myBuffer, 1, myAddr, UDPAsyncClientAndServerSocket::m_uv_send_cb);
 	if (Result < 0) {
 		throw std::runtime_error(uv_err_name(Result));
 	}
@@ -111,8 +113,8 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncClientAndServerSocket::Ini
 	
 	uv_udp_init(this->mySocketWorker->m_uv_loop.get(), this->m_SocketHandle);
 	this->m_SocketHandle->data = (void*)this;
-	sockaddr myAddress = this->m_myAddr.getIPAddress();
-	int state = uv_udp_bind(this->m_SocketHandle, &myAddress, 0);
+	const sockaddr* myAddress = this->m_myAddr.getIPAddress();
+	int state = uv_udp_bind(this->m_SocketHandle, myAddress, 0);
 }
 void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncClientAndServerSocket::Destroy()
 {
@@ -155,8 +157,8 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncClientSocket::Init()
 	uv_udp_init(this->mySocketWorker->m_uv_loop.get(), this->m_SocketHandle);
 	this->m_SocketHandle->data = (void*) this;
 	if (this->m_myAddr.getPort() != 0U) {
-		sockaddr myAddress = this->m_myAddr.getIPAddress();
-		int state = uv_udp_bind(this->m_SocketHandle, &myAddress, 0);
+		const sockaddr* myAddress = this->m_myAddr.getIPAddress();
+		int state = uv_udp_bind(this->m_SocketHandle, myAddress, 0);
 	}
 }
 
@@ -186,7 +188,7 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncClientSocket::SendMsg(cons
 {
 	uv_udp_send_t* mySendReq = (uv_udp_send_t*)malloc(sizeof(uv_udp_send_t));
 	IpAddr MyDestination = Destination;
-	sockaddr myAddr = MyDestination.getIPAddress();
+	const sockaddr* myAddr = MyDestination.getIPAddress();
 	char* tmpData = new char[Data.length() + 1];
 	for (unsigned int i = 0; i < Data.length(); i++) {
 		tmpData[i] = Data[i];
@@ -194,7 +196,7 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncClientSocket::SendMsg(cons
 	tmpData[Data.length()] = '\0';
 	uv_buf_t myBuffer = uv_buf_init(tmpData, Data.length());
 
-	int Result = uv_udp_send(mySendReq, this->m_SocketHandle, &myBuffer, 1, &myAddr, UDPAsyncClientSocket::m_uv_send_cb);
+	int Result = uv_udp_send(mySendReq, this->m_SocketHandle, &myBuffer, 1, myAddr, UDPAsyncClientSocket::m_uv_send_cb);
 	if (Result < 0) {
 		throw std::runtime_error(uv_err_name(Result));
 	}
@@ -223,8 +225,8 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncServerSocket::Init()
 
 	uv_udp_init(this->mySocketWorker->m_uv_loop.get(), this->m_SocketHandle);
 	this->m_SocketHandle->data = (void*)this;
-	sockaddr myAddress = this->m_myAddr.getIPAddress();
-	int state = uv_udp_bind(this->m_SocketHandle, &myAddress, 0);
+	const sockaddr* myAddress = this->m_myAddr.getIPAddress();
+	int state = uv_udp_bind(this->m_SocketHandle, myAddress, 0);
 }
 
 void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncServerSocket::Destroy()
@@ -261,7 +263,7 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncServerSocket::m_uv_read_cb
 	std::string data;
 	Socket::IpAddr RemoteAddr;
 	if (remoteaddr != NULL) {
-		RemoteAddr.setIPAddress((*(remoteaddr)));
+		RemoteAddr.setIPAddress(remoteaddr);
 	}
 	if (nread > 0) {
 		data.assign(buf->base, nread);
@@ -324,5 +326,5 @@ void EasyCrossPlatform::Network::Socket::UDP::UDPAsyncServerSocket::StopListen()
 
 bool EasyCrossPlatform::Network::Socket::UDP::UDPAsyncServerSocket::isListening()
 {
-	return this->isListening;
+	return this->m_isListening;
 }

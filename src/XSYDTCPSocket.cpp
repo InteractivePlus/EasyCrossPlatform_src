@@ -103,8 +103,8 @@ EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket::TCPAsyncClientSoc
 		else {
 			mIp.setIPAddress("::", SelfPort);
 		}
-		sockaddr tempAddr = mIp.getIPAddress();
-		uv_tcp_bind(this->m_ClientSocketHandle, &tempAddr, 0);
+		const sockaddr* tempAddr = mIp.getIPAddress();
+		uv_tcp_bind(this->m_ClientSocketHandle, tempAddr, 0);
 	}
 }
 EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket::TCPAsyncClientSocket(const TCPAsyncClientSocket & oldClient)
@@ -149,8 +149,8 @@ void EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket::Connect()
 	}
 	uv_connect_t *myReadReq = (uv_connect_t*) malloc(sizeof(uv_connect_t));
 	myReadReq->data = (void*) this;
-	sockaddr myAddress = this->m_remoteAddr.getIPAddress();
-	int Result = uv_tcp_connect(myReadReq, this->m_ClientSocketHandle, &myAddress, EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket::m_uv_connect_cb);
+	const sockaddr* myAddress = this->m_remoteAddr.getIPAddress();
+	int Result = uv_tcp_connect(myReadReq, this->m_ClientSocketHandle, myAddress, EasyCrossPlatform::Network::Socket::TCP::TCPAsyncClientSocket::m_uv_connect_cb);
 	if (Result < 0) {
 		throw std::runtime_error(uv_err_name(Result));
 	}
@@ -162,7 +162,7 @@ EasyCrossPlatform::Network::Socket::IpAddr EasyCrossPlatform::Network::Socket::T
 		IpAddr myIP;
 		int ipStructSize = sizeof(sockaddr);
 		uv_tcp_getsockname(this->m_ClientSocketHandle, &mySocketAddr, &ipStructSize);
-		myIP.setIPAddress(mySocketAddr);
+		myIP.setIPAddress(&mySocketAddr);
 		return myIP;
 	}
 	return IpAddr("127.0.0.1",0U);
@@ -174,7 +174,7 @@ EasyCrossPlatform::Network::Socket::IpAddr EasyCrossPlatform::Network::Socket::T
 		IpAddr remoteIP;
 		int ipStructSize = sizeof(sockaddr);
 		uv_tcp_getpeername(this->m_ClientSocketHandle, &mySocketAddr, &ipStructSize);
-		remoteIP.setIPAddress(mySocketAddr);
+		remoteIP.setIPAddress(&mySocketAddr);
 		return remoteIP;
 	}
 	return this->m_remoteAddr;
@@ -367,8 +367,8 @@ EasyCrossPlatform::Network::Socket::IpAddr EasyCrossPlatform::Network::Socket::T
 
 void EasyCrossPlatform::Network::Socket::TCP::TCPAsyncServerSocket::StartListen()
 {
-	sockaddr myAddr = this->m_myIP.getIPAddress();
-	int bindState = uv_tcp_bind(&this->m_SocketHandle, &myAddr, 0);
+	const sockaddr* myAddr = this->m_myIP.getIPAddress();
+	int bindState = uv_tcp_bind(&this->m_SocketHandle, myAddr, 0);
 	if (bindState < 0) {
 		this->onError(bindState, uv_err_name(bindState));
 		return;

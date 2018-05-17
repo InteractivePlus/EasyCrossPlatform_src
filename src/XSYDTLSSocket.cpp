@@ -877,6 +877,36 @@ EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::TLSSNIAsyncServer(TL
 	throw std::runtime_error("You cannot have a copy of this class");
 }
 
+void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::SetClientConnectCallBack(StandardClientConnCallBack mCB)
+{
+	this->m_ClientConnectCallBack = mCB;
+}
+
+void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::SetClientMsgCallBack(StandardClientMsgCallBack mCB)
+{
+	this->m_ClientMsgCallBack = mCB;
+}
+
+void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::SetClientDisconnectCallBack(StandardClientDisconnectCallBack mCB)
+{
+	this->m_ClientDisconnectCallBack = mCB;
+}
+
+void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::SetClientErrorCallBack(StandardClientErrorCallBack mCB)
+{
+	this->m_ClientErrorCallBack = mCB;
+}
+
+void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::SetServerNewConnCallBack(StandardServerNewConnectionCallBack mCB)
+{
+	this->m_ServerConnectionCallback = mCB;
+}
+
+void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::SetServerErrorCallBack(StandardServerErrorCallBack mCB)
+{
+	this->m_ServerErrorCallBack = mCB;
+}
+
 EasyCrossPlatform::Network::Socket::IpAddr EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::getIP()
 {
 	return this->m_ServerSocket->getIP();
