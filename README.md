@@ -29,6 +29,7 @@ The development of EasyCrossPlatform is given power by the following lib:
 [brotli](https://github.com/google/brotli) - Google Brotli Compression Lib  
 [iconv](https://www.gnu.org/software/libiconv/) - Iconv Internationl Charset Lib.  
 [iconv-win](https://github.com/ThePhD/libiconv) - Iconv made to build with VC++. I add some header files so that it supports cross-platform compilation  
+[WebSocket](https://github.com/katzarsky/WebSocket) - WebSocket codes in C++. Implements RFC6455. Robust one-class parser implementation. I add some code to fix several bugs in the class  
 *Those projects remain in their own licenses, please refer to their project site.*  
 ## Why not GUI?
 GUI requires too much dependencies, and we are considering using "mygui". However, the OpenGL environment in each machine can be different, and if you want to use a GUI Lib, we recommend MyGUI with OpenGL2.0 Implemention  
