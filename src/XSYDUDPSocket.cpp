@@ -131,13 +131,10 @@ void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::Init()
 		return;
 	}
 	this->m_SocketHandle = std::shared_ptr<uv_udp_t>(new uv_udp_t);
-	if (this->mySocketWorker->m_num_Client == 0U) {
-		uv_loop_init(this->mySocketWorker->m_uv_loop.get());
-		this->mySocketWorker->Start();
-	}
+	this->mySocketWorker->Increment();
 	this->m_MyClassPtrs[this->m_SocketHandle.get()] = std::vector<UDPAsyncSocket*>();
 	this->m_MyClassPtrs[this->m_SocketHandle.get()].push_back(this);
-	this->mySocketWorker->m_num_Client++;
+	
 	uv_udp_init(this->mySocketWorker->m_uv_loop.get(), this->m_SocketHandle.get());
 	this->m_hasInited = true;
 }
@@ -161,12 +158,7 @@ void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::Destroy()
 		uv_close((uv_handle_t*)this->m_SocketHandle.get(), NULL);
 		this->m_MyClassPtrs.erase(this->m_SocketHandle.get());
 	}
-	this->mySocketWorker->m_num_Client--;
-	if (this->mySocketWorker->m_num_Client == 0U) {
-		uv_stop(this->mySocketWorker->m_uv_loop.get());
-		this->mySocketWorker->Stop();
-		uv_loop_close(this->mySocketWorker->m_uv_loop.get());
-	}
+	this->mySocketWorker->Decrement();
 	this->m_hasInited = false;
 }
 void EasyCrossPlatform::Network::Socket::UDPAsyncSocket::onMsg(const IpAddr& SourceIP, const std::string& data)

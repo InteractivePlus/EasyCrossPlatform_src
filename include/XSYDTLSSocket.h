@@ -23,44 +23,43 @@
 				class TLSSNIAsyncServerSingleConnection;
 				class TLSSNIAsyncServer;
 
-				typedef void(*TLSClientMsgCallBack)(const std::vector<byte>&, TLSAsyncClientSocket*);
-				typedef void(*TLSClientConnectCallBack)(bool, TLSAsyncClientSocket*);
-				typedef void(*TLSClientDisconnectCallBack)(TLSAsyncClientSocket*);
-				typedef void(*TLSClientErrorCallBack)(int, const std::string&, TLSAsyncClientSocket*);
-
-				typedef void(*TLSSingleConnMsgCallBack)(const std::vector<byte>&, TLSSNIAsyncServerSingleConnection*);
-				typedef void(*TLSSingleConnConnectCallBack)(bool, TLSSNIAsyncServerSingleConnection*);
-				typedef void(*TLSSingleConnDisconnectCallBack)(TLSSNIAsyncServerSingleConnection*);
-				typedef void(*TLSSingleConnErrorCallBack)(int, const std::string&, TLSSNIAsyncServerSingleConnection*);
-
-				typedef void(*TLSServerNewConnectionCallBack)(TLSSNIAsyncServerSingleConnection*, TLSSNIAsyncServer*);
-				typedef void(*TLSServerErrorCallBack)(int, const std::string&, TLSSNIAsyncServer*);
-				class TLSAsyncClientSocket {
+				class TLSAsyncClientSocket : public StandardClientSocket {
 					private:
-
+						StandardClientConnCallBack m_ConnectCallBack = NULL;
+						StandardClientMsgCallBack m_MsgCallBack = NULL;
+						StandardClientErrorCallBack m_ErrorCallBack = NULL;
+						StandardClientDisconnectCallBack m_DisconnectCallBack = NULL;
+						char** m_TMPALPNProtoList = NULL;
+						unsigned int m_TMPALPNProtoNum = 0U;
 					protected:
+						std::string serverHostName = "localhost";
+
+						unsigned int MinHandshakeTime = 1000U;
+						unsigned int MaxHandshakeTime = 60000U;
+
+						std::vector<std::string> SupportedALPNProtocols;
+						bool VerifyServerCert = true;
+
 						std::deque<byte> m_MsgWaitingForRead;
-						bool m_Inited = false;
 						mbedtls_entropy_context m_sslEntropy;
 						mbedtls_ctr_drbg_context m_sslCtr_drbg;
 						mbedtls_ssl_context m_sslContext;
 						mbedtls_ssl_config m_sslConf;
 						mbedtls_x509_crt m_sslCACert;
+						
 						bool m_Shaked = false;
-						char** m_TMPALPNProtoList = NULL;
-						unsigned int m_TMPALPNProtoNum = 0U;
 						
 						EasyCrossPlatform::Thread::SingleWork myWorkCls;
 
-						static void TCPConnectCallBack(bool Succeed, TCPAsyncClientSocket* ClientSocketPtr);
-						static void TCPDisconnectCallBack(TCPAsyncClientSocket* ClientSocketPtr);
-						static void TCPMsgCallBack(const std::vector<byte>& Data, TCPAsyncClientSocket* ClientSocketPtr);
-						static void TCPErrorCallBack(int ErrNo, const std::string& ErrDescription, TCPAsyncClientSocket* ClientSocketPtr);
+						static void TCPConnectCallBack(bool Succeed, StandardClientSocket* ClientSocketPtr);
+						static void TCPDisconnectCallBack(StandardClientSocket* ClientSocketPtr);
+						static void TCPMsgCallBack(const std::vector<byte>& Data, StandardClientSocket* ClientSocketPtr);
+						static void TCPErrorCallBack(int ErrNo, const std::string& ErrDescription, StandardClientSocket* ClientSocketPtr);
 						static void TLSDebugCallBack(void* TLSClientPtr, int level, const char* file, int line, const char* str);
 						static int TLSRecvCallBack(void* TLSClientPtr, unsigned char* buf, size_t len);
 						static int TLSSendCallback(void* TLSClientPtr, const unsigned char* buf, size_t len);
 						static void CompleteShakeProgress(std::thread::id myThreadID, void* Parameters, bool* RunningSign, std::mutex* Mutex);
-						TCPAsyncClientSocket m_ClientSocket;
+						TCPAsyncClientSocket* m_ClientSocket = NULL;
 						std::mutex ReadTCPMsgMutex;
 						std::mutex SendTCPMsgMutex;
 						void onDisconnected();
@@ -69,44 +68,47 @@
 						void onErrorOccured(int errNo, const std::string& ErrDescription);
 						void onMbedTLSError(int mbedErrNo);
 						bool CheckMsg();
-					public:
-						TLSClientConnectCallBack ConnectCallBack = NULL;
-						TLSClientMsgCallBack MsgCallBack = NULL;
-						TLSClientErrorCallBack ErrorCallBack = NULL;
-						TLSClientDisconnectCallBack DisconnectCallBack = NULL;
-						std::string serverHostName = "localhost";
-						
-						unsigned int MinHandshakeTime = 1000U;
-						unsigned int MaxHandshakeTime = 60000U;
 
-						std::vector<std::string> SupportedALPNProtocols;
+						void Init();
+						void Destroy();
+					public:
+						TLSAsyncClientSocket(SocketWorker* mWorker, const IpAddr& RemoteAddr, bool IVerifyServerCert = true, const std::string& RemoteHostName = "localhost", const std::vector<std::string>& SupportALPNProtocols = std::vector<std::string>(), const unsigned int MinHandshakeTime = 1000U, const unsigned int MaxHandshakeTime = 60000U, unsigned short SelfPort = 0U);
+						TLSAsyncClientSocket(TLSAsyncClientSocket& oldClient);
+						
 						std::string NegotiatedALPNProtocols;
-						bool VerifyServerCert = true;
-						void setWorker(SocketWorker* newWorker);
-						void setRemoteIPAddr(const IpAddr& newIP);
-						void setSelfPort(const unsigned short Port);
 						IpAddr getMyIpAddr();
 						IpAddr getRemoteAddr();
 						void setTrustedCAChain(const std::string& newCAChain);
 
-						TLSAsyncClientSocket();
-						TLSAsyncClientSocket(TLSAsyncClientSocket& oldClient);
+						void SetConnectCallBack(StandardClientConnCallBack mCB);
+						void SetMsgCallBack(StandardClientMsgCallBack mCB);
+						void SetDisconnectCallBack(StandardClientDisconnectCallBack mCB);
+						void SetErrorCallBack(StandardClientErrorCallBack mCB);
+
 						void* CustomData = NULL;
-						void Init();
+						
 						void Connect();
 						void Disconnect();
+						bool isConnected();
 						void SendMsg(const std::string& Data);
 						void SendMsg(const std::vector<byte>& Data);
-						void Destroy();
+						
 						~TLSAsyncClientSocket();
 				};
-				class TLSSNIAsyncServerSingleConnection {
+				class TLSSNIAsyncServerSingleConnection : public StandardClientSocket {
 					friend class TLSSNIAsyncServer;
 				private:
-
+					StandardClientConnCallBack m_ConnectCallBack = NULL;
+					StandardClientMsgCallBack m_MsgCallBack = NULL;
+					StandardClientErrorCallBack m_ErrorCallBack = NULL;
+					StandardClientDisconnectCallBack m_DisconnectCallBack = NULL;
 				protected:
+					TLSSNIAsyncServerSingleConnection(TCPAsyncClientSocket* mClient, const std::vector<std::string>& SupportALPNProtos, unsigned int MinHandshakeTime = 1000U, unsigned int MaxHandshakeTime = 60000U);
+					unsigned int MinHandshakeTime = 1000U;
+					unsigned int MaxHandshakeTime = 60000U;
+					std::vector<std::string> SupportedALPNProtocols;
+
 					std::deque<byte> m_MsgWaitingForRead;
-					bool m_Inited = false;
 					mbedtls_entropy_context m_sslEntropy;
 					mbedtls_ctr_drbg_context m_sslCtr_drbg;
 					mbedtls_ssl_context m_sslContext;
@@ -122,10 +124,10 @@
 					bool m_Shaked = false;
 					EasyCrossPlatform::Thread::SingleWork myWorkCls;
 
-					static void TCPConnectCallBack(bool Succeed, TCPAsyncClientSocket* ClientSocketPtr);
-					static void TCPDisconnectCallBack(TCPAsyncClientSocket* ClientSocketPtr);
-					static void TCPMsgCallBack(const std::vector<byte>& Data, TCPAsyncClientSocket* ClientSocketPtr);
-					static void TCPErrorCallBack(int ErrNo, const std::string& ErrDescription, TCPAsyncClientSocket* ClientSocketPtr);
+					static void TCPConnectCallBack(bool Succeed, StandardClientSocket* ClientSocketPtr);
+					static void TCPDisconnectCallBack(StandardClientSocket* ClientSocketPtr);
+					static void TCPMsgCallBack(const std::vector<byte>& Data, StandardClientSocket* ClientSocketPtr);
+					static void TCPErrorCallBack(int ErrNo, const std::string& ErrDescription, StandardClientSocket* ClientSocketPtr);
 					static void TLSDebugCallBack(void* TLSClientPtr, int level, const char* file, int line, const char* str);
 					static int TLSRecvCallBack(void* TLSClientPtr, unsigned char* buf, size_t len);
 					static int TLSSendCallback(void* TLSClientPtr, const unsigned char* buf, size_t len);
@@ -135,83 +137,77 @@
 					std::mutex ReadTCPMsgMutex;
 					std::mutex SendTCPMsgMutex;
 					void Init();
+					void Destroy();
 					void onDisconnected();
 					void onConnected(bool Succeeded);
 					void onMsgCB(const std::vector<byte>& Data);
 					void onErrorOccured(int errNo, const std::string& ErrDescription);
 					void onMbedTLSError(int mbedErrNo);
-					void setWorker(SocketWorker* newWorker);
-					void setSrvCert(const std::map < std::string,std::pair<std::string, std::pair<std::string,std::string>>> *newCerts); //first string is the hostname, default means all that does not match, first string in the pair is the cert content, second string in the pair is the private key.
+					void setSrvCert(const std::map<std::string, std::pair<std::string, std::pair<std::string,std::string>>> *newCerts); //first string is the hostname, default means all that does not match, first string in the pair is the cert content, second string in the pair is the private key.
 					bool CheckNewMsg();
 					const std::map<std::string, std::pair<std::string, std::pair<std::string,std::string>>>* m_SrvCerts;
 				public:
-					TLSSingleConnConnectCallBack ConnectCallBack = NULL;
-					TLSSingleConnMsgCallBack MsgCallBack = NULL;
-					TLSSingleConnErrorCallBack ErrorCallBack = NULL;
-					TLSSingleConnDisconnectCallBack DisconnectCallBack = NULL;
+					TLSSNIAsyncServerSingleConnection(TLSSNIAsyncServerSingleConnection& oldClient);
+
 					std::string serverHostName = "localhost";
 
 					void* CustomData = NULL;
 
-					bool VerifyServerCert = true;
-
 					IpAddr getMyIpAddr();
 					IpAddr getRemoteAddr();
 
-					unsigned int MinHandshakeTime = 1000U;
-					unsigned int MaxHandshakeTime = 60000U;
-
-					std::vector<std::string> SupportedALPNProtocols;
 					std::string NegotiatedALPNProtocols = "";
 
-					TLSSNIAsyncServerSingleConnection();
-					TLSSNIAsyncServerSingleConnection(TLSSNIAsyncServerSingleConnection& oldClient);
+					void SetConnectCallBack(StandardClientConnCallBack mCB);
+					void SetMsgCallBack(StandardClientMsgCallBack mCB);
+					void SetDisconnectCallBack(StandardClientDisconnectCallBack mCB);
+					void SetErrorCallBack(StandardClientErrorCallBack mCB);
+
+					void Connect();
 					void Disconnect();
 					void SendMsg(const std::string& Data);
 					void SendMsg(const std::vector<byte>& Data);
-					void Destroy();
-					void setCACert(const std::string& newCAChain);
+					bool isConnected();
+					
 					~TLSSNIAsyncServerSingleConnection();
 				};
-				class TLSSNIAsyncServer {
+				class TLSSNIAsyncServer : public StandardServerSocket {
 					private:
-
+						StandardServerNewConnectionCallBack m_ServerConnectionCallback = NULL;
+						StandardServerErrorCallBack m_ServerErrorCallBack = NULL;
+						StandardClientConnCallBack m_ClientConnectCallBack = NULL;
+						StandardClientMsgCallBack m_ClientMsgCallBack = NULL;
+						StandardClientErrorCallBack m_ClientErrorCallBack = NULL;
+						StandardClientDisconnectCallBack m_ClientDisconnectCallBack = NULL;
 					protected:
-						TCPAsyncServerSocket m_ServerSocket;
-						static void TCPServerNewConnCallBack(TCPAsyncClientSocket* newClientSocket, TCPAsyncServerSocket* ServerClassPtr);
-						static void TCPServerErrorCallBack(int errCode, const std::string& errInfo, TCPAsyncServerSocket* ServerClassPtr);
+						
+
+						unsigned int MinHandshakeTime = 1000U;
+						unsigned int MaxHandshakeTime = 60000U;
+						std::vector<std::string> SupportedALPNProtocols;
+
+						void Init();
+						void Destroy();
+						TCPAsyncServerSocket* m_ServerSocket = NULL;
+						static void TCPServerNewConnCallBack(StandardClientSocket* newClientSocket, StandardServerSocket* ServerClassPtr);
+						static void TCPServerErrorCallBack(int errCode, const std::string& errInfo, StandardServerSocket* ServerClassPtr);
 
 						bool m_Inited = false;
-						std::map<std::string, std::pair<std::string, std::pair<std::string,std::string>>> m_SrvCerts;
+						std::map<std::string, std::pair<std::string, std::pair<std::string,std::string>>> m_SrvCerts; //first string is the hostname, default means all that does not match, first string in the pair is the cert content, second string in the pair is the private key.
 
 						void onError(int ErrNo, const std::string& ErrorDescription);
 						void onMbedTLSError(int ErrNo);
 						void onConnection(TLSSNIAsyncServerSingleConnection* NewClientPtr);
-						std::string m_sslCACert;
 					public:
-						unsigned int MinHandshakeTime = 1000U;
-						unsigned int MaxHandshakeTime = 60000U;
-						TLSSNIAsyncServer();
+						TLSSNIAsyncServer(const IpAddr& BindIP, SocketWorker* mWorker, const std::map<std::string,std::pair<std::string,std::pair<std::string,std::string>>>& ServerCerts, int QueLength = 500);
 						TLSSNIAsyncServer(TLSSNIAsyncServer& oldServer);
-						std::vector<std::string> SupportedALPNProtocols;
 						
-						TLSServerNewConnectionCallBack ConnectionCallback = NULL;
-						TLSServerErrorCallBack SrvErrorCallBack = NULL;
-						TLSSingleConnConnectCallBack ConnectCallBack = NULL;
-						TLSSingleConnMsgCallBack MsgCallBack = NULL;
-						TLSSingleConnErrorCallBack ErrorCallBack = NULL;
-						TLSSingleConnDisconnectCallBack DisconnectCallBack = NULL;
-						void setIP(const IpAddr& myIP, int QueueLength = 0);
+						
 						void* CustomData = NULL;
 						IpAddr getIP();
-						void Listen();
+						void StartListen();
 						void StopListen();
 						bool isListening();
-						void Init();
-						void Destroy();
-						void setWorker(SocketWorker* newWorker);
-						void setServerCerts(std::map<std::string, std::pair<std::string, std::pair<std::string,std::string>>>& newCerts); //first string is the hostname, default means all that does not match, first string in the pair is the cert content, second string in the pair is the private key.
-						void setCACerts(const std::string& Cert);
 				};
 			}
 		}

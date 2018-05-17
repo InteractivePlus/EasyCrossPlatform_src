@@ -32,14 +32,14 @@ EasyCrossPlatform::Network::Socket::IpAddr::IpAddr()
 	this->m_isIpV4 = true;
 }
 
-EasyCrossPlatform::Network::Socket::IpAddr::IpAddr(const std::string & IpAddress, const unsigned short Port, bool AddrIpV4) : IpAddr(IpAddress.c_str(), Port, AddrIpV4)
+EasyCrossPlatform::Network::Socket::IpAddr::IpAddr(const std::string & IpAddress, const unsigned short Port)
 {
-
+	this->setIPAddress(IpAddress, Port);
 }
 
-EasyCrossPlatform::Network::Socket::IpAddr::IpAddr(const char * IpAddress, const unsigned short Port, bool AddrIpV4)
+EasyCrossPlatform::Network::Socket::IpAddr::IpAddr(const char * IpAddress, const unsigned short Port)
 {
-	this->setIPAddress(IpAddress, Port, AddrIpV4);
+	this->setIPAddress(std::string(IpAddress), Port);
 }
 
 EasyCrossPlatform::Network::Socket::IpAddr::IpAddr(const sockaddr & newAddr)
@@ -53,26 +53,28 @@ EasyCrossPlatform::Network::Socket::IpAddr::IpAddr(const IpAddr & oldAddr)
 	this->m_Addr = oldAddr.m_Addr;
 }
 
-bool EasyCrossPlatform::Network::Socket::IpAddr::setIPAddress(const std::string & IpAddress, const unsigned short Port, bool AddrIpV4)
-{
-	return setIPAddress(IpAddress.c_str(), Port, AddrIpV4);
-}
-
-bool EasyCrossPlatform::Network::Socket::IpAddr::setIPAddress(const char * IpAddress, const unsigned short Port, bool AddrIpV4)
+bool EasyCrossPlatform::Network::Socket::IpAddr::setIPAddress(const std::string & IpAddress, const unsigned short Port)
 {
 	int setState = 0;
-	if (AddrIpV4) {
-		setState = uv_ip4_addr(IpAddress, static_cast<int>(Port), (sockaddr_in*)&this->m_Addr);
+	bool isIPv4 = IpAddress.find('.', 0U);
+	if (isIPv4) {
+		setState = uv_ip4_addr(IpAddress.c_str(), static_cast<int>(Port), (sockaddr_in*)&this->m_Addr);
 	}
 	else {
-		setState = uv_ip6_addr(IpAddress, static_cast<int>(Port), (sockaddr_in6*)&this->m_Addr);
+		setState = uv_ip6_addr(IpAddress.c_str(), static_cast<int>(Port), (sockaddr_in6*)&this->m_Addr);
 	}
 	if (setState < 0) {
 		return false;
 	}
 	else {
+		this->m_isIpV4 = isIPv4;
 		return true;
 	}
+}
+
+bool EasyCrossPlatform::Network::Socket::IpAddr::setIPAddress(const char * IpAddress, const unsigned short Port)
+{
+	return setIPAddress(std::string(IpAddress), Port);
 }
 
 bool EasyCrossPlatform::Network::Socket::IpAddr::setIPAddress(const sockaddr & newAddr) {
@@ -148,6 +150,22 @@ void EasyCrossPlatform::Network::Socket::SocketWorker::Stop()
 {
 	uv_stop(this->m_uv_loop.get());
 	this->m_MTManager.StopJob();
+}
+
+void EasyCrossPlatform::Network::Socket::SocketWorker::Increment()
+{
+	this->m_num_Client++;
+	if (this->m_num_Client == 1) {
+		this->Start();
+	}
+}
+
+void EasyCrossPlatform::Network::Socket::SocketWorker::Decrement()
+{
+	this->m_num_Client--;
+	if (this->m_num_Client == 0) {
+		this->Stop();
+	}
 }
 
 void EasyCrossPlatform::Network::Socket::SocketWorker::m_MultiThread_Job(std::thread::id ThreadID, void * Parameters, bool * RunningSign, std::mutex * Mutex)

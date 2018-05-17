@@ -10,21 +10,20 @@
 			namespace Socket{
 				class TCPAsyncClientSocket;
 				class TCPAsyncServerSocket;
-				typedef void(*TCPClientMsgCallBack)(const std::vector<byte>&, TCPAsyncClientSocket*);
-				typedef void(*TCPClientConnectCallBack)(bool, TCPAsyncClientSocket*);
-				typedef void(*TCPClientDisconnectCallBack)(TCPAsyncClientSocket*);
-				typedef void(*TCPServerNewConnectionCallBack)(TCPAsyncClientSocket*, TCPAsyncServerSocket*);
-				typedef void(*TCPClientErrorCallBack)(int, const std::string&, TCPAsyncClientSocket*);
-				typedef void(*TCPServerErrorCallBack)(int, const std::string&, TCPAsyncServerSocket*);
-				class TCPAsyncClientSocket {
+
+				class TCPAsyncClientSocket : public StandardClientSocket {
 					friend class TCPAsyncServerSocket;
 					private:
-						
+						StandardClientConnCallBack m_ConnectCallBack = NULL;
+						StandardClientMsgCallBack m_MsgCallBack = NULL;
+						StandardClientErrorCallBack m_ErrorCallBack = NULL;
+						StandardClientDisconnectCallBack m_DisconnectCallBack = NULL;
+
 					protected:
+						TCPAsyncClientSocket(SocketWorker* mWorker);
 						IpAddr m_remoteAddr;
-						std::shared_ptr<uv_tcp_t> m_ClientSocketHandle;
+						uv_tcp_t* m_ClientSocketHandle;
 						bool m_Connected = false;
-						bool Inited = false;
 						bool Closing = false;
 						static void m_uv_connect_cb(uv_connect_t* req, int status);
 						static void m_uv_close_cb(uv_handle_t* handle);
@@ -33,76 +32,75 @@
 						static void m_uv_write_cb(uv_write_t* req, int status);
 						static void m_uv_alloc_buffer(uv_handle_t* handle, size_t suggested_size, uv_buf_t* buf);
 
-						SocketWorker* mySocketWorker = NULL;
+						SocketWorker* m_SocketWorker = NULL;
 						void onConnected(bool Succeeded);
 						void onMsg(const std::vector<byte>& Msg);
 						void onDisconnect();
 						void onError(int errCode, const std::string& errDescription);
-					public:
-						TCPAsyncClientSocket();
-						TCPAsyncClientSocket(const IpAddr& RemoteIP);
-						TCPAsyncClientSocket(const TCPAsyncClientSocket& oldClient);
-						
-						void setWorker(SocketWorker* socketWorker);
+
 						void Init();
+						void Destroy();
+					public:
+						TCPAsyncClientSocket(const IpAddr& RemoteIP, SocketWorker* mWorker, unsigned short SelfPortU);
+						TCPAsyncClientSocket(const TCPAsyncClientSocket& oldClient);
+						void SetConnectCallBack(StandardClientConnCallBack mCallBack);
+						void SetMsgCallBack(StandardClientMsgCallBack mCallBack);
+						void SetDisconnectCallBack(StandardClientDisconnectCallBack mCallBack);
+						void SetErrorCallBack(StandardClientErrorCallBack mCallBack);
+						
 						void Connect();
-						void setRemoteIPAddr(const IpAddr& newIP);
-						void setSelfPort(const unsigned short Port);
 						IpAddr getMyIpAddr();
 						IpAddr getRemoteAddr();
 						bool isConnected();
 						void SendMsg(const std::string& Msg);
 						void SendMsg(const std::vector<byte>& Msg);
 						void Disconnect();
-						void Destroy();
+						
 						void* CustomData = NULL;
-						TCPClientConnectCallBack ConnectCallBack = NULL;
-						TCPClientMsgCallBack MsgCallBack = NULL;
-						TCPClientErrorCallBack ErrorCallBack = NULL;
-						TCPClientDisconnectCallBack DisconnectCallBack = NULL;
+						
 
 						~TCPAsyncClientSocket();
 				};
 
-				class TCPAsyncServerSocket {
+				class TCPAsyncServerSocket : public StandardServerSocket {
 					private:
-
+						StandardClientConnCallBack m_ClientConnectCallBack;
+						StandardClientMsgCallBack m_ClientMsgCallBack;
+						StandardClientErrorCallBack m_ClientErrorCallBack;
+						StandardClientDisconnectCallBack m_ClientDisconnectCallBack;
+						StandardServerNewConnectionCallBack m_ServerNewConnCallBack;
+						StandardServerErrorCallBack m_ServerErrorCallBack;
 					protected:
 						void onConnection(TCPAsyncClientSocket* newClient);
 						void onError(int errCode, const std::string& errorDescription);
+
+						void Init();
+						void Destroy();
 						
 						static void m_uv_connection_cb(uv_stream_t* server, int status);
 
 						uv_tcp_t m_SocketHandle;
-						IpAddr m_myIP = IpAddr();
+						IpAddr m_myIP;
 						bool m_isListening = false;
-						bool hasInted = false;
-						int m_QueueLength = 0;
+						int m_QueueLength;
 						SocketWorker* myListenWorker = NULL;
 					public:
-						TCPAsyncServerSocket();
-						TCPAsyncServerSocket(const IpAddr& myIP, int QueLength);
+						TCPAsyncServerSocket(const IpAddr& myIP,SocketWorker* mWorker ,int QueLength = 500);
 						TCPAsyncServerSocket(const TCPAsyncServerSocket& oldServer);
 
-						void setWorkers(SocketWorker* Worker);
-						void Init();
-						void Destroy();
+						void SetClientConnectCallBack(StandardClientConnCallBack mCB);
+						void SetClientMsgCallBack(StandardClientMsgCallBack mCB);
+						void SetClientDisconnectCallBack(StandardClientDisconnectCallBack mCB);
+						void SetClientErrorCallBack(StandardClientErrorCallBack mCB);
+						void SetServerNewConnCallBack(StandardServerNewConnectionCallBack mCB);
+						void SetServerErrorCallBack(StandardServerErrorCallBack mCB);
 
-
-						void setIP(const IpAddr& myIP, int QueLength = 0);
 						IpAddr getIP();
-						void Listen();
-						void Listen(const IpAddr& myIP, int QueLength = 0);
+						void StartListen();
 						void StopListen();
 						bool isListening();
 
 						void* CustomData = NULL;
-						TCPClientConnectCallBack ClientConnectCallBack;
-						TCPClientMsgCallBack ClientMsgCallBack;
-						TCPClientErrorCallBack ClientErrorCallBack;
-						TCPClientDisconnectCallBack ClientDisconnectCallBack;
-						TCPServerNewConnectionCallBack ServerNewConnCallBack;
-						TCPServerErrorCallBack ServerErrorCallBack;
 
 						~TCPAsyncServerSocket();
 				};
