@@ -12,9 +12,10 @@ Supported Architecture: x86(i386) / x64(x86_64) / ARMv5 / ARMv6 / ARMv7 / ARMv8
 *Luckily, our modern CPUs are almost ALL Small-Endian*  
 Powered by [BlueAirTechGroup](https://www.xsyds.cn/)  
 Contribution List: [Windy](https://github.com/ToiletCommander)  
+
 ---
 
-Libs: 
+- Libs: 
 	- MultiThreadPool
 	- MultiThread
 	- FileIO
@@ -28,9 +29,12 @@ Libs:
 	- HTTP1.X Parser
 	- International Charsets
 	- Regex Expression Match/Search/Replace  
-	- ~~HTTP Server~~
+	- ~~HTTP Server~~(Comming Soon)
+- Required Environment: 
+	- POSIX/Windows System
+	- C++ 11
 
-Require Support: MacOSX / Linux / Windows System and C++ 11 Support  
+---
 ## Uncompromising Performances?
 Right, we use LibUV as our basis for our socket class.  
 As benchmark showed, on release version, the socket Delay is 240ms with 10k connections.  

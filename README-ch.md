@@ -12,9 +12,10 @@ Language: [English](README.md)
 *所幸现在大多数的CPU都是小端序的*  
 [形随意动](https://www.xsyds.cn/)作品  
 贡献列表: [年迈的老秋风](https://github.com/ToiletCommander)  
+
 ---
 
-包含库: 
+- 包含库: 
 	- 多线程池
 	- 多线程
 	- 文件读写
@@ -28,8 +29,13 @@ Language: [English](README.md)
 	- HTTP1.X解析器
 	- 国际编码转换
 	- 正则表达式匹配/替换/查找
+	- ~~HTTP服务器~~(即将到来)
+- 环境依赖: 
+	- POSIX/Windows系统
+	- C++ 11  
 
-需要支持: Unix / Linux / Windows系统 + C++11  
+---
+
 ## 毫不妥协的性能
 Socket库以Libuv为底层, 开发了跨平台的Socket库.  
 根据测试, Release版本在1万并发的情况下延时仅240ms.  
