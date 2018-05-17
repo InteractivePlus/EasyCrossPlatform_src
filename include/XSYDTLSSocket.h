@@ -19,12 +19,22 @@
 			namespace Socket {
 				const constexpr int MBEDTLS_DEBUGLEVEL = 0;
 				const constexpr char* defaultAuthorityCA = "";
-				typedef void(*TLSClientMsgCallBack)(const std::vector<byte>&, void*);
-				typedef void(*TLSClientConnectCallBack)(bool, void*);
-				typedef void(*TLSClientDisconnectCallBack)(void*);
-				typedef void(*TLSServerNewConnectionCallBack)(void*, void*);
-				typedef void(*TLSClientErrorCallBack)(int, const std::string&, void*);
-				typedef void(*TLSServerErrorCallBack)(int, const std::string&, void*);
+				class TLSAsyncClientSocket;
+				class TLSSNIAsyncServerSingleConnection;
+				class TLSSNIAsyncServer;
+
+				typedef void(*TLSClientMsgCallBack)(const std::vector<byte>&, TLSAsyncClientSocket*);
+				typedef void(*TLSClientConnectCallBack)(bool, TLSAsyncClientSocket*);
+				typedef void(*TLSClientDisconnectCallBack)(TLSAsyncClientSocket*);
+				typedef void(*TLSClientErrorCallBack)(int, const std::string&, TLSAsyncClientSocket*);
+
+				typedef void(*TLSSingleConnMsgCallBack)(const std::vector<byte>&, TLSSNIAsyncServerSingleConnection*);
+				typedef void(*TLSSingleConnConnectCallBack)(bool, TLSSNIAsyncServerSingleConnection*);
+				typedef void(*TLSSingleConnDisconnectCallBack)(TLSSNIAsyncServerSingleConnection*);
+				typedef void(*TLSSingleConnErrorCallBack)(int, const std::string&, TLSSNIAsyncServerSingleConnection*);
+
+				typedef void(*TLSServerNewConnectionCallBack)(TLSSNIAsyncServerSingleConnection*, TLSSNIAsyncServer*);
+				typedef void(*TLSServerErrorCallBack)(int, const std::string&, TLSSNIAsyncServer*);
 				class TLSAsyncClientSocket {
 					private:
 
@@ -42,10 +52,10 @@
 						
 						EasyCrossPlatform::Thread::SingleWork myWorkCls;
 
-						static void TCPConnectCallBack(bool Succeed, void* ClientSocketPtr);
-						static void TCPDisconnectCallBack(void* ClientSocketPtr);
-						static void TCPMsgCallBack(const std::vector<byte>& Data, void* ClientSocketPtr);
-						static void TCPErrorCallBack(int ErrNo, const std::string& ErrDescription, void* ClientSocketPtr);
+						static void TCPConnectCallBack(bool Succeed, TCPAsyncClientSocket* ClientSocketPtr);
+						static void TCPDisconnectCallBack(TCPAsyncClientSocket* ClientSocketPtr);
+						static void TCPMsgCallBack(const std::vector<byte>& Data, TCPAsyncClientSocket* ClientSocketPtr);
+						static void TCPErrorCallBack(int ErrNo, const std::string& ErrDescription, TCPAsyncClientSocket* ClientSocketPtr);
 						static void TLSDebugCallBack(void* TLSClientPtr, int level, const char* file, int line, const char* str);
 						static int TLSRecvCallBack(void* TLSClientPtr, unsigned char* buf, size_t len);
 						static int TLSSendCallback(void* TLSClientPtr, const unsigned char* buf, size_t len);
@@ -112,10 +122,10 @@
 					bool m_Shaked = false;
 					EasyCrossPlatform::Thread::SingleWork myWorkCls;
 
-					static void TCPConnectCallBack(bool Succeed, void* ClientSocketPtr);
-					static void TCPDisconnectCallBack(void* ClientSocketPtr);
-					static void TCPMsgCallBack(const std::vector<byte>& Data, void* ClientSocketPtr);
-					static void TCPErrorCallBack(int ErrNo, const std::string& ErrDescription, void* ClientSocketPtr);
+					static void TCPConnectCallBack(bool Succeed, TCPAsyncClientSocket* ClientSocketPtr);
+					static void TCPDisconnectCallBack(TCPAsyncClientSocket* ClientSocketPtr);
+					static void TCPMsgCallBack(const std::vector<byte>& Data, TCPAsyncClientSocket* ClientSocketPtr);
+					static void TCPErrorCallBack(int ErrNo, const std::string& ErrDescription, TCPAsyncClientSocket* ClientSocketPtr);
 					static void TLSDebugCallBack(void* TLSClientPtr, int level, const char* file, int line, const char* str);
 					static int TLSRecvCallBack(void* TLSClientPtr, unsigned char* buf, size_t len);
 					static int TLSSendCallback(void* TLSClientPtr, const unsigned char* buf, size_t len);
@@ -135,10 +145,10 @@
 					bool CheckNewMsg();
 					const std::map<std::string, std::pair<std::string, std::pair<std::string,std::string>>>* m_SrvCerts;
 				public:
-					TLSClientConnectCallBack ConnectCallBack = NULL;
-					TLSClientMsgCallBack MsgCallBack = NULL;
-					TLSClientErrorCallBack ErrorCallBack = NULL;
-					TLSClientDisconnectCallBack DisconnectCallBack = NULL;
+					TLSSingleConnConnectCallBack ConnectCallBack = NULL;
+					TLSSingleConnMsgCallBack MsgCallBack = NULL;
+					TLSSingleConnErrorCallBack ErrorCallBack = NULL;
+					TLSSingleConnDisconnectCallBack DisconnectCallBack = NULL;
 					std::string serverHostName = "localhost";
 
 					void* CustomData = NULL;
@@ -168,8 +178,8 @@
 
 					protected:
 						TCPAsyncServerSocket m_ServerSocket;
-						static void TCPServerNewConnCallBack(void* newClientSocket, void* ServerClassPtr);
-						static void TCPServerErrorCallBack(int errCode, const std::string& errInfo, void* ServerClassPtr);
+						static void TCPServerNewConnCallBack(TCPAsyncClientSocket* newClientSocket, TCPAsyncServerSocket* ServerClassPtr);
+						static void TCPServerErrorCallBack(int errCode, const std::string& errInfo, TCPAsyncServerSocket* ServerClassPtr);
 
 						bool m_Inited = false;
 						std::map<std::string, std::pair<std::string, std::pair<std::string,std::string>>> m_SrvCerts;
@@ -187,10 +197,10 @@
 						
 						TLSServerNewConnectionCallBack ConnectionCallback = NULL;
 						TLSServerErrorCallBack SrvErrorCallBack = NULL;
-						TLSClientConnectCallBack ConnectCallBack = NULL;
-						TLSClientMsgCallBack MsgCallBack = NULL;
-						TLSClientErrorCallBack ErrorCallBack = NULL;
-						TLSClientDisconnectCallBack DisconnectCallBack = NULL;
+						TLSSingleConnConnectCallBack ConnectCallBack = NULL;
+						TLSSingleConnMsgCallBack MsgCallBack = NULL;
+						TLSSingleConnErrorCallBack ErrorCallBack = NULL;
+						TLSSingleConnDisconnectCallBack DisconnectCallBack = NULL;
 						void setIP(const IpAddr& myIP, int QueueLength = 0);
 						void* CustomData = NULL;
 						IpAddr getIP();

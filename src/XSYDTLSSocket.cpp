@@ -10,7 +10,7 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::setTrustedCAChain
 	}
 }
 
-void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPConnectCallBack(bool Succeed, void * ClientSocketPtr)
+void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPConnectCallBack(bool Succeed, EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClientSocketPtr)
 {
 	int ret = 0;
 	TLSAsyncClientSocket* myTLSClient = (TLSAsyncClientSocket*) ((TCPAsyncClientSocket*) ClientSocketPtr)->CustomData;
@@ -52,13 +52,13 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPConnectCallBac
 	}
 }
 
-void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPDisconnectCallBack(void * ClientSocketPtr)
+void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPDisconnectCallBack(EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClientSocketPtr)
 {
 	TLSAsyncClientSocket* myTLSClient = (TLSAsyncClientSocket*) ((TCPAsyncClientSocket*) ClientSocketPtr)->CustomData;
 	myTLSClient->onDisconnected();
 }
 
-void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPMsgCallBack(const std::vector<byte> & Data, void * ClientSocketPtr)
+void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPMsgCallBack(const std::vector<byte> & Data, EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClientSocketPtr)
 {
 	TLSAsyncClientSocket* myTLSClient = (TLSAsyncClientSocket*) ((TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
 	myTLSClient->ReadTCPMsgMutex.lock();
@@ -71,7 +71,7 @@ void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPMsgCallBack(co
 	}
 }
 
-void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPErrorCallBack(int ErrNo, const std::string & ErrDescription, void * ClientSocketPtr)
+void EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::TCPErrorCallBack(int ErrNo, const std::string & ErrDescription, EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClientSocketPtr)
 {
 	TLSAsyncClientSocket* myTLSClient = (TLSAsyncClientSocket*)((TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
 	myTLSClient->onErrorOccured(ErrNo, ErrDescription);
@@ -382,7 +382,7 @@ EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket::~TLSAsyncClientSocket(
 }
 
 
-void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPConnectCallBack(bool Succeed, void * ClientSocketPtr)
+void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPConnectCallBack(bool Succeed, EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClientSocketPtr)
 {
 	int ret = 0;
 	TLSSNIAsyncServerSingleConnection* myTLSClient = (TLSSNIAsyncServerSingleConnection*) ((TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
@@ -443,13 +443,13 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPC
 	}
 }
 
-void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPDisconnectCallBack(void * ClientSocketPtr)
+void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPDisconnectCallBack(EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClientSocketPtr)
 {
 	TLSSNIAsyncServerSingleConnection* myTLSClient = (TLSSNIAsyncServerSingleConnection*)((TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
 	myTLSClient->onDisconnected();
 }
 
-void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPMsgCallBack(const std::vector<byte> & Data, void * ClientSocketPtr)
+void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPMsgCallBack(const std::vector<byte> & Data, EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClientSocketPtr)
 {
 	TLSSNIAsyncServerSingleConnection* myTLSClient = (TLSSNIAsyncServerSingleConnection*)((TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
 	myTLSClient->ReadTCPMsgMutex.lock();
@@ -462,7 +462,7 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPM
 	}
 }
 
-void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPErrorCallBack(int ErrNo, const std::string & ErrDescription, void * ClientSocketPtr)
+void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::TCPErrorCallBack(int ErrNo, const std::string & ErrDescription, EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClientSocketPtr)
 {
 	TLSSNIAsyncServerSingleConnection* myTLSClient = (TLSSNIAsyncServerSingleConnection*)((TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
 	myTLSClient->onErrorOccured(ErrNo, ErrDescription);
@@ -829,10 +829,10 @@ EasyCrossPlatform::Network::Socket::TLSSNIAsyncServerSingleConnection::~TLSSNIAs
 }
 
 
-void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServer::TCPServerNewConnCallBack(void * newClientSocket, void * ServerClassPtr)
+void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServer::TCPServerNewConnCallBack(EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * newClientSocket, EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket * ServerClassPtr)
 {
-	TCPAsyncClientSocket* myClient = (TCPAsyncClientSocket*)newClientSocket;
-	TLSSNIAsyncServer* myTLSServer = (TLSSNIAsyncServer*) ((TCPAsyncServerSocket*)ServerClassPtr)->CustomData;
+	TCPAsyncClientSocket* myClient = newClientSocket;
+	TLSSNIAsyncServer* myTLSServer = (TLSSNIAsyncServer*) (ServerClassPtr)->CustomData;
 	TLSSNIAsyncServerSingleConnection* mSingleNewConn = new TLSSNIAsyncServerSingleConnection();
 	mSingleNewConn->ConnectCallBack = myTLSServer->ConnectCallBack;
 	mSingleNewConn->DisconnectCallBack = myTLSServer->DisconnectCallBack;
@@ -849,9 +849,9 @@ void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServer::TCPServerNewConnCall
 	return;
 }
 
-void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServer::TCPServerErrorCallBack(int errCode, const std::string & errInfo, void * ServerClassPtr)
+void EasyCrossPlatform::Network::Socket::TLSSNIAsyncServer::TCPServerErrorCallBack(int errCode, const std::string & errInfo, EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket * ServerClassPtr)
 {
-	TLSSNIAsyncServer* myTLSServer = (TLSSNIAsyncServer*)((TCPAsyncServerSocket*)ServerClassPtr)->CustomData;
+	TLSSNIAsyncServer* myTLSServer = (TLSSNIAsyncServer*)(ServerClassPtr)->CustomData;
 	myTLSServer->onError(errCode, errInfo);
 }
 

@@ -232,25 +232,25 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::Destroy()
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::onConnected(bool Succeeded)
 {
 	if (this->ConnectCallBack != NULL) {
-		this->ConnectCallBack(Succeeded,(void*) this);
+		this->ConnectCallBack(Succeeded, this);
 	}
 }
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::onMsg(const std::vector<byte> & Msg)
 {
 	if (this->MsgCallBack != NULL) {
-		this->MsgCallBack(Msg,(void*) this);
+		this->MsgCallBack(Msg,this);
 	}
 }
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::onDisconnect()
 {
 	if (this->DisconnectCallBack != NULL) {
-		this->DisconnectCallBack((void*) this);
+		this->DisconnectCallBack(this);
 	}
 }
 void EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::onError(int errCode, const std::string& errDescription)
 {
 	if (this->ErrorCallBack != NULL) {
-		this->ErrorCallBack(errCode, errDescription,(void*) this);
+		this->ErrorCallBack(errCode, errDescription, this);
 	}
 }
 EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::~TCPAsyncClientSocket()
@@ -261,7 +261,7 @@ EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket::~TCPAsyncClientSocket(
 void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::onConnection(TCPAsyncClientSocket* newClient)
 {
 	if (this->ServerNewConnCallBack != NULL) {
-		this->ServerNewConnCallBack(newClient, (void*) this);
+		this->ServerNewConnCallBack(newClient, this);
 	}
 	newClient->onConnected(true);
 }
@@ -269,7 +269,7 @@ void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::onConnection(TCPA
 void EasyCrossPlatform::Network::Socket::TCPAsyncServerSocket::onError(int errCode, const std::string & errorDescription)
 {
 	if (this->ServerErrorCallBack != NULL) {
-		this->ServerErrorCallBack(errCode, errorDescription, (void*) this);
+		this->ServerErrorCallBack(errCode, errorDescription, this);
 	}
 }
 

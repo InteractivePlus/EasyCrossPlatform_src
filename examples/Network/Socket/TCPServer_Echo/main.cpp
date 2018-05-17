@@ -5,21 +5,21 @@ std::vector<TCPAsyncClientSocket*> myClients;
 std::mutex myMutex;
 class MyServerFunction {
 public:
-	static void onServerNewConn(void* newClientSocket, void* ServerClassPtr) {
-		TCPAsyncClientSocket* MyClientSocket = (TCPAsyncClientSocket*)newClientSocket;
+	static void onServerNewConn(void* newClientSocket, TCPAsyncServerSocket* ServerClassPtr) {
+		TCPAsyncClientSocket* MyClientSocket = newClientSocket;
 		TCPAsyncServerSocket* MyServer = (TCPAsyncServerSocket*)ServerClassPtr;
 		myClients.push_back(MyClientSocket);
 	}
-	static void onServerError(int errCode, const std::string& errInfo, void* ServerClassPtr) {
-		TCPAsyncServerSocket* MyServer = (TCPAsyncServerSocket*)ServerClassPtr;
+	static void onServerError(int errCode, const std::string& errInfo, TCPAsyncServerSocket* ServerClassPtr) {
+		TCPAsyncServerSocket* MyServer = ServerClassPtr;
 		std::cout << "SrvError:" << errInfo << std::endl;
 	}
-	static void onClientConnect(bool Succeed, void* ClientPtr) {
-		TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
+	static void onClientConnect(bool Succeed, TCPAsyncClientSocket* ClientPtr) {
+		TCPAsyncClientSocket* MyClient = ClientPtr;
 		//std::cout << "ClientConnect:" << MyClient->getRemoteAddr().getIPString() << ":" << MyClient->getRemoteAddr().getPort() << std::endl;
 	}
-	static void onClientDisconnect(void* ClientPtr) {
-		TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
+	static void onClientDisconnect(TCPAsyncClientSocket* ClientPtr) {
+		TCPAsyncClientSocket* MyClient = ClientPtr;
 		MyClient->Destroy();
 
 		myMutex.lock();
@@ -37,13 +37,13 @@ public:
 		}
 		myMutex.unlock();
 	}
-	static void onClientMsg(const std::vector<byte>& data, void* ClientPtr) {
-		TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
+	static void onClientMsg(const std::vector<byte>& data, TCPAsyncClientSocket* ClientPtr) {
+		TCPAsyncClientSocket* MyClient = ClientPtr;
 		//std::cout << MyClient->getRemoteAddr().getIPString() << ":(" << data << ")" << std::endl;
 		MyClient->SendMsg(data);
 	}
-	static void onClientError(int errCode, const std::string& errInfo, void* ClientPtr) {
-		TCPAsyncClientSocket* MyClient = (TCPAsyncClientSocket*)ClientPtr;
+	static void onClientError(int errCode, const std::string& errInfo, TCPAsyncClientSocket* ClientPtr) {
+		TCPAsyncClientSocket* MyClient = ClientPtr;
 		//std::cout << "ClientError:" << errInfo << std::endl;
 	}
 };

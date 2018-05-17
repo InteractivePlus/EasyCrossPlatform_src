@@ -32,14 +32,14 @@
 					bool m_IsProcessing = false;
 					bool m_IsHTTPS = false;
 					bool m_operationSucceed = false;
-					static void m_TCPMsg_CB(const std::vector<byte>& Msg, void* ClassPtr);
-					static void m_TCPConn_CB(bool Succeed, void* ClassPtr);
-					static void m_TCPDisConn_CB(void* ClassPtr);
-					static void m_TCPErr_CB(int ErrNo, const std::string& ErrDescription, void* ClassPtr);
-					static void m_TLSMsg_CB(const std::vector<byte>& Msg, void* ClassPtr);
-					static void m_TLSConn_CB(bool Succeed, void* ClassPtr);
-					static void m_TLSDisConn_CB(void* ClassPtr);
-					static void m_TLSErr_CB(int ErrNo, const std::string& ErrDescription, void* ClassPtr);
+					static void m_TCPMsg_CB(const std::vector<byte>& Msg, EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClassPtr);
+					static void m_TCPConn_CB(bool Succeed, EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClassPtr);
+					static void m_TCPDisConn_CB(EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClassPtr);
+					static void m_TCPErr_CB(int ErrNo, const std::string& ErrDescription, EasyCrossPlatform::Network::Socket::TCPAsyncClientSocket * ClassPtr);
+					static void m_TLSMsg_CB(const std::vector<byte>& Msg, EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket * ClassPtr);
+					static void m_TLSConn_CB(bool Succeed, EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket * ClassPtr);
+					static void m_TLSDisConn_CB(EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket * ClassPtr);
+					static void m_TLSErr_CB(int ErrNo, const std::string& ErrDescription, EasyCrossPlatform::Network::Socket::TLSAsyncClientSocket * ClassPtr);
 					std::string m_MsgWaitingForRead = "";
 				public:
 					WebsiteRequest();
