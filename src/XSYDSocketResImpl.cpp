@@ -195,3 +195,13 @@ EasyCrossPlatform::Network::Socket::SocketWorker::~SocketWorker()
 {
 	this->Stop();
 }
+
+void * EasyCrossPlatform::Network::Socket::CustomDataCarrier::getCustomData()
+{
+	return this->CustomData;
+}
+
+void EasyCrossPlatform::Network::Socket::CustomDataCarrier::setCustomData(void * Data)
+{
+	this->CustomData = Data;
+}

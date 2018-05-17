@@ -33,7 +33,7 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::SetErrorCall
 void EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::TCPConnectCallBack(bool Succeed, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClientSocketPtr)
 {
 	int ret = 0;
-	TLS::TLSAsyncClientSocket* myTLSClient = (TLS::TLSAsyncClientSocket*) ((TCP::TCPAsyncClientSocket*) ClientSocketPtr)->CustomData;
+	TLS::TLSAsyncClientSocket* myTLSClient = (TLS::TLSAsyncClientSocket*) ((TCP::TCPAsyncClientSocket*) ClientSocketPtr)->getCustomData();
 	if (Succeed) {
 		mbedtls_ssl_config_defaults(&myTLSClient->m_sslConf,MBEDTLS_SSL_IS_CLIENT,MBEDTLS_SSL_TRANSPORT_STREAM,MBEDTLS_SSL_PRESET_DEFAULT);
 		if (myTLSClient->VerifyServerCert) {
@@ -74,26 +74,26 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::TCPConnectCa
 
 void EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::TCPDisconnectCallBack(EasyCrossPlatform::Network::Socket::StandardClientSocket * ClientSocketPtr)
 {
-	TLS::TLSAsyncClientSocket* myTLSClient = (TLS::TLSAsyncClientSocket*) ((TCP::TCPAsyncClientSocket*) ClientSocketPtr)->CustomData;
+	TLS::TLSAsyncClientSocket* myTLSClient = (TLS::TLSAsyncClientSocket*) ((TCP::TCPAsyncClientSocket*) ClientSocketPtr)->getCustomData();
 	myTLSClient->onDisconnected();
 }
 
 void EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::TCPMsgCallBack(const std::vector<byte> & Data, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClientSocketPtr)
 {
-	TLS::TLSAsyncClientSocket* myTLSClient = (TLS::TLSAsyncClientSocket*) ((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
-	myTLSClient->ReadTCPMsgMutex.lock();
+	TLS::TLSAsyncClientSocket* myTLSClient = (TLS::TLSAsyncClientSocket*) ((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->getCustomData();
 	for (size_t i = 0U; i < Data.size(); i++) {
 		myTLSClient->m_MsgWaitingForRead.push_back(Data[i]);
 	}
-	myTLSClient->ReadTCPMsgMutex.unlock();
-	while (myTLSClient->CheckMsg() == true) {
-		//Checking Msg!
+	if (myTLSClient->m_Shaked) {
+		while (myTLSClient->CheckMsg()) {
+			//Checking Msg!
+		}
 	}
 }
 
 void EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::TCPErrorCallBack(int ErrNo, const std::string & ErrDescription, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClientSocketPtr)
 {
-	TLS::TLSAsyncClientSocket* myTLSClient = (TLS::TLSAsyncClientSocket*)((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
+	TLS::TLSAsyncClientSocket* myTLSClient = (TLS::TLSAsyncClientSocket*)((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->getCustomData();
 	myTLSClient->onErrorOccured(ErrNo, ErrDescription);
 }
 
@@ -111,14 +111,12 @@ int EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::TLSRecvCallBa
 		return MBEDTLS_ERR_SSL_WANT_READ;
 	}
 	else {
-		myTLSClient->ReadTCPMsgMutex.lock();
 		size_t LengthToWrite = len > myTLSClient->m_MsgWaitingForRead.size() ? myTLSClient->m_MsgWaitingForRead.size() : len;
 		
 		for (size_t i = 0U; i < LengthToWrite; i++) {
 			buf[i] = myTLSClient->m_MsgWaitingForRead.front();
 			myTLSClient->m_MsgWaitingForRead.pop_front();
 		}
-		myTLSClient->ReadTCPMsgMutex.unlock();
 		return static_cast<int>(LengthToWrite);
 	}
 }
@@ -130,9 +128,7 @@ int EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::TLSSendCallba
 	for (size_t i = 0U; i < len; i++) {
 		myMsgToSend.push_back(buf[i]);
 	}
-	myTLSClient->SendTCPMsgMutex.lock();
 	myTLSClient->m_ClientSocket->SendMsg(myMsgToSend);
-	myTLSClient->SendTCPMsgMutex.unlock();
 	return static_cast<int>(len);
 }
 
@@ -152,7 +148,7 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::CompleteShak
 				myTLSClient->onConnected(true);
 				myTLSClient->m_Shaked = true;
 				if (!myTLSClient->m_MsgWaitingForRead.empty()) {
-					while (myTLSClient->CheckMsg() == true) {
+					while (myTLSClient->CheckMsg()) {
 						//Checking New Msg!
 					}
 				}
@@ -172,7 +168,7 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::onDisconnect
 {
 	this->myWorkCls.StopJob();
 	if (!this->m_MsgWaitingForRead.empty()) {
-		while (this->CheckMsg() == true) {
+		while (this->CheckMsg()) {
 			//Checking Msg!
 		}
 	}
@@ -286,7 +282,7 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSAsyncClientSocket::Init()
 	this->m_ClientSocket->SetDisconnectCallBack(TLS::TLSAsyncClientSocket::TCPDisconnectCallBack);
 	this->m_ClientSocket->SetMsgCallBack(TLS::TLSAsyncClientSocket::TCPMsgCallBack);
 	this->m_ClientSocket->SetErrorCallBack(TLS::TLSAsyncClientSocket::TCPErrorCallBack);
-	this->m_ClientSocket->CustomData = this;
+	this->m_ClientSocket->setCustomData(this);
 	this->m_TMPALPNProtoList = NULL;
 	this->m_TMPALPNProtoNum = 0U;
 }
@@ -379,7 +375,7 @@ EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection::TLSS
 void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection::TCPConnectCallBack(bool Succeed, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClientSocketPtr)
 {
 	int ret = 0;
-	TLS::TLSSNIAsyncServerSingleConnection* myTLSClient = (TLS::TLSSNIAsyncServerSingleConnection*) ((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
+	TLS::TLSSNIAsyncServerSingleConnection* myTLSClient = (TLS::TLSSNIAsyncServerSingleConnection*) ((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->getCustomData();
 	if (Succeed) {
 		mbedtls_ssl_config_defaults(&myTLSClient->m_sslConf, MBEDTLS_SSL_IS_SERVER, MBEDTLS_SSL_TRANSPORT_STREAM, MBEDTLS_SSL_PRESET_DEFAULT);
 		//mbedtls_ssl_conf_ca_chain(&myTLSClient->m_sslConf, &myTLSClient->m_sslCACert, NULL);
@@ -439,26 +435,26 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection:
 
 void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection::TCPDisconnectCallBack(EasyCrossPlatform::Network::Socket::StandardClientSocket * ClientSocketPtr)
 {
-	TLS::TLSSNIAsyncServerSingleConnection* myTLSClient = (TLS::TLSSNIAsyncServerSingleConnection*)((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
+	TLS::TLSSNIAsyncServerSingleConnection* myTLSClient = (TLS::TLSSNIAsyncServerSingleConnection*)((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->getCustomData();
 	myTLSClient->onDisconnected();
 }
 
 void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection::TCPMsgCallBack(const std::vector<byte> & Data, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClientSocketPtr)
 {
-	TLS::TLSSNIAsyncServerSingleConnection* myTLSClient = (TLS::TLSSNIAsyncServerSingleConnection*)((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
-	myTLSClient->ReadTCPMsgMutex.lock();
+	TLS::TLSSNIAsyncServerSingleConnection* myTLSClient = (TLS::TLSSNIAsyncServerSingleConnection*)((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->getCustomData();
 	for (size_t i = 0U; i < Data.size(); i++) {
 		myTLSClient->m_MsgWaitingForRead.push_back(Data[i]);
 	}
-	myTLSClient->ReadTCPMsgMutex.unlock();
-	while (myTLSClient->CheckNewMsg() == true) {
-		//Checking New Msg
+	if (myTLSClient->m_Shaked) {
+		while (myTLSClient->CheckNewMsg()) {
+			//Checking New Msg
+		}
 	}
 }
 
 void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection::TCPErrorCallBack(int ErrNo, const std::string & ErrDescription, EasyCrossPlatform::Network::Socket::StandardClientSocket * ClientSocketPtr)
 {
-	TLS::TLSSNIAsyncServerSingleConnection* myTLSClient = (TLS::TLSSNIAsyncServerSingleConnection*)((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->CustomData;
+	TLS::TLSSNIAsyncServerSingleConnection* myTLSClient = (TLS::TLSSNIAsyncServerSingleConnection*)((TCP::TCPAsyncClientSocket*)ClientSocketPtr)->getCustomData();
 	myTLSClient->onErrorOccured(ErrNo, ErrDescription);
 }
 
@@ -476,14 +472,12 @@ int EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection::
 		return MBEDTLS_ERR_SSL_WANT_READ;
 	}
 	else {
-		myTLSClient->ReadTCPMsgMutex.lock();
 		size_t LengthToWrite = len > myTLSClient->m_MsgWaitingForRead.size() ? myTLSClient->m_MsgWaitingForRead.size() : len;
 
 		for (size_t i = 0U; i < LengthToWrite; i++) {
 			buf[i] = myTLSClient->m_MsgWaitingForRead.front();
 			myTLSClient->m_MsgWaitingForRead.pop_front();
 		}
-		myTLSClient->ReadTCPMsgMutex.unlock();
 		return static_cast<int>(LengthToWrite);
 	}
 }
@@ -495,9 +489,7 @@ int EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection::
 	for (size_t i = 0U; i < len; i++) {
 		myMsgToSend.push_back(buf[i]);
 	}
-	myTLSClient->SendTCPMsgMutex.lock();
 	myTLSClient->m_ClientSocket->SendMsg(myMsgToSend);
-	myTLSClient->SendTCPMsgMutex.unlock();
 	return static_cast<int>(len);
 }
 
@@ -582,7 +574,7 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection:
 				myTLSClient->onConnected(true);
 				myTLSClient->m_Shaked = true;
 				if (!myTLSClient->m_MsgWaitingForRead.empty()) {
-					while (myTLSClient->CheckNewMsg() == true) {
+					while (myTLSClient->CheckNewMsg()) {
 						//Checking New Msg!
 					}
 				}
@@ -603,7 +595,7 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection:
 {
 	this->myWorkCls.StopJob();
 	if (!this->m_MsgWaitingForRead.empty()) {
-		while (this->CheckNewMsg() == true) {
+		while (this->CheckNewMsg()) {
 			//Checking New Msg!
 		}
 	}
@@ -740,7 +732,7 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection:
 	this->m_ClientSocket->SetDisconnectCallBack(TLS::TLSSNIAsyncServerSingleConnection::TCPDisconnectCallBack);
 	this->m_ClientSocket->SetMsgCallBack(TLS::TLSSNIAsyncServerSingleConnection::TCPMsgCallBack);
 	this->m_ClientSocket->SetErrorCallBack(TLS::TLSSNIAsyncServerSingleConnection::TCPErrorCallBack);
-	this->m_ClientSocket->CustomData = this;
+	this->m_ClientSocket->setCustomData(this);
 	this->m_TMPALPNProtoList = NULL;
 	this->m_TMPALPNProtoNum = 0U;
 }
@@ -826,7 +818,7 @@ EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServerSingleConnection::~TLS
 void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::TCPServerNewConnCallBack(EasyCrossPlatform::Network::Socket::StandardClientSocket * newClientSocket, EasyCrossPlatform::Network::Socket::StandardServerSocket * ServerClassPtr)
 {
 	TCP::TCPAsyncClientSocket* myClient = (TCP::TCPAsyncClientSocket*) newClientSocket;
-	TLS::TLSSNIAsyncServer* myTLSServer = (TLS::TLSSNIAsyncServer*) ((TCP::TCPAsyncServerSocket*) ServerClassPtr)->CustomData;
+	TLS::TLSSNIAsyncServer* myTLSServer = (TLS::TLSSNIAsyncServer*) ((TCP::TCPAsyncServerSocket*) ServerClassPtr)->getCustomData();
 	TLS::TLSSNIAsyncServerSingleConnection* mSingleNewConn = new TLS::TLSSNIAsyncServerSingleConnection(myClient,myTLSServer->SupportedALPNProtocols,myTLSServer->MinHandshakeTime,myTLSServer->MaxHandshakeTime);
 	mSingleNewConn->SetConnectCallBack(myTLSServer->m_ClientConnectCallBack);
 	mSingleNewConn->SetDisconnectCallBack(myTLSServer->m_ClientDisconnectCallBack);
@@ -839,7 +831,7 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::TCPServerNewCon
 
 void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::TCPServerErrorCallBack(int errCode, const std::string & errInfo, EasyCrossPlatform::Network::Socket::StandardServerSocket * ServerClassPtr)
 {
-	TLS::TLSSNIAsyncServer* myTLSServer = (TLS::TLSSNIAsyncServer*)((TCP::TCPAsyncServerSocket*) ServerClassPtr)->CustomData;
+	TLS::TLSSNIAsyncServer* myTLSServer = (TLS::TLSSNIAsyncServer*)((TCP::TCPAsyncServerSocket*) ServerClassPtr)->getCustomData();
 	myTLSServer->onError(errCode, errInfo);
 }
 
@@ -936,7 +928,7 @@ void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::Init()
 	this->m_ServerSocket->SetServerErrorCallBack(TLS::TLSSNIAsyncServer::TCPServerErrorCallBack);
 	this->m_ServerSocket->SetServerNewConnCallBack(TLS::TLSSNIAsyncServer::TCPServerNewConnCallBack);
 	mbedtls_debug_set_threshold(EasyCrossPlatform::Network::Socket::TLS::MBEDTLS_DEBUGLEVEL);
-	this->m_ServerSocket->CustomData = this;
+	this->m_ServerSocket->setCustomData(this);
 }
 
 void EasyCrossPlatform::Network::Socket::TLS::TLSSNIAsyncServer::Destroy()

@@ -57,7 +57,6 @@
 						void SendMsg(const std::vector<byte>& Msg);
 						void Disconnect();
 
-						void* CustomData = NULL;
 
 
 						~TCPAsyncClientSocket();
@@ -100,8 +99,6 @@
 						void StartListen();
 						void StopListen();
 						bool isListening();
-
-						void* CustomData = NULL;
 
 						~TCPAsyncServerSocket();
 					};

@@ -59,6 +59,14 @@
 						~SocketWorker();
 				};
 				
+				class CustomDataCarrier {
+				private:
+					void* CustomData;
+				public:
+					void* getCustomData();
+					void setCustomData(void* Data);
+				};
+
 				class StandardClientSocket;
 				typedef void(*StandardClientConnCallBack)(bool, StandardClientSocket*);
 				typedef void(*StandardClientMsgCallBack)(const std::vector<byte>&, StandardClientSocket*);
@@ -68,7 +76,7 @@
 				class StandardServerSocket;
 				typedef void(*StandardServerNewConnectionCallBack)(StandardClientSocket*, StandardServerSocket*);
 				typedef void(*StandardServerErrorCallBack)(int ErrNo, const std::string& ErrDescription, StandardServerSocket*);
-				class StandardClientSocket {
+				class StandardClientSocket : public CustomDataCarrier {
 				public:
 					virtual void SetConnectCallBack(StandardClientConnCallBack) = 0;
 					virtual void SetMsgCallBack(StandardClientMsgCallBack) = 0;
@@ -80,7 +88,7 @@
 					virtual void Disconnect() = 0;
 					virtual bool isConnected() = 0;
 				};
-				class StandardServerSocket {
+				class StandardServerSocket : public CustomDataCarrier {
 				public:
 					virtual void SetClientConnectCallBack(StandardClientConnCallBack) = 0;
 					virtual void SetClientMsgCallBack(StandardClientMsgCallBack) = 0;
@@ -98,13 +106,13 @@
 				class MailRecieverSocket;
 				typedef void(*MailBoxRecieverMsgCallBack)(const std::vector<byte>&, const IpAddr& IncommingIP, MailRecieverSocket*);
 				typedef void(*MailBoxRecieverErrorCallBack)(int, const std::string&, MailRecieverSocket*);
-				class MailSenderSocket {
+				class MailSenderSocket : public CustomDataCarrier {
 					virtual void SendMsg(const IpAddr&, const std::string&) = 0;
 					virtual void SendMsg(const IpAddr&, const std::vector<byte>&) = 0;
 				};
 
 				
-				class MailRecieverSocket {
+				class MailRecieverSocket : public CustomDataCarrier {
 					virtual void SetServerMsgCallBack(MailBoxRecieverMsgCallBack) = 0;
 					virtual void SetServerErrCallBack(MailBoxRecieverErrorCallBack) = 0;
 					virtual void StartListen() = 0;

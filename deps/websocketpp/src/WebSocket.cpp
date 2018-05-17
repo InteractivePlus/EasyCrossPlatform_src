@@ -192,7 +192,7 @@ int WebSocket::makeFrame(WebSocketFrameType frame_type, unsigned char* msg, int 
 	return (size+pos);
 }
 
-WebSocketFrameType WebSocket::getFrame(unsigned char* in_buffer, int in_length, unsigned char* out_buffer, int out_size, int* out_length)
+WebSocketFrameType WebSocket::getFrame(unsigned char* in_buffer, int& in_length, unsigned char* out_buffer, int out_size, int* out_length)
 {
 	//printf("getTextFrame()\n");
 	if(in_length < 3) return INCOMPLETE_FRAME;
@@ -258,8 +258,8 @@ WebSocketFrameType WebSocket::getFrame(unsigned char* in_buffer, int in_length, 
 
 	memcpy((void*)out_buffer, (void*)(in_buffer+pos), payload_length);
 	out_buffer[payload_length] = 0;
-	*out_length = payload_length+1;
-	
+	*out_length = payload_length;
+	in_length = payload_length+pos;
 	//printf("TEXT: %s\n", out_buffer);
 
 	if(msg_opcode == 0x0) return (msg_fin)?TEXT_FRAME:INCOMPLETE_TEXT_FRAME; // continuation frame ?

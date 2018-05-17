@@ -61,8 +61,6 @@
 						static int TLSSendCallback(void* TLSClientPtr, const unsigned char* buf, size_t len);
 						static void CompleteShakeProgress(std::thread::id myThreadID, void* Parameters, bool* RunningSign, std::mutex* Mutex);
 						TCP::TCPAsyncClientSocket* m_ClientSocket = NULL;
-						std::mutex ReadTCPMsgMutex;
-						std::mutex SendTCPMsgMutex;
 						void onDisconnected();
 						void onConnected(bool Succeeded);
 						void onMsgCB(const std::vector<byte>& Data);
@@ -85,8 +83,6 @@
 						void SetMsgCallBack(StandardClientMsgCallBack mCB);
 						void SetDisconnectCallBack(StandardClientDisconnectCallBack mCB);
 						void SetErrorCallBack(StandardClientErrorCallBack mCB);
-
-						void* CustomData = NULL;
 
 						void Connect();
 						void Disconnect();
@@ -135,8 +131,6 @@
 						static int TLSSNICallBack(void* MyClsPtr, mbedtls_ssl_context* ssl, const unsigned char* HostName, size_t HostNameLength);
 						static void CompleteShakeProgress(std::thread::id myThreadID, void* Parameters, bool* RunningSign, std::mutex* Mutex);
 						TCP::TCPAsyncClientSocket* m_ClientSocket = NULL;
-						std::mutex ReadTCPMsgMutex;
-						std::mutex SendTCPMsgMutex;
 						void Init();
 						void Destroy();
 						void onDisconnected();
@@ -151,8 +145,6 @@
 						TLSSNIAsyncServerSingleConnection(TLSSNIAsyncServerSingleConnection& oldClient);
 
 						std::string serverHostName = "localhost";
-
-						void* CustomData = NULL;
 
 						IpAddr getMyIpAddr();
 						IpAddr getRemoteAddr();
@@ -210,7 +202,6 @@
 						void SetServerNewConnCallBack(StandardServerNewConnectionCallBack mCB);
 						void SetServerErrorCallBack(StandardServerErrorCallBack mCB);
 
-						void* CustomData = NULL;
 						IpAddr getIP();
 						void StartListen();
 						void StopListen();

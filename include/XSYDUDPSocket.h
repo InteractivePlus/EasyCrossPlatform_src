@@ -42,8 +42,6 @@
 						void StopListen();
 						bool isListening();
 
-						void* CustomData;
-
 						~UDPAsyncClientAndServerSocket();
 					};
 					class UDPAsyncClientSocket : public MailSenderSocket {
@@ -62,8 +60,6 @@
 
 						void SendMsg(const IpAddr& Destination, const std::string& Data);
 						void SendMsg(const IpAddr& Destination, const std::vector<byte>& Data);
-
-						void* CustomData;
 
 						~UDPAsyncClientSocket();
 					};
@@ -91,7 +87,6 @@
 						void StartListen();
 						void StopListen();
 						bool isListening();
-						void* CustomData;
 					};
 				}
 			}
