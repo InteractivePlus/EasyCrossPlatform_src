@@ -9,6 +9,7 @@
 	namespace EasyCrossPlatform {
 		namespace Network {
 			namespace HTTPServer {
+				const constexpr unsigned int MinCompressMsgLength = 1024U;
 				class HTTPServer;
 				struct HTTPRequestClientInfo {
 					float ConnectionStartTime;
@@ -35,8 +36,6 @@
 				protected:
 					void Init();
 					void Destroy();
-
-					Parser::HTTP::HTTPRequest m_HTTPRequestParser;
 
 					float m_MaxConnectionAliveTime = 0.0F;
 

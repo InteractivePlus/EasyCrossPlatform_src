@@ -29,7 +29,7 @@ Contribution List: [Windy](https://github.com/ToiletCommander)
 	- HTTP1.X Parser
 	- International Charsets
 	- Regex Expression Match/Search/Replace  
-	- ~~HTTP Server~~(Comming Soon)
+	- HTTP Server
 - Required Environment: 
 	- POSIX/Windows System
 	- C++ 11

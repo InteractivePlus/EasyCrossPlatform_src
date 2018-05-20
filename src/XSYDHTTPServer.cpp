@@ -172,24 +172,25 @@ bool EasyCrossPlatform::Network::HTTPServer::HTTPServer::CheckMsg(HTTPServer * m
 		if (mParseVal.canDecode && mParseVal.msgIsEnough && mParseVal.msgIsHTTP && (!mParseVal.onError)) {
 			if (myServer->AcceptWebsocket) {
 				myServer->ConnectInfoMutex->lock();
-				auto FieldIt = myServer->m_HTTPRequestParser.FieldsValues.find("Upgrade");
+				auto FieldIt = RequestCls.FieldsValues.find("Upgrade");
 				myServer->ConnectInfoMutex->unlock();
-				if (FieldIt != myServer->m_HTTPRequestParser.FieldsValues.end()) {
+				if (FieldIt != RequestCls.FieldsValues.end()) {
 					if (!(*FieldIt).second.empty()) {
 						if (EasyCrossPlatform::Parser::StringUtil::toLower((*FieldIt).second[0]) == "websocket") {
 							//upgrade to websocket
-							Websocket::WebsocketSingleConnection* mySingleConn = new Websocket::WebsocketSingleConnection(myServer->m_HTTPRequestParser.toReqString(), (*SocketIt).first, true);
+							Websocket::WebsocketSingleConnection* mySingleConn = new Websocket::WebsocketSingleConnection(RequestCls, (*SocketIt).first, true);
 							mySingleConn->SetConnectCallBack(myServer->m_WebsocketConnectCallBack);
 							mySingleConn->SetDisconnectCallBack(myServer->m_WebsocketDisconnectCallBack);
 							mySingleConn->SetMsgCallBack(myServer->m_WebsocketMsgCallBack);
 							mySingleConn->SetErrorCallBack(myServer->m_WebsocketErrCallBack);
 							mySingleConn->SetLatencyTestCallBack(myServer->m_WebsocketLatencyCallBack);
 
+							mySingleConn->onConnect(true);
 							delete (*SocketIt).second.MsgMutex;
 							myServer->ConnectInfoMutex->lock();
 							myServer->m_NormalHTTPConnInfo.erase(SocketIt);
 							myServer->ConnectInfoMutex->unlock();
-							return true;
+							return false;
 						}
 					}
 				}
@@ -201,27 +202,30 @@ bool EasyCrossPlatform::Network::HTTPServer::HTTPServer::CheckMsg(HTTPServer * m
 			myServer->m_RequestCallBack(RequestCls, ResponseCls);
 
 			ResponseCls.Connection = RequestCls.Connection;
-			bool canBr = false, canGzip = false, canDeflate = false;
-			for (auto i = RequestCls.AcceptEncoding.begin(); i != RequestCls.AcceptEncoding.end(); i++) {
-				if ((*i).first == "br") {
-					canBr = true;
-				}
-				else if ((*i).first == "gzip") {
-					canGzip = true;
-				}
-				else if ((*i).first == "deflate") {
-					canDeflate = true;
-				}
-			}
 			ResponseCls.ContentEncoding.clear();
-			if (canBr) {
-				ResponseCls.ContentEncoding.push_back("br");
-			}
-			else if (canGzip) {
-				ResponseCls.ContentEncoding.push_back("gzip");
-			}
-			else if (canDeflate) {
-				ResponseCls.ContentEncoding.push_back("deflate");
+			if (ResponseCls.OriginalData.length() >= MinCompressMsgLength) {
+				bool canBr = false, canGzip = false, canDeflate = false;
+				for (auto i = RequestCls.AcceptEncoding.begin(); i != RequestCls.AcceptEncoding.end(); i++) {
+					if ((*i).first == "br") {
+						canBr = true;
+					}
+					else if ((*i).first == "gzip") {
+						canGzip = true;
+					}
+					else if ((*i).first == "deflate") {
+						canDeflate = true;
+					}
+				}
+
+				if (canBr) {
+					ResponseCls.ContentEncoding.push_back("br");
+				}
+				else if (canGzip) {
+					ResponseCls.ContentEncoding.push_back("gzip");
+				}
+				else if (canDeflate) {
+					ResponseCls.ContentEncoding.push_back("deflate");
+				}
 			}
 			std::string ResponseString = ResponseCls.toResponseString();
 			SocketPtr->SendMsg(ResponseString);

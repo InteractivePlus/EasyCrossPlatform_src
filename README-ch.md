@@ -29,7 +29,7 @@ Language: [English](README.md)
 	- HTTP1.X解析器
 	- 国际编码转换
 	- 正则表达式匹配/替换/查找
-	- ~~HTTP服务器~~(即将到来)
+	- HTTP服务器
 - 环境依赖: 
 	- POSIX/Windows系统
 	- C++ 11  
