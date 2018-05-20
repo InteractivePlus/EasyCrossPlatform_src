@@ -4,7 +4,8 @@ using namespace EasyCrossPlatform::Network::Socket;
 
 class MyHTTPResponse {
 public:
-	static void OnResponse(const EasyCrossPlatform::Parser::HTTP::HTTPRequest& RequestClass, EasyCrossPlatform::Parser::HTTP::HTTPResponse& ResponseClass) {
+	static void OnResponse(StandardClientSocket* ClientSocket,const EasyCrossPlatform::Parser::HTTP::HTTPRequest& RequestClass, EasyCrossPlatform::Parser::HTTP::HTTPResponse& ResponseClass) {
+		//You dont need to control Socket Behavior here but ClientSocket is a information for you to check negotiated ALPN, serverHost for TLS.
 		ResponseClass.OriginalData = "<!DOCTYPE HTML><html><title>Hello World</title><head></head><body><h1>Hello, World!</h1></body></html>";
 		ResponseClass.ResponseCode = 200U;
 		ResponseClass.ResponseDescription = "OK";

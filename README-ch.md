@@ -1,7 +1,7 @@
 # EasyCrossPlatform
 用简单的代码, 写出毫无妥协性能的程序  
 [形随意动](https://github.com/BlueAirTechGroup/)旗下项目, 项目起始日期为2017年10月15日  
-版本: 1.2 Dev Alpha  
+版本: 1.2 Dev Beta  
 Language: [English](README.md)  
 **稳定版本可在Release页面中找到**  
 ## 介绍
@@ -29,7 +29,7 @@ Language: [English](README.md)
 	- HTTP1.X解析器
 	- 国际编码转换
 	- 正则表达式匹配/替换/查找
-	- HTTP服务器
+	- HTTP服务器(支持Websocket服务器)
 - 环境依赖: 
 	- POSIX/Windows系统
 	- C++ 11  

@@ -1,7 +1,7 @@
 ﻿# EasyCrossPlatform
 Write Easy Code with uncompromising performances.  
 A project under [BlueAirTechGroup](https://github.com/BlueAirTechGroup), started from 15 Oct 2017  
-Version: 1.2 Dev Alpha  
+Version: 1.2 Dev Beta  
 Language: [中文](README-ch.md)  
 **You can find stable release under release page**  
 ## Introduction
@@ -29,7 +29,7 @@ Contribution List: [Windy](https://github.com/ToiletCommander)
 	- HTTP1.X Parser
 	- International Charsets
 	- Regex Expression Match/Search/Replace  
-	- HTTP Server
+	- HTTP Server(With Websocket Server Support)
 - Required Environment: 
 	- POSIX/Windows System
 	- C++ 11

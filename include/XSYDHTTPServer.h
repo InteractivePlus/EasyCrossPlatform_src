@@ -18,7 +18,7 @@
 					Socket::StandardClientSocket* SocketPtr;
 				};
 
-				typedef void(*HTTPServerOnRequestCallBack)(const Parser::HTTP::HTTPRequest&, Parser::HTTP::HTTPResponse&);
+				typedef void(*HTTPServerOnRequestCallBack)(Socket::StandardClientSocket*,const Parser::HTTP::HTTPRequest&, Parser::HTTP::HTTPResponse&);
 				
 				struct CallOnRequestPara {
 					Socket::StandardClientSocket* SocketPtr;

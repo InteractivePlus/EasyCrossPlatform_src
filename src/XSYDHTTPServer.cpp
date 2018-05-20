@@ -199,7 +199,7 @@ bool EasyCrossPlatform::Network::HTTPServer::HTTPServer::CheckMsg(HTTPServer * m
 			ResponseCls.MajorVersion = 1U;
 			ResponseCls.MinorVersion = 1U;
 
-			myServer->m_RequestCallBack(RequestCls, ResponseCls);
+			myServer->m_RequestCallBack(SocketPtr,RequestCls, ResponseCls);
 
 			ResponseCls.Connection = RequestCls.Connection;
 			ResponseCls.ContentEncoding.clear();
