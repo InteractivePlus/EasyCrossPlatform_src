@@ -434,7 +434,7 @@ void EasyCrossPlatform::Parser::HTTP::HTTPRequestHeader::AppendFieldWithSingleVa
 {
 	auto Iter = this->FieldsValues.find(FieldName);
 	std::vector<std::string> TempVector = std::vector<std::string>();
-	if (Iter == this->FieldsValues.end()) {
+	if (Iter != this->FieldsValues.end()) {
 		TempVector = (*Iter).second;
 	}
 	TempVector.push_back(AppendFieldValue);
@@ -776,8 +776,8 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPRequest::WriteHeader()
 		if (!this->OriginalData.empty()) {
 			this->EncodeData();
 		}
-		this->SetFieldWithSingleValue("Content-Length",std::to_string(this->EncodedData.length()));
 	}
+	this->SetFieldWithSingleValue("Content-Length", std::to_string(this->EncodedData.length()));
 	mReqHeaderCls.FieldsValues = this->FieldsValues;
 	mReqHeaderCls.MajorVersion = this->MajorVersion;
 	mReqHeaderCls.MinorVersion = this->MinorVersion;
@@ -889,7 +889,7 @@ void EasyCrossPlatform::Parser::HTTP::HTTPRequest::AppendFieldWithSingleValue(co
 {
 	auto Iter = this->FieldsValues.find(FieldName);
 	std::vector<std::string> TempVector = std::vector<std::string>();
-	if (Iter == this->FieldsValues.end()) {
+	if (Iter != this->FieldsValues.end()) {
 		TempVector = (*Iter).second;
 	}
 	TempVector.push_back(AppendFieldValue);
@@ -1263,7 +1263,7 @@ void EasyCrossPlatform::Parser::HTTP::HTTPResponseHeader::AppendFieldWithSingleV
 {
 	auto Iter = this->FieldsValues.find(FieldName);
 	std::vector<std::string> TempVector = std::vector<std::string>();
-	if (Iter == this->FieldsValues.end()) {
+	if (Iter != this->FieldsValues.end()) {
 		TempVector = (*Iter).second;
 	}
 	TempVector.push_back(AppendFieldValue);
@@ -1545,8 +1545,8 @@ std::string EasyCrossPlatform::Parser::HTTP::HTTPResponse::WriteHeader()
 		if (!this->OriginalData.empty()) {
 			this->EncodeData();
 		}
-		this->SetFieldWithSingleValue("Content-Length",std::to_string(this->EncodedData.length()));
 	}
+	this->SetFieldWithSingleValue("Content-Length", std::to_string(this->EncodedData.length()));
 	mReqHeaderCls.FieldsValues = this->FieldsValues;
 	mReqHeaderCls.MajorVersion = this->MajorVersion;
 	mReqHeaderCls.MinorVersion = this->MinorVersion;
@@ -1639,7 +1639,7 @@ void EasyCrossPlatform::Parser::HTTP::HTTPResponse::AppendFieldWithSingleValue(c
 {
 	auto Iter = this->FieldsValues.find(FieldName);
 	std::vector<std::string> TempVector = std::vector<std::string>();
-	if (Iter == this->FieldsValues.end()) {
+	if (Iter != this->FieldsValues.end()) {
 		TempVector = (*Iter).second;
 	}
 	TempVector.push_back(AppendFieldValue);

@@ -21,4 +21,6 @@
 	#include <XSYDRegex.h>
 	#include <XSYDIntlCharset.h>
 	#include <XSYDFileInfo.h>
+	#include <XSYDWebSocket.h>
+	#include <XSYDHTTPServer.h>
 #endif //__EasyCrossPlatformFile__

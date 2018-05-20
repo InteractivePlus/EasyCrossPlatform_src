@@ -29,7 +29,11 @@ EasyCrossPlatform::Network::Websocket::WebsocketSingleConnection::~WebsocketSing
 
 void EasyCrossPlatform::Network::Websocket::WebsocketSingleConnection::Init()
 {
-
+	this->m_SocketHandle->SetConnectCallBack(WebsocketSingleConnection::m_ConnectCallBack);
+	this->m_SocketHandle->SetDisconnectCallBack(WebsocketSingleConnection::m_DisconnCallBack);
+	this->m_SocketHandle->SetErrorCallBack(WebsocketSingleConnection::m_ErrCallBack);
+	this->m_SocketHandle->SetMsgCallBack(WebsocketSingleConnection::m_MsgCallBack);
+	this->m_SocketHandle->setCustomData(this);
 }
 
 void EasyCrossPlatform::Network::Websocket::WebsocketSingleConnection::Destroy()
@@ -123,7 +127,9 @@ bool EasyCrossPlatform::Network::Websocket::WebsocketSingleConnection::checkNewM
 	int NewLength = static_cast<int>(BufferLength);
 	int OutLength = 0;
 	WebSocketFrameType fType = this->mParser.getFrame(WaitingReadBuffer, NewLength, DecodedMsgBuffer, NewLength - 16, &OutLength);
+	
 	std::string StrResult;
+	int NewPongLength = 0;
 	switch (fType) {
 	case WebSocketFrameType::BINARY_FRAME:
 	case WebSocketFrameType::TEXT_FRAME:
@@ -139,7 +145,7 @@ bool EasyCrossPlatform::Network::Websocket::WebsocketSingleConnection::checkNewM
 	case WebSocketFrameType::PING_FRAME:
 		//Make a PONG Frame
 		unsigned char mPongHolder[500];
-		int NewPongLength = this->mParser.makeFrame(WebSocketFrameType::PONG_FRAME, reinterpret_cast<unsigned char*>(""), 0, mPongHolder, 500);
+		NewPongLength = this->mParser.makeFrame(WebSocketFrameType::PONG_FRAME, reinterpret_cast<unsigned char*>(""), 0, mPongHolder, 500);
 		this->m_SocketHandle->SendMsg(std::string(reinterpret_cast<char*>(mPongHolder), NewPongLength));
 		bResult = true;
 		break;
@@ -186,6 +192,7 @@ EasyCrossPlatform::Network::Websocket::WebsocketSingleConnection::WebsocketSingl
 	this->m_SocketHandle->SendMsg(mParser.answerHandshake());
 	this->m_Shaked = true;
 	this->Init();
+	this->onConnect(true);
 }
 
 void EasyCrossPlatform::Network::Websocket::WebsocketSingleConnection::SetConnectCallBack(Socket::StandardClientConnCallBack mCB)

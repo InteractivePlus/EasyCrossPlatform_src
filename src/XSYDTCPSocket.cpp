@@ -367,6 +367,9 @@ EasyCrossPlatform::Network::Socket::IpAddr EasyCrossPlatform::Network::Socket::T
 
 void EasyCrossPlatform::Network::Socket::TCP::TCPAsyncServerSocket::StartListen()
 {
+	if (this->m_isListening) {
+		return;
+	}
 	const sockaddr* myAddr = this->m_myIP.getIPAddress();
 	int bindState = uv_tcp_bind(&this->m_SocketHandle, myAddr, 0);
 	if (bindState < 0) {
@@ -383,6 +386,9 @@ void EasyCrossPlatform::Network::Socket::TCP::TCPAsyncServerSocket::StartListen(
 
 void EasyCrossPlatform::Network::Socket::TCP::TCPAsyncServerSocket::StopListen()
 {
+	if (!this->m_isListening) {
+		return;
+	}
 	this->m_isListening = false;
 	uv_close((uv_handle_t*) &this->m_SocketHandle, NULL);
 }
