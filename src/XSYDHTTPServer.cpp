@@ -198,36 +198,67 @@ bool EasyCrossPlatform::Network::HTTPServer::HTTPServer::CheckMsg(HTTPServer * m
 			Parser::HTTP::HTTPResponse ResponseCls;
 			ResponseCls.MajorVersion = 1U;
 			ResponseCls.MinorVersion = 1U;
+			bool needCallRequest = false;
+			bool OnlyNeedHeader = false;
+			EasyCrossPlatform::Network::Request::RequestMethod RequestMethod = std::storm(RequestCls.Method);
+			std::string ResponseString = "";
+			switch (RequestMethod) {
+			case EasyCrossPlatform::Network::Request::RequestMethod::HEAD:
+				OnlyNeedHeader = true;
+				needCallRequest = true;
+			case EasyCrossPlatform::Network::Request::RequestMethod::TRACE:
+				OnlyNeedHeader = false;
+				needCallRequest = false;
+				ResponseString = RequestCls.toReqString();
+			default:
+				OnlyNeedHeader = false;
+				needCallRequest = true;
+			}
 
-			myServer->m_RequestCallBack(SocketPtr,RequestCls, ResponseCls);
+			if (needCallRequest) {
+				myServer->m_RequestCallBack(SocketPtr, RequestCls, ResponseCls);
+				
+				ResponseCls.Connection = RequestCls.Connection;
+				ResponseCls.ContentEncoding.clear();
+				if (ResponseCls.OriginalData.length() >= MinCompressMsgLength) {
+					bool canBr = false, canGzip = false, canDeflate = false;
+					for (auto i = RequestCls.AcceptEncoding.begin(); i != RequestCls.AcceptEncoding.end(); i++) {
+						if ((*i).first == "br") {
+							canBr = true;
+						}
+						else if ((*i).first == "gzip") {
+							canGzip = true;
+						}
+						else if ((*i).first == "deflate") {
+							canDeflate = true;
+						}
+					}
 
-			ResponseCls.Connection = RequestCls.Connection;
-			ResponseCls.ContentEncoding.clear();
-			if (ResponseCls.OriginalData.length() >= MinCompressMsgLength) {
-				bool canBr = false, canGzip = false, canDeflate = false;
-				for (auto i = RequestCls.AcceptEncoding.begin(); i != RequestCls.AcceptEncoding.end(); i++) {
-					if ((*i).first == "br") {
-						canBr = true;
+					if (canBr) {
+						ResponseCls.ContentEncoding.push_back("br");
 					}
-					else if ((*i).first == "gzip") {
-						canGzip = true;
+					else if (canGzip) {
+						ResponseCls.ContentEncoding.push_back("gzip");
 					}
-					else if ((*i).first == "deflate") {
-						canDeflate = true;
+					else if (canDeflate) {
+						ResponseCls.ContentEncoding.push_back("deflate");
 					}
 				}
+				if (EasyCrossPlatform::Parser::StringUtil::toLower(RequestCls.Connection) == "keep-alive" && myServer->m_MaxConnectionAliveTime > 0.0) {
+					ResponseCls.SetFieldWithSingleValue("Keep-Alive", "max=" + std::to_string(static_cast<unsigned int>(myServer->m_MaxConnectionAliveTime)));
+				}
 
-				if (canBr) {
-					ResponseCls.ContentEncoding.push_back("br");
+				if (OnlyNeedHeader) {
+					ResponseString = ResponseCls.WriteHeader();
 				}
-				else if (canGzip) {
-					ResponseCls.ContentEncoding.push_back("gzip");
-				}
-				else if (canDeflate) {
-					ResponseCls.ContentEncoding.push_back("deflate");
+				else {
+					ResponseString = ResponseCls.toResponseString();
 				}
 			}
-			std::string ResponseString = ResponseCls.toResponseString();
+
+			
+			
+			
 			SocketPtr->SendMsg(ResponseString);
 			
 			if (EasyCrossPlatform::Parser::StringUtil::toLower(RequestCls.Connection) == "close") {

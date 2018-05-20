@@ -10,6 +10,8 @@ public:
 		ResponseClass.OriginalData = "<!DOCTYPE HTML><html><title>Websocket Test</title><head></head><body><h1>This is a test of websocket, please access this page using websocket.</h1></body></html>";
 		ResponseClass.ResponseCode = 200U;
 		ResponseClass.ResponseDescription = "OK";
+		ResponseClass.SetFieldWithSingleValue("Content-Type", "text/html");
+		ResponseClass.SetFieldWithSingleValue("X-Powered-By", "EasyCrossPlatform/1.2.0 Beta");
 	}
 	static void OnWebsocketConnect(bool Succeed, StandardClientSocket* mSocketPtr) {
 		mWebsockets.push_back(mSocketPtr);

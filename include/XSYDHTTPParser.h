@@ -3,6 +3,7 @@
 	#include <EasyCP_Common.h>
 	#include <XSYDStringUtil.h>
 	#include <XSYDCompression.h>
+	#include <XSYDHTTPMethodDec.h>
 	#include <math.h>
 	#include <cmath>
 

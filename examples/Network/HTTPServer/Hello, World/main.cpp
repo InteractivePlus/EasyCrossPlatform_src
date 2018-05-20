@@ -9,6 +9,8 @@ public:
 		ResponseClass.OriginalData = "<!DOCTYPE HTML><html><title>Hello World</title><head></head><body><h1>Hello, World!</h1></body></html>";
 		ResponseClass.ResponseCode = 200U;
 		ResponseClass.ResponseDescription = "OK";
+		ResponseClass.SetFieldWithSingleValue("Content-Type", "text/html");
+		ResponseClass.SetFieldWithSingleValue("X-Powered-By", "EasyCrossPlatform/1.2.0 Beta");
 	}
 };
 int main(int argc, char** args) {
