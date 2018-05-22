@@ -60,7 +60,7 @@ Everybody Loves C++, but there is actually no user-friendly libs for beginners t
 Influenced by [Reasoning](http://reasoning.biz) Library, however, that library is no longer maintained since 2008  
 With less code, developers can develop more safe code preventing memory leaks and debug less. EasyCrossPlatform also brings noticeable performance while enabling developers to develop codes fast and secure.  
 ## Special Thanks
-[Ruki](https://github.com/waruqi) - The author of xmake, help me to fix building structures.  
+[Ruki](https://github.com/waruqi) - The author of xmake, he helped me to fix building structures.  
 ## Build
 This project is not even released with beta and it is still in its early stage of development.  
 If you cannot wait to see it, 
