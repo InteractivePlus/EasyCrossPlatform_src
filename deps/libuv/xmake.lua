@@ -1,5 +1,5 @@
 add_includedirs("include")
-if is_os("windows") then
+if is_plat("windows") then
 
 		add_files(
 				'win/async.c',
@@ -54,7 +54,7 @@ if is_os("windows") then
 				'unix/tty.c',
 				'unix/udp.c'
 		)
-		if is_os("solaris") then
+		if is_plat("solaris") then
 			add_cxflags("-pthreads")
 			add_ldflags("-pthreads")
 		else
@@ -63,18 +63,18 @@ if is_os("windows") then
 			add_ldflags("-pthread")
 		end
 		
-		if (is_os("macosx") or is_os("ios") or is_os("linux") or is_os("android") or is_os("zos")) then
+		if (is_plat("macosx") or is_plat("ios") or is_plat("linux") or is_plat("android") or is_plat("zos")) then
 			add_files('unix/proctitle.c') --Only MacOS, iOS, Linux, Android, ZOS
 		end
 		
-		if (is_os("macosx") or is_os("ios")) then
+		if (is_plat("macosx") or is_plat("ios")) then
 			add_files('unix/darwin.c',
 					'unix/fsevents.c',
 					'unix/darwin-proctitle.c'
 			)
 			add_defines('_DARWIN_USE_64_BIT_INODE=1','_DARWIN_UNLIMITED_SELECT=1')
 		end
-		if is_os("linux") then
+		if is_plat("linux") then
 			add_defines("_GNU_SOURCE","_POSIX_C_SOURCE=200112")
 			add_files('unix/linux-core.c',
 					'unix/linux-inotify.c',
@@ -86,7 +86,7 @@ if is_os("windows") then
 			)
 			add_links("dl","rt")
 		end
-		if is_os("android") then
+		if is_plat("android") then
 			add_files('unix/linux-core.c',
 					'unix/linux-inotify.c',
 					'unix/linux-syscalls.c',
@@ -98,7 +98,7 @@ if is_os("windows") then
 			)
 			add_links("dl")
 		end
-		if is_os("solaris") then
+		if is_plat("solaris") then
 			add_files("unix/no-proctitle.c",
 					"unix/sunos.c"
 			)
@@ -106,22 +106,22 @@ if is_os("windows") then
 			add_links('kstat','nsl','sendfile','socket')
 			
 		end
-		if (is_os("freebsd") or is_os("dragonflybsd")) then
+		if (is_plat("freebsd") or is_plat("dragonflybsd")) then
 			add_files("unix/freebsd.c")
 		end
-		if is_os("openbsd") then
+		if is_plat("openbsd") then
 			add_files("unix/openbsd.c")
 		end
-		if is_os("netbsd") then
+		if is_plat("netbsd") then
 			add_files("unix/netbsd.c")
 		end
-		if (is_os("freebsd") or is_os("dragonflybsd") or is_os("openbsd") or is_os("netbsd")) then
+		if (is_plat("freebsd") or is_plat("dragonflybsd") or is_plat("openbsd") or is_plat("netbsd")) then
 			add_files("unix/posix-hrtime.c")
 		end
-		if (is_os("macosx") or is_os("ios") or is_os("freebsd") or is_os("dragonflybsd") or is_os("openbsd") or is_os("netbsd")) then
+		if (is_plat("macosx") or is_plat("ios") or is_plat("freebsd") or is_plat("dragonflybsd") or is_plat("openbsd") or is_plat("netbsd")) then
 			add_files('unix/bsd-ifaddrs.c','unix/kqueue.c')
 		end
-		if is_os("zos") then
+		if is_plat("zos") then
 			add_files('unix/pthread-fixes.c',
 					'unix/os390.c',
 					'unix/os390-syscalls.c'
@@ -136,7 +136,7 @@ add_files('fs-poll.c',
 			'uv-data-getter-setters.c',
 			'uv-common.c',
 			'version.c')
-if (not(is_os("windows"))) then
+if (not(is_plat("windows"))) then
 		add_defines('_LARGEFILE_SOURCE', '_FILE_OFFSET_BITS=64')
 end
 
