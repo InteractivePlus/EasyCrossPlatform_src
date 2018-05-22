@@ -60,6 +60,8 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 大家都爱C++, 但是并没有任何好用的库, 来帮助初学者快速上手C++的多线程, 网络, 用户交互开发, 同时享受C++带来的无与伦比的速度与效率优势  
 受到 [Reasoning](http://reasoning.biz/) 库的影响, 但是这个库自2008年便不再开发  
 用EasyCrossPlatform开发, 可以有效的减少代码行数, 意味着更少Bug和溢出漏洞的可能性. EasyCrossPlatform在实现层趋向于将底层代码封装的更简易, 但是仍旧保留不妥协的性能  
+## 特别鸣谢
+[Ruki](https://github.com/waruqi) - Xmake作者, 帮助我完成了许多编译文件的构建.  
 ## 编译
 此项目仍在早期开发阶段, 且并没有考虑开始发行, Beta版都不! 不过如果您等不及了, 可以编译此库以使用它.  
 1. 我们使用[XMake](http://xmake.io/)来简化我们的编译过程, 您需要首先安装Xmake.
@@ -69,21 +71,15 @@ EasyCrossPlatform的发展是由下面几个库驱动的:
 	- 复制 extlibs/mariadb/Win_x86/mariadb.lib 到 extlibs/mariadb.lib
 	- 复制 extlibs/mariadb/Win_x86/mariadb.dll 到 extlibs/mariadb.dll
 3. 如果您是 
-	1) 以下其中一种 Linux 系统的用户, 你需要从下方命令行代码中运行一个(运行您系统的对应命令)  
+	1) 以下其中一种 Linux 系统的用户, 你需要从下方命令行代码中运行一个(运行您系统的对应命令), 原生Linux用户无需执行下列代码中的任何一个  
 
 ```
-xmake f --build-on-solaris=y
-xmake f --build-on-zos=y
-xmake f --build-on-freebsd=y
-xmake f --build-on-dragonflybsd=y
-xmake f --build-on-openbsd=y
-xmake f --build-on-netbsd=y
-```
-
-	2) 其他Linux用户(不包括Mac)
-
-```
-xmake f --build-on-linux=y
+xmake f -p solaris
+xmake f -p zos
+xmake f -p freebsd
+xmake f -p dragonflybsd
+xmake f -p openbsd
+xmake f -p netbsd
 ```
 
 4. 目录下运行xmake即可生成静态/动态链接库.  

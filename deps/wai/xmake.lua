@@ -1,6 +1,5 @@
+add_files("*.c")
 target("whereami_s")
 	set_kind("static")
-	add_files("*.c")
 target("whereami")
 	set_kind("shared")
-	add_files("*.c")

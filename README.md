@@ -59,6 +59,8 @@ GUI requires too much dependencies, and we are considering using "mygui". Howeve
 Everybody Loves C++, but there is actually no user-friendly libs for beginners to start using C++ with full support of network and multithreading function, while covering the hardware and underlying technologies.   
 Influenced by [Reasoning](http://reasoning.biz) Library, however, that library is no longer maintained since 2008  
 With less code, developers can develop more safe code preventing memory leaks and debug less. EasyCrossPlatform also brings noticeable performance while enabling developers to develop codes fast and secure.  
+## Special Thanks
+[Ruki](https://github.com/waruqi) - The author of xmake, help me to fix building structures.  
 ## Build
 This project is not even released with beta and it is still in its early stage of development.  
 If you cannot wait to see it, 
@@ -69,21 +71,15 @@ If you cannot wait to see it,
 	- Copy extlibs/mariadb/Win_x86/mariadb.lib to extlibs/mariadb.lib
 	- Copy extlibs/mariadb/Win_x86/mariadb.dll to extlibs/mariadb.dll
 3. If you are 
-	1) Either of the following Linux system's user, you need to run either of following command(depends on your system)  
+	1) Either of the following Linux system's user, you need to run either of following command(depends on your system), Generic Linux users are not required to run any of the following command.  
 
 ```
-xmake f --build-on-solaris=y
-xmake f --build-on-zos=y
-xmake f --build-on-freebsd=y
-xmake f --build-on-dragonflybsd=y
-xmake f --build-on-openbsd=y
-xmake f --build-on-netbsd=y
-```
-
-	2) Any Other Linux User(not including Mac)
-
-```
-xmake f --build-on-linux=y
+xmake f -p solaris
+xmake f -p zos
+xmake f -p freebsd
+xmake f -p dragonflybsd
+xmake f -p openbsd
+xmake f -p netbsd
 ```
 
 4. simply run xmake in the directory to generate a static/shared library that you can use.  
