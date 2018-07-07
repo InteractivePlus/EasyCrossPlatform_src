@@ -264,11 +264,12 @@ void EasyCrossPlatform::Network::Websocket::WebsocketSingleConnection::Disconnec
 {
 	if (this->m_Shaked) {
 		//Make a closing frame
+		/*
 		unsigned char mCloseHolder[500];
 		int NewPongLength = this->mParser.makeFrame(WebSocketFrameType::CLOSING_FRAME, reinterpret_cast<unsigned char*>(""), 0, mCloseHolder, 500);
 		std::string SendbackMsg = std::string(reinterpret_cast<char*>(mCloseHolder), NewPongLength);
 		this->m_SocketHandle->SendMsg(SendbackMsg);
-
+		*/
 	}
 	this->m_SocketHandle->Disconnect();
 	this->m_Shaked = false;
