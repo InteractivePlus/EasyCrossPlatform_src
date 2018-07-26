@@ -1,7 +1,8 @@
 ﻿# EasyCrossPlatform
 Write Easy Code with uncompromising performances.  
+**This project is currently in re-construction, please go to Release page to see the latest release**  
 A project under [BlueAirTechGroup](https://github.com/BlueAirTechGroup), started from 15 Oct 2017  
-Version: 1.2 Dev Beta  
+Version: 2.0 Dev  
 Language: [中文](README-ch.md)  
 **You can find stable release under release page**  
 ## Introduction

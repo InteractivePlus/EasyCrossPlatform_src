@@ -1,5 +1,0 @@
-add_files("*.c")
-target("whereami_s")
-	set_kind("static")
-target("whereami")
-	set_kind("shared")
