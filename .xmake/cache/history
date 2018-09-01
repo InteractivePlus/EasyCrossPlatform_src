@@ -1,0 +1,14 @@
+
+{
+    ["__version"] = "2.1.8"
+,   ["cmdlines"] = 
+    {
+        "xmake l C:\\Users\\dcao\\.vscode\\extensions\\tboox.xmake-vscode-1.1.5\\assets\\config.lua"
+    ,   "xmake l C:\\Users\\dcao\\.vscode\\extensions\\tboox.xmake-vscode-1.1.5\\assets\\config.lua"
+    ,   "xmake"
+    ,   "xmake l C:\\Users\\dcao\\.vscode\\extensions\\tboox.xmake-vscode-1.1.5\\assets\\config.lua"
+    ,   "xmake l C:\\Users\\dcao\\.vscode\\extensions\\tboox.xmake-vscode-1.1.5\\assets\\config.lua"
+    ,   "xmake l C:\\Users\\dcao\\.vscode\\extensions\\tboox.xmake-vscode-1.1.5\\assets\\config.lua"
+    }
+
+}

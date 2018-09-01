@@ -1,0 +1,4 @@
+#ifndef __EASYCROSSPLATFORM_FILE_GENERALINCLUDE_INCLUDED__
+	#define __EASYCROSSPLATFORM_FILE_GENERALINCLUDE_INCLUDED__
+	#include <EasyCrossPlatform/Internal/EasyCP_Common.h>
+#endif //__EasyCrossPlatformFile__
