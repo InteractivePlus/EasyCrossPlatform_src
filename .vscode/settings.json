@@ -62,6 +62,8 @@
         "locale": "cpp",
         "xthread": "cpp",
         "xlocbuf": "cpp",
-        "xlocmes": "cpp"
+        "xlocmes": "cpp",
+        "condition_variable": "cpp",
+        "shared_mutex": "cpp"
     }
 }
