@@ -1,4 +1,7 @@
-﻿# EasyCrossPlatform
+﻿# EasyCrossPlatform(Deprecated)
+
+EasyCrossPlatform is **DEPRECATED**, I don't really have time to maintain this project. This started out as a base library for InteractivePlus to develop on, but we don't think we'll write C++ servers in the near future. Plus, there are thousands of better libraries out there for you to use. Please do not consider using this library anymore.    
+
 Write Easy Code with uncompromising performances.  
 **This project is currently in re-construction, please go to Release page to see the latest release**  
 A project under [BlueAirTechGroup](https://github.com/BlueAirTechGroup), started from 15 Oct 2017  
